@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { DAILY_REVIEW_TARGET } from '@/lib/study-progress-utils';
 
-interface Stats { subjects: number; studySets: number; dueCards: number; mastery: number; minutesToday: number; }
+interface Stats { subjects: number; studySets: number; dueCards: number; mastery: number; cardsReviewedToday: number; streakDays: number; }
 interface StudySet { id: string; title: string; sourceType: string; createdAt: string; }
 interface Subject { id: string; name: string; emoji: string; masteryLevel: number; }
 interface Activity { id: string; description: string; createdAt: string; }
@@ -35,13 +36,14 @@ export default function DashboardPage() {
     return () => { cancelled = true; };
   }, []);
 
-  const minutes = stats?.minutesToday ?? 0;
-  const goalProgress = Math.min(100, Math.round((minutes / 20) * 100));
+  const reviewedToday = stats?.cardsReviewedToday ?? 0;
+  const goalProgress = Math.min(100, Math.round((reviewedToday / DAILY_REVIEW_TARGET) * 100));
   const statsCards = [
     { label: 'Study sets', value: stats?.studySets ?? '—', icon: '📚', tone: 'bg-violet-50 text-violet-700' },
     { label: 'Subjects', value: stats?.subjects ?? '—', icon: '🗂️', tone: 'bg-sky-50 text-sky-700' },
     { label: 'Cards to review', value: stats?.dueCards ?? '—', icon: '🧠', tone: 'bg-amber-50 text-amber-700' },
     { label: 'Mastery level', value: stats ? String(stats.mastery) + '%' : '—', icon: '✨', tone: 'bg-emerald-50 text-emerald-700' },
+    { label: 'Study streak', value: stats ? String(stats.streakDays) + ' days' : '—', icon: '🔥', tone: 'bg-orange-50 text-orange-700' },
   ];
 
   return (
@@ -52,7 +54,10 @@ export default function DashboardPage() {
           <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Good morning, learner! <span aria-hidden="true">👋</span></h1>
           <p className="mt-2 text-sm leading-6 text-slate-500 sm:text-base">A little progress today goes a long way. What will you discover?</p>
         </div>
-        <Link href="/library" className="inline-flex items-center justify-center gap-2 self-start rounded-2xl bg-blue-600 px-5 py-3 text-sm font-extrabold text-white shadow-lg shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-blue-700 sm:self-auto">＋ Create study set</Link>
+        <div className="flex flex-wrap gap-3">
+          <Link href="/review" className="inline-flex items-center justify-center gap-2 rounded-2xl border border-blue-200 bg-white px-5 py-3 text-sm font-extrabold text-blue-700 transition hover:bg-blue-50">✓ Review due cards ({stats?.dueCards ?? '—'})</Link>
+          <Link href="/library" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-blue-600 px-5 py-3 text-sm font-extrabold text-white shadow-lg shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-blue-700">＋ Create study set</Link>
+        </div>
       </header>
 
       {loadError && <p role="alert" className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">{loadError}</p>}
@@ -72,18 +77,19 @@ export default function DashboardPage() {
           </div>
           <div className="flex items-center gap-5 rounded-3xl border border-white/70 bg-white/55 p-5 backdrop-blur sm:max-w-sm lg:flex-col lg:items-center lg:justify-center lg:gap-3 lg:p-6">
             <div className="relative flex h-28 w-28 shrink-0 items-center justify-center rounded-full p-2" style={{ background: 'conic-gradient(#2563eb ' + goalProgress + '%, #dbeafe ' + goalProgress + '%)' }}>
-              <div className="flex h-full w-full flex-col items-center justify-center rounded-full bg-white"><span className="text-2xl font-black text-slate-950">{minutes}</span><span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">of 20 min</span></div>
+              <div className="flex h-full w-full flex-col items-center justify-center rounded-full bg-white"><span className="text-2xl font-black text-slate-950">{reviewedToday}</span><span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">of {DAILY_REVIEW_TARGET} cards</span></div>
             </div>
             <div className="min-w-0 lg:text-center">
               <div className="text-xs font-extrabold uppercase tracking-widest text-blue-800">Daily goal</div>
-              <div className="mt-1 text-lg font-black text-slate-950">{goalProgress >= 100 ? 'Goal reached!' : 'You’re building momentum'}</div>
-              <p className="mt-1 text-xs leading-5 text-slate-600">{goalProgress >= 100 ? 'Amazing work. Keep the streak going.' : Math.max(0, 20 - minutes) + ' minutes to reach today’s goal.'}</p>
+              <div className="mt-1 text-lg font-black text-slate-950">{goalProgress >= 100 ? 'Goal reached!' : 'Keep your learning streak'}</div>
+              <p className="mt-1 text-xs leading-5 text-slate-600">{goalProgress >= 100 ? 'Amazing work. Come back tomorrow to keep the habit.' : Math.max(0, DAILY_REVIEW_TARGET - reviewedToday) + ' more cards to reach today’s goal.'}</p>
+              <p className="mt-2 text-xs font-bold text-orange-700">🔥 {stats?.streakDays ?? 0} day streak</p>
             </div>
           </div>
         </div>
       </section>
 
-      <section aria-label="Learning statistics" className="grid grid-cols-2 gap-3 xl:grid-cols-4 xl:gap-4">
+      <section aria-label="Learning statistics" className="grid grid-cols-2 gap-3 xl:grid-cols-5 xl:gap-4">
         {statsCards.map((stat) => <article key={stat.label} className="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:p-6">
           <div className="flex items-center justify-between gap-3"><span className={'flex h-11 w-11 items-center justify-center rounded-2xl text-xl ' + stat.tone} aria-hidden="true">{stat.icon}</span><span className="text-xs font-semibold text-slate-400">Your progress</span></div>
           <div className="mt-5 text-3xl font-black tracking-tight text-slate-950">{String(stat.value)}</div><div className="mt-1 text-sm font-semibold text-slate-500">{stat.label}</div>

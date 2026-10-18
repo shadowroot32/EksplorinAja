@@ -36,7 +36,7 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
-      - name: Run authentication and material validation tests
+      - name: Run authentication, material, and progress tests
         run: npm test
       - name: Type-check TypeScript
         run: npm run typecheck
@@ -59,3 +59,5 @@ jobs:
         run: node scripts/smoke-otp-api.cjs
       - name: Smoke-test material API authentication
         run: node scripts/smoke-material-api.cjs
+      - name: Smoke-test study progress APIs
+        run: node scripts/smoke-study-progress-api.cjs

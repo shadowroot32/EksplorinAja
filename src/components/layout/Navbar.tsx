@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 
 const nav = [
   { href: '/dashboard', label: 'Dashboard', icon: '⌂' },
+  { href: '/review', label: 'Review due cards', icon: '✓' },
   { href: '/subjects', label: 'Subjects', icon: '▤' },
   { href: '/library', label: 'Study library', icon: '✧' },
   { href: '/settings', label: 'Settings', icon: '⚙' },
@@ -64,9 +65,9 @@ export default function Navbar() {
         <button onClick={logout} className="rounded-xl px-3 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100">Sign out</button>
       </header>
 
-      <nav aria-label="Mobile navigation" className="fixed inset-x-3 bottom-3 z-40 grid grid-cols-4 gap-1 rounded-2xl border border-slate-200 bg-white/95 p-2 shadow-xl shadow-blue-900/10 backdrop-blur lg:hidden">
+      <nav aria-label="Mobile navigation" className="fixed inset-x-3 bottom-3 z-40 grid grid-cols-5 gap-1 rounded-2xl border border-slate-200 bg-white/95 p-2 shadow-xl shadow-blue-900/10 backdrop-blur lg:hidden">
         {nav.map((item) => <Link key={item.href} href={item.href} aria-current={activePath(item.href) ? 'page' : undefined} className={cn('flex min-w-0 flex-col items-center gap-1 rounded-xl px-1 py-2 text-[10px] font-bold transition-colors', activePath(item.href) ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-50')}>
-          <span className="text-lg leading-none" aria-hidden="true">{item.icon}</span><span className="truncate">{item.label === 'Study library' ? 'Library' : item.label}</span>
+          <span className="text-lg leading-none" aria-hidden="true">{item.icon}</span><span className="truncate">{item.label === 'Study library' ? 'Library' : item.label === 'Review due cards' ? 'Review' : item.label}</span>
         </Link>)}
       </nav>
     </>
