@@ -25,7 +25,7 @@ import {
   youtubeStudySetSchema,
 } from '@/lib/ai/material-validation';
 
-export const maxDuration = 60;
+export const maxDuration = 90;
 
 const pdfTitleSchema = z.object({
   title: z.string().trim().min(1).max(200),
