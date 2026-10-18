@@ -9,7 +9,9 @@ async function main() {
     ['/api/study-sets/example/podcast', 'GET'],
     ['/api/study-sets/example/mind-map', 'POST'],
     ['/api/study-sets/example/share', 'POST'],
+    ['/api/user/export', 'GET'],
   ];
+
   for (const [path, method] of checks) {
     const response = await fetch(baseUrl + path, {
       method,
@@ -17,9 +19,11 @@ async function main() {
     });
     assert.equal(response.status, 401, method + ' ' + path + ' must require authentication');
   }
+
   const invalidShare = await fetch(baseUrl + '/api/share/invalid-token');
   assert.equal(invalidShare.status, 404, 'invalid public share tokens must not disclose documents');
-  console.log('Learning feature API smoke tests passed: private routes require auth and invalid share tokens return 404.');
+
+  console.log('Learning API smoke tests passed: private routes (including data export) require auth and invalid share tokens return 404.');
 }
 
 main().catch((error) => {

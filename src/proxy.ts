@@ -9,7 +9,7 @@ function secret() {
   return new TextEncoder().encode(configured || 'dev-secret-change-me');
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const token = request.cookies.get('cendekia_session')?.value;
   if (!token) return NextResponse.redirect(new URL('/login', request.url));
   try {
@@ -17,7 +17,13 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   } catch {
     const res = NextResponse.redirect(new URL('/login', request.url));
-    res.cookies.delete('cendekia_session');
+    res.cookies.set('cendekia_session', '', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 0,
+    });
     return res;
   }
 }
