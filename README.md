@@ -122,6 +122,7 @@ CI **tidak** membuktikan bahwa Google OAuth, kredensial provider AI, database pr
 │   └── 0001_stage3_learning_features.sql
 ├── scripts/                       # HTTP smoke tests
 ├── src/
+│   ├── proxy.ts                 # Guard rute dashboard (Next.js 16)
 │   ├── app/
 │   │   ├── (auth)/login/          # Login
 │   │   ├── (dashboard)/           # Dashboard, library, study, settings
