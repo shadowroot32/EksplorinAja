@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+
+# Databases & Backups
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.db.bak*
+*.sqlite
+*.sqlite3
+*.bak
+*.bak_*
+
+# Environment Variables & Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.token
+
+# Generated Multimedia & Large Assets
+static/videos/
+*.mp4
+*.mp3
+*.wav
+
+# OS & Editor Artifacts
+.vscode/
+.idea/
+*.swp
+*~
+Thumbs.db
+.DS_Store
