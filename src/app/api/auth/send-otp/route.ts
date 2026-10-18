@@ -1,4 +1,4 @@
-import { randomInt, randomUUID } from 'crypto';
+import { randomUUID } from 'crypto';
 import { and, eq, isNull } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
@@ -7,15 +7,13 @@ import { otpCodes } from '@/lib/db/schema';
 import { sendOtpEmail, isSmtpConfigured } from '@/lib/email';
 import { hashOtpCode } from '@/lib/auth';
 import { checkRateLimit } from '@/lib/rate-limit';
+import { generateOtp, normalizeEmail } from '@/lib/otp';
 
 const schema = z.object({
-  email: z.string().trim().email().transform((value) => value.toLowerCase()),
+  email: z.string().trim().email().transform(normalizeEmail),
   name: z.string().trim().max(100).optional(),
 });
 
-function generateOtp(): string {
-  return String(randomInt(100000, 1_000_000));
-}
 
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({}));

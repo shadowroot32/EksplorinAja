@@ -6,9 +6,10 @@ import { db } from '@/lib/db';
 import { otpCodes, users } from '@/lib/db/schema';
 import { createSession, hashOtpCode } from '@/lib/auth';
 import { checkRateLimit } from '@/lib/rate-limit';
+import { normalizeEmail } from '@/lib/otp';
 
 const schema = z.object({
-  email: z.string().trim().email().transform((value) => value.toLowerCase()),
+  email: z.string().trim().email().transform(normalizeEmail),
   code: z.string().regex(/^\d{6}$/),
   name: z.string().trim().max(100).optional(),
 });

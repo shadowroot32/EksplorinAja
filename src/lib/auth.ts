@@ -1,4 +1,4 @@
-import { createHmac } from 'crypto';
+import { hashOtp } from './otp';
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 import { db } from './db';
@@ -22,7 +22,7 @@ function secretValue(): string {
 const secret = () => new TextEncoder().encode(secretValue());
 
 export function hashOtpCode(code: string): string {
-  return createHmac('sha256', secretValue()).update(code).digest('hex');
+  return hashOtp(code, secretValue());
 }
 
 export async function createSession(userId: string): Promise<string> {
