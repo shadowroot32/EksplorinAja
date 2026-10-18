@@ -32,11 +32,11 @@ export default function SettingsPage() {
     window.location.href = '/login';
   }
 
-  if (!user) return <div className="text-slate-400 text-center py-20">Loading…</div>;
+  if (!user) return <div className="text-slate-600 text-center py-20">Loading…</div>;
 
   return (
     <div className="space-y-6 max-w-2xl">
-      <h1 className="text-2xl font-bold text-slate-100">Settings</h1>
+      <h1 className="text-2xl font-bold text-slate-900">Settings</h1>
 
       <Card>
         <CardHeader><CardTitle>Profile</CardTitle></CardHeader>
@@ -62,7 +62,7 @@ export default function SettingsPage() {
             </div>
             <div className="flex items-center gap-3">
               <Button type="submit" disabled={saving}>{saving ? 'Saving…' : 'Save Changes'}</Button>
-              {saved && <span className="text-emerald-400 text-sm">✓ Saved</span>}
+              {saved && <span className="text-emerald-700 text-sm">✓ Saved</span>}
             </div>
           </form>
         </CardContent>
@@ -70,10 +70,10 @@ export default function SettingsPage() {
 
       <Card>
         <CardHeader><CardTitle>Environment Config</CardTitle></CardHeader>
-        <CardContent className="space-y-2 text-sm font-mono text-slate-400">
+        <CardContent className="space-y-2 text-sm font-mono text-slate-600">
           {['LLM_BASE_URL', 'LLM_MODEL', 'SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'DATABASE_URL'].map(k => (
             <div key={k} className="flex items-center gap-2">
-              <span className="text-emerald-500">{k}</span>
+              <span className="text-emerald-600">{k}</span>
               <span className="text-slate-600">=</span>
               <span className="text-slate-500">[set via .env]</span>
             </div>
@@ -81,10 +81,10 @@ export default function SettingsPage() {
         </CardContent>
       </Card>
 
-      <Card className="border-red-900/50">
-        <CardHeader><CardTitle className="text-red-400">Danger Zone</CardTitle></CardHeader>
+      <Card className="border-red-200">
+        <CardHeader><CardTitle className="text-red-600">Danger Zone</CardTitle></CardHeader>
         <CardContent>
-          <p className="text-slate-400 text-sm mb-4">Permanently delete your account and all associated data.</p>
+          <p className="text-slate-600 text-sm mb-4">Permanently delete your account and all associated data.</p>
           <Button variant="destructive" onClick={deleteAccount}>Delete Account</Button>
         </CardContent>
       </Card>
