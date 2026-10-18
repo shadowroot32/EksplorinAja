@@ -169,7 +169,7 @@ export async function extractPDF(buffer: Buffer): Promise<string> {
         }
         if (totalChars >= MAX_SOURCE_CHARS) break;
       }
-      return pageTexts.join('\\n\\n').slice(0, MAX_SOURCE_CHARS).trim();
+      return pageTexts.join('\n\n').slice(0, MAX_SOURCE_CHARS).trim();
     };
 
     let ocrText: string;
@@ -180,7 +180,7 @@ export async function extractPDF(buffer: Buffer): Promise<string> {
       throw new PDFOCRUnavailableError();
     }
 
-    if (ocrText.replace(/\\s/g, '').length < 10) {
+    if (ocrText.replace(/\s/g, '').length < 10) {
       if (nativeText.length >= 10) return nativeText;
       throw new PDFOCRNoTextError();
     }
