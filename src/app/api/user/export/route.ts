@@ -15,7 +15,6 @@ import {
   subjects,
 } from '@/lib/db/schema';
 
-export const dynamic = 'force-dynamic';
 
 export async function GET() {
   const user = await getSession();
