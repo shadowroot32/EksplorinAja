@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
         // Keep the delivery failure response even if invalidating the code also fails.
       }
     }
-    console.error('[AUTH OTP] Email delivery failed:', error instanceof Error ? error.name : 'UnknownError');
+    console.error('[AUTH OTP] Email delivery failed:', error instanceof Error ? { name: error.name, code: ('code' in error && typeof error.code === 'string') ? error.code : undefined, message: error.message.slice(0, 240) } : 'UnknownError');
     return NextResponse.json({
       error: 'We could not deliver your verification code. Check the email address and SMTP provider settings, then try again.',
     }, { status: 502 });
