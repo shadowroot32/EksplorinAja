@@ -6,6 +6,10 @@ const {
   AI_REQUEST_TIMEOUT_MS,
   MAX_PDF_BYTES,
   MAX_SOURCE_CHARS,
+  MAX_PDF_OCR_PAGES,
+  MIN_NATIVE_PDF_TEXT_CHARS,
+  PDF_OCR_TIMEOUT_MS,
+  shouldRunPdfOcr,
   getPdfUploadError,
   getYouTubeVideoId,
   hasPdfSignature,
@@ -20,6 +24,9 @@ test('source and timeout limits stay bounded for a single serverless request', (
   assert.equal(MAX_PDF_BYTES, 4 * 1024 * 1024);
   assert.equal(MAX_SOURCE_CHARS, 60_000);
   assert.ok(AI_REQUEST_TIMEOUT_MS > 0 && AI_REQUEST_TIMEOUT_MS <= 15_000);
+  assert.equal(MIN_NATIVE_PDF_TEXT_CHARS, 40);
+  assert.equal(MAX_PDF_OCR_PAGES, 8);
+  assert.ok(PDF_OCR_TIMEOUT_MS > 0 && PDF_OCR_TIMEOUT_MS <= 30_000);
 });
 
 test('PDF validation rejects wrong extensions, types, empty files, and oversized files', () => {
@@ -28,6 +35,14 @@ test('PDF validation rejects wrong extensions, types, empty files, and oversized
   assert.equal(getPdfUploadError({ name: 'notes.pdf', size: 0, type: 'application/pdf' }), 'empty_file');
   assert.equal(getPdfUploadError({ name: 'notes.pdf', size: MAX_PDF_BYTES + 1, type: 'application/pdf' }), 'file_too_large');
   assert.equal(getPdfUploadError({ name: 'notes.pdf', size: 100, type: 'application/pdf' }), null);
+});
+
+test('PDF OCR fallback only activates when native text extraction returns too little text', () => {
+  assert.equal(shouldRunPdfOcr(''), true);
+  assert.equal(shouldRunPdfOcr('  \\n  '), true);
+  assert.equal(shouldRunPdfOcr('A'.repeat(MIN_NATIVE_PDF_TEXT_CHARS - 1)), true);
+  assert.equal(shouldRunPdfOcr('A'.repeat(MIN_NATIVE_PDF_TEXT_CHARS)), false);
+  assert.equal(shouldRunPdfOcr('A useful page of extracted PDF text with headings and complete sentences.'), false);
 });
 
 test('PDF signature checks actual bytes rather than trusting filename or MIME type', () => {

@@ -13,6 +13,7 @@
 
 ### Belajar dan progres
 - Materi belajar dari teks/catatan, PDF, dan tautan YouTube.
+- OCR fallback untuk PDF scan: ekstraksi teks biasa dicoba terlebih dahulu, lalu Tesseract.js mengenali teks pada maksimal 8 halaman pertama jika hasil ekstraksi terlalu sedikit.
 - Ringkasan AI, flashcard, kuis pilihan ganda, dan chat/tutor berbasis materi.
 - Spaced repetition berbasis algoritma SuperMemo SM-2.
 - Progres belajar, review yang jatuh tempo, streak/tujuan, dan statistik dashboard.
@@ -94,6 +95,7 @@ Flow login menggunakan authorization code, PKCE S256, state, nonce, verifikasi I
 | `GOOGLE_REDIRECT_URI` | Callback OAuth lengkap yang terdaftar di Google Cloud |
 | `NEXT_PUBLIC_APP_URL` | URL publik aplikasi; fallback untuk callback |
 | `JWT_SECRET` | Secret acak minimal 32 karakter di production |
+| `PDF_OCR_LANGS` | Opsional; bahasa OCR Tesseract (default `eng+ind`) |
 
 SMTP tidak diperlukan untuk login utama Google. Endpoint email OTP lama masih tersedia sebagai kompatibilitas API; SMTP hanya dibutuhkan bila endpoint tersebut sengaja digunakan.
 
