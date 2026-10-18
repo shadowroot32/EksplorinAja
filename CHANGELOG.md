@@ -1,5 +1,14 @@
 # Changelog
 
+## Tahap 5 — OCR fallback untuk PDF scan
+
+- Menambahkan Tesseract.js sebagai fallback jika ekstraksi teks asli PDF menghasilkan kurang dari 40 karakter.
+- PDF dirender sebagai PNG oleh `pdf-parse`, lalu OCR dijalankan maksimal pada 8 halaman pertama.
+- Membatasi waktu OCR ke 25 detik, membatasi hasil teks mengikuti batas input yang sudah ada, dan menggunakan cache model pada path sementara yang dapat ditulis.
+- Menambahkan error berbeda untuk timeout, layanan OCR yang tidak tersedia, dan teks yang tidak berhasil dikenali.
+- Menambahkan uji unit untuk aturan fallback dan batas OCR serta dokumentasi konfigurasi `PDF_OCR_LANGS`.
+
+
 Catatan ini merangkum fitur yang telah ditambahkan pada tahapan pengembangan Cendekia.ai dan pekerjaan yang masih perlu dilakukan sebelum rilis production. Ini bukan bukti bahwa konfigurasi deployment pengguna telah diuji.
 
 ## Tahap 4 — Portabilitas data dan pemolesan akhir
