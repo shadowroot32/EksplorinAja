@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { db } from '@/lib/db';
 import { otpCodes, users } from '@/lib/db/schema';
-import { createSession } from '@/lib/auth';
+import { createSession, hashOtpCode } from '@/lib/auth';
 import { checkRateLimit } from '@/lib/rate-limit';
 
 const schema = z.object({
@@ -20,14 +20,17 @@ export async function POST(req: NextRequest) {
 
   const forwardedFor = req.headers.get('x-forwarded-for');
   const ip = forwardedFor?.split(',')[0]?.trim() || req.headers.get('x-real-ip') || 'unknown';
-  const { allowed } = checkRateLimit(ip, 'verify-otp', 10, 60_000);
-  if (!allowed) return NextResponse.json({ error: 'Too many attempts. Please wait a minute and try again.' }, { status: 429 });
+  const { allowed: ipAllowed } = checkRateLimit(ip, 'verify-otp', 10, 60_000);
+  if (!ipAllowed) return NextResponse.json({ error: 'Too many attempts. Please wait a minute and try again.' }, { status: 429 });
 
   const { email, code, name } = parsed.data;
+  const { allowed: emailAllowed } = checkRateLimit(email, 'verify-otp-email', 10, 10 * 60_000);
+  if (!emailAllowed) return NextResponse.json({ error: 'Too many verification attempts for this address. Request a new code later.' }, { status: 429 });
+
   const now = new Date();
   const [otp] = await db.select().from(otpCodes).where(and(
     eq(otpCodes.email, email),
-    eq(otpCodes.code, code),
+    eq(otpCodes.code, hashOtpCode(code)),
     eq(otpCodes.action, 'login'),
     isNull(otpCodes.usedAt),
     gt(otpCodes.expiresAt, now),
