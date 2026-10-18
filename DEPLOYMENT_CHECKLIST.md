@@ -4,6 +4,9 @@ Gunakan checklist ini untuk deployment baru atau saat merilis perubahan yang men
 
 ## 1. Environment dan secrets
 
+- [ ] Pastikan host mengizinkan koneksi keluar untuk mengunduh model bahasa Tesseract pada penggunaan OCR pertama. Atur `PDF_OCR_LANGS` bila membutuhkan bahasa selain default `eng+ind`.
+- [ ] Verifikasi bahwa runtime hosting mengizinkan request upload hingga 90 detik untuk OCR dan pembuatan materi AI.
+
 - [ ] Siapkan PostgreSQL dan pastikan aplikasi dapat terhubung melalui `DATABASE_URL`.
 - [ ] Isi `LLM_BASE_URL`, `LLM_API_KEY`, dan `LLM_MODEL` dengan konfigurasi provider AI yang benar.
 - [ ] Buat OAuth Client ID bertipe Web di Google Cloud.
