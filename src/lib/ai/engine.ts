@@ -99,7 +99,7 @@ export async function extractYouTube(url: string): Promise<string> {
   return segments.map((segment: { text: string }) => segment.text).join(' ').trim();
 }
 
-export { InvalidAIOutputError };
+export { InvalidAIOutputError, InvalidMindMapError };
 
 
 export async function generateMindMap(content: string): Promise<{ title: string; nodes: { id: string; label: string; parentId: string | null }[] }> {
