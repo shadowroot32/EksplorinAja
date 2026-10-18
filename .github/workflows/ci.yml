@@ -36,7 +36,7 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
-      - name: Run OTP helper tests
+      - name: Run authentication and material validation tests
         run: npm test
       - name: Type-check TypeScript
         run: npm run typecheck
@@ -55,5 +55,7 @@ jobs:
           done
           cat /tmp/cendekia-next.log
           exit 1
-      - name: Smoke-test live OTP API error handling
+      - name: Smoke-test legacy OTP API error handling
         run: node scripts/smoke-otp-api.cjs
+      - name: Smoke-test material API authentication
+        run: node scripts/smoke-material-api.cjs
