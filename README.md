@@ -1,107 +1,206 @@
-# 🐴 Cendekia.ai v2 - Full-Stack AI Learning Workspace
+# Cendekia.ai
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
-[![Next.js: 15+](https://img.shields.io/badge/Next.js-15%2B-black.svg)](https://nextjs.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0%2B-blue.svg)](https://www.typescriptlang.org)
-[![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-v4-38bdf8.svg)](https://tailwindcss.com)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791.svg)](https://www.postgresql.org)
-[![Drizzle ORM](https://img.shields.io/badge/Drizzle%20ORM-latest-C5F74F.svg)](https://orm.drizzle.team)
+[![CI](https://github.com/shadowroot32/cendekia-ai/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/shadowroot32/cendekia-ai/actions/workflows/ci.yml)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql)](https://www.postgresql.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-> **Cendekia.ai v2** adalah platform *AI Learning Workspace* generasi kedua yang dibangun ulang secara penuh menggunakan arsitektur modern **Full-Stack Next.js 15 (App Router)**, **TypeScript**, **Drizzle ORM**, dan **PostgreSQL**.
+**Cendekia.ai** adalah ruang belajar berbasis AI untuk mengubah catatan, dokumen PDF, dan materi YouTube menjadi ringkasan, flashcard, kuis, serta pengalaman belajar yang terorganisasi. Project ini dibangun dengan Next.js App Router, TypeScript, Drizzle ORM, dan PostgreSQL.
 
----
+## Daftar isi
 
-## ✨ Fitur Utama
+- [Fitur](#fitur)
+- [Teknologi](#teknologi)
+- [Persyaratan](#persyaratan)
+- [Menjalankan secara lokal](#menjalankan-secara-lokal)
+- [Konfigurasi environment](#konfigurasi-environment)
+- [Pengujian dan build](#pengujian-dan-build)
+- [Continuous integration](#continuous-integration)
+- [Struktur repository](#struktur-repository)
+- [Catatan keamanan dan deployment](#catatan-keamanan-dan-deployment)
+- [Kontribusi](#kontribusi)
+- [Lisensi](#lisensi)
 
-- 📥 **Multi-Source Ingestion**: Drop file PDF (`pdf-parse`) atau link video YouTube (`youtube-transcript`), serta catatan bebas.
-- 🧠 **AI-Powered Learning Assets**: Ringkasan berstruktur, kartu hafalan (*flashcards*), kuis pilihan ganda, dan AI chat tutor berbasis konteks dokumen.
-- 🗂️ **SuperMemo SM-2 Spaced Repetition**: Algoritma interval pengulangan memori adaptif dengan antarmuka 3D flip card.
-- 🔐 **Passwordless OTP Email Auth**: Autentikasi berbasis kode OTP 6 digit via SMTP/Gmail, tanpa password, dengan sesi secure JWT (`jose`) dan cookie `httpOnly`.
-- 🎨 **Modern Learning Workspace**: Antarmuka responsif bernuansa biru-langit dan putih, navigasi sidebar, kartu progres, serta tampilan belajar yang ramah di desktop dan perangkat seluler.
-- ⚡ **Production-Ready & Self-Hosted**: 100% open-source, bebas biaya langganan, dan siap di-deploy secara mandiri di Proxmox/Linux VM atau cloud provider.
+## Fitur
 
----
+- **Materi multi-sumber:** catatan, dokumen PDF, dan tautan YouTube.
+- **Belajar dengan AI:** ringkasan materi, flashcard, kuis pilihan ganda, dan tutor berbasis konteks materi.
+- **Spaced repetition:** penjadwalan review menggunakan algoritma SuperMemo SM-2.
+- **Login tanpa password:** OTP email enam digit dengan masa berlaku, hashing OTP saat disimpan, batas percobaan, dan session cookie HTTP-only.
+- **Dashboard responsif:** ringkasan progres dan navigasi yang disesuaikan untuk desktop maupun perangkat seluler.
+- **Self-hosted:** konfigurasi database, penyedia email, dan LLM berada di environment milik pengguna.
 
-## 🏗️ Struktur Proyek
+## Teknologi
 
-```text
-cendekia-ai-v2/
-├── src/
-│   ├── app/
-│   │   ├── (auth)/login/            # Halaman login OTP
-│   │   ├── (dashboard)/             # Protected layout & views (dashboard, subjects, library, study, settings)
-│   │   ├── api/                     # Next.js API Routes (auth, dashboard, study-sets, subjects, user)
-│   │   ├── globals.css              # Tailwind v4 configuration & theme
-│   │   ├── layout.tsx               # Root layout
-│   │   └── page.tsx                 # Public landing page
-│   ├── components/                  # UI components (FlashcardViewer, QuizPlayer, ChatInterface, Navbar)
-│   ├── lib/
-│   │   ├── ai/engine.ts             # Vercel AI SDK integration (OpenAI-compatible)
-│   │   ├── db/                      # Drizzle ORM client & PostgreSQL schema (12 tables)
-│   │   ├── auth.ts                  # JWT token creation & verification
-│   │   ├── email.ts                 # Nodemailer SMTP transport
-│   │   ├── rate-limit.ts            # In-memory sliding window rate limiter
-│   │   └── sm2.ts                   # SuperMemo SM-2 algorithm implementation
-│   └── types/                       # TypeScript interfaces
-├── drizzle.config.ts                # Drizzle Kit configuration
-├── next.config.ts                   # Next.js build config
-└── package.json                     # Scripts & dependencies
-```
+| Bagian | Teknologi |
+| --- | --- |
+| Framework | Next.js App Router |
+| Bahasa | TypeScript |
+| UI | React, Tailwind CSS v4 |
+| Database | PostgreSQL |
+| ORM | Drizzle ORM |
+| Autentikasi | JWT menggunakan `jose`, email OTP menggunakan Nodemailer |
+| AI | Vercel AI SDK dengan endpoint yang kompatibel dengan OpenAI |
+| Pengujian | Node.js Test Runner, TypeScript, production build, HTTP smoke test |
 
----
+## Persyaratan
 
-## 🚀 Panduan Memulai Cepat
+- Node.js 22 direkomendasikan (versi yang dipakai CI).
+- npm.
+- PostgreSQL yang dapat diakses aplikasi.
+- Endpoint LLM yang kompatibel dengan OpenAI.
+- Kredensial SMTP aktif untuk menguji login OTP lewat email.
 
-### Prasyarat
-- Node.js 20+ & npm
-- PostgreSQL database (lokal, Docker, atau remote VM)
-- Provider LLM (Ollama, LM Studio, vLLM, OpenAI, atau LLM local proxy)
+## Menjalankan secara lokal
 
-### 1. Salin Konfigurasi Environment
+1. **Clone repository dan masuk ke folder project.**
+
+   ```bash
+   git clone https://github.com/shadowroot32/cendekia-ai.git
+   cd cendekia-ai
+   ```
+
+2. **Pasang dependensi.**
+
+   ```bash
+   npm ci
+   ```
+
+3. **Siapkan environment.**
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   Buka `.env` dan isi nilai yang sesuai dengan lingkunganmu. Rincian variabel tersedia pada bagian [Konfigurasi environment](#konfigurasi-environment).
+
+4. **Siapkan skema database.**
+
+   Untuk pengembangan lokal, jalankan:
+
+   ```bash
+   npx drizzle-kit push
+   ```
+
+   Pastikan `DATABASE_URL` mengarah ke database pengembangan yang benar sebelum menjalankan perintah ini.
+
+5. **Jalankan aplikasi.**
+
+   ```bash
+   npm run dev
+   ```
+
+   Buka [http://localhost:3000](http://localhost:3000).
+
+## Konfigurasi environment
+
+Salin `.env.example` menjadi `.env`, lalu konfigurasi variabel berikut.
+
+| Variabel | Kegunaan |
+| --- | --- |
+| `DATABASE_URL` | Connection string PostgreSQL |
+| `LLM_BASE_URL` | Base URL provider LLM yang kompatibel dengan OpenAI |
+| `LLM_API_KEY` | API key provider LLM; gunakan nilai sesuai provider |
+| `LLM_MODEL` | Nama model yang tersedia pada provider |
+| `SMTP_HOST` | Host SMTP untuk email OTP |
+| `SMTP_PORT` | Port SMTP; umum digunakan 587 untuk STARTTLS atau 465 untuk TLS |
+| `SMTP_USER` | Username SMTP / alamat email pengirim |
+| `SMTP_PASSWORD` | Password SMTP atau app password dari provider |
+| `SMTP_FROM` | Alamat pengirim yang ditampilkan; opsional |
+| `JWT_SECRET` | Secret untuk sesi JWT dan hash OTP; di production minimal 32 karakter |
+| `NEXT_PUBLIC_APP_URL` | URL aplikasi untuk konfigurasi aplikasi |
+
+### Gmail dan OTP
+
+Untuk memakai Gmail, aktifkan 2-Step Verification pada akun Google dan buat **Google App Password**. Gunakan app password tersebut sebagai `SMTP_PASSWORD`; jangan gunakan password akun Google biasa. Untuk provider lain, gunakan hostname, port, username, dan password SMTP yang diberikan provider.
+
+Alur OTP dirancang agar tidak menyatakan berhasil bila SMTP tidak dikonfigurasi atau pengiriman gagal:
+
+- Konfigurasi SMTP yang hilang menghasilkan HTTP 503.
+- Kegagalan pengiriman menghasilkan HTTP 502 dan OTP yang dibuat untuk pengiriman tersebut dinonaktifkan.
+- OTP disimpan sebagai HMAC hash dan diverifikasi dengan secret aplikasi.
+- OTP kedaluwarsa setelah 10 menit dan batas percobaan diterapkan per IP serta alamat email.
+
+Jika API mengembalikan error pengiriman, periksa log server (tanpa mencatat kode OTP atau kredensial), pastikan konfigurasi SMTP benar, dan periksa folder Spam. Jangan pernah menambahkan file `.env` berisi kredensial ke Git.
+
+## Pengujian dan build
+
+Jalankan pemeriksaan berikut sebelum mengirim perubahan:
+
 ```bash
-cp .env.example .env
-```
-Sesuaikan konfigurasi di berkas `.env`:
+# Unit test helper OTP
+npm test
 
-Untuk Gmail, aktifkan 2-Step Verification lalu gunakan Google App Password (bukan password akun biasa). `SMTP_FROM` bersifat opsional. OTP hanya dianggap terkirim setelah SMTP menerima email; saat konfigurasi tidak lengkap atau pengiriman gagal, endpoint akan mengembalikan error dan tidak mencetak OTP ke log server.
+# Pemeriksaan tipe TypeScript
+npm run typecheck
 
-
-```env
-DATABASE_URL=postgresql://user:password@localhost:5432/cendekia
-LLM_BASE_URL=http://localhost:20128/v1
-LLM_API_KEY=your_key_or_local
-LLM_MODEL=your_model_name
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your_email@gmail.com
-SMTP_PASSWORD=your_google_app_password
-SMTP_FROM=Cendekia.ai <your_email@gmail.com>
-JWT_SECRET=generate_a_random_32_character_string_here
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-```
-
-### 2. Pasang Dependensi
-```bash
-npm install
-```
-
-### 3. Migrasi Skema Database ke PostgreSQL
-```bash
-npx drizzle-kit push
-```
-
-### 4. Jalankan Aplikasi
-```bash
-# Mode Development
-npm run dev
-
-# Mode Production Build
+# Production build
 npm run build
+
+# Jalankan build production secara lokal
 npm start
 ```
-Buka peramban di `http://localhost:3000`.
 
----
+Unit test mencakup format OTP enam digit, normalisasi email, dan perilaku hash. Smoke test HTTP yang dipakai di CI berada di `scripts/smoke-otp-api.cjs`; script ini memeriksa landing page dan respons validasi OTP pada server production. Smoke test tersebut **tidak** mengirim email nyata dan tidak membuktikan kredensial SMTP deployment sudah benar.
 
-## 📄 Lisensi
-Didistribusikan di bawah lisensi terbuka [MIT License](LICENSE).
+## Continuous integration
+
+Workflow [GitHub Actions](.github/workflows/ci.yml) berjalan saat ada push ke `main` atau pull request menuju `main`. Workflow melakukan:
+
+1. Instalasi bersih dependensi melalui `npm ci`.
+2. Unit test helper OTP.
+3. Type-check TypeScript.
+4. Production build Next.js.
+5. Menjalankan server hasil build dan melakukan HTTP smoke test terhadap landing page serta penanganan error API OTP.
+
+[**Lihat status CI dan riwayat pengujian**](https://github.com/shadowroot32/cendekia-ai/actions/workflows/ci.yml).
+
+## Struktur repository
+
+```text
+.
+├── .github/
+│   ├── pull_request_template.md
+│   └── workflows/ci.yml          # Test, type-check, build, HTTP smoke test
+├── scripts/
+│   └── smoke-otp-api.cjs         # Smoke test terhadap server production lokal
+├── src/
+│   ├── app/
+│   │   ├── (auth)/login/         # Login OTP
+│   │   ├── (dashboard)/          # Dashboard, subjects, library, study, settings
+│   │   └── api/                  # API autentikasi dan fitur belajar
+│   ├── components/               # Komponen UI, navigasi, dan belajar
+│   └── lib/
+│       ├── ai/                   # Integrasi provider LLM
+│       ├── db/                   # Drizzle client dan skema PostgreSQL
+│       ├── auth.ts               # Session JWT dan helper hash OTP
+│       ├── email.ts              # Transport SMTP dan template email OTP
+│       ├── otp.ts                # Generator, normalisasi, dan hashing OTP
+│       ├── rate-limit.ts         # Pembatasan percobaan in-memory
+│       └── sm2.ts                # Algoritma spaced repetition SM-2
+├── tests/
+│   └── otp.test.cjs              # Unit test helper OTP
+├── .env.example
+├── CONTRIBUTING.md
+├── LICENSE
+├── README.md
+└── SECURITY.md
+```
+
+## Catatan keamanan dan deployment
+
+- Konfigurasikan `JWT_SECRET` yang panjang, acak, dan unik untuk production. Jangan menggunakan secret contoh di `.env.example`.
+- Mengganti secret dapat membuat sesi lama tidak valid dan OTP yang masih aktif tidak bisa diverifikasi.
+- Rate limiter saat ini menyimpan hitungan di memori proses. Untuk deployment multi-instance, gunakan rate limiter bersama seperti Redis agar batas percobaan konsisten antar-instance.
+- CI menggunakan kredensial dummy dan sengaja tidak mengirim email sungguhan. Verifikasi pengiriman OTP dengan environment SMTP pada deployment.
+- Untuk production, kelola perubahan skema database secara terencana dan lakukan backup sebelum perubahan skema yang berisiko.
+
+## Kontribusi
+
+Baca [CONTRIBUTING.md](CONTRIBUTING.md) sebelum membuat pull request. Pastikan test, type-check, dan build lulus serta jangan sertakan rahasia atau file environment.
+
+## Lisensi
+
+Project ini dirilis di bawah [MIT License](LICENSE).
