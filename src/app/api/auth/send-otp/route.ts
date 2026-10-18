@@ -38,6 +38,15 @@ export async function POST(req: NextRequest) {
     expiresAt,
   });
 
-  await sendOtpEmail(email, code, name);
+  try {
+    if (process.env.SMTP_PASSWORD) {
+      await sendOtpEmail(email, code, name);
+    } else {
+      console.log(`[AUTH OTP CONSOLE] To: ${email} | OTP: ${code}`);
+    }
+  } catch (err) {
+    console.error('[AUTH OTP ERROR] Failed to send email, logging to console:', err);
+    console.log(`[AUTH OTP FALLBACK] To: ${email} | OTP: ${code}`);
+  }
   return NextResponse.json({ success: true });
 }
