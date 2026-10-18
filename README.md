@@ -7,52 +7,47 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql)](https://www.postgresql.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-**Cendekia.ai** adalah ruang belajar berbasis AI yang mengubah catatan, PDF, dan materi YouTube menjadi ringkasan, flashcard, kuis, serta pengalaman belajar yang terorganisasi. Dibangun dengan Next.js App Router, TypeScript, Drizzle ORM, dan PostgreSQL.
-
-## Daftar isi
-
-- [Fitur](#fitur)
-- [Teknologi](#teknologi)
-- [Persyaratan](#persyaratan)
-- [Menjalankan secara lokal](#menjalankan-secara-lokal)
-- [Menyiapkan Google OAuth](#menyiapkan-google-oauth)
-- [Environment variables](#environment-variables)
-- [Pengujian dan CI](#pengujian-dan-ci)
-- [Struktur repository](#struktur-repository)
-- [Keamanan dan deployment](#keamanan-dan-deployment)
-- [Kontribusi](#kontribusi)
-- [Lisensi](#lisensi)
+**Cendekia.ai** adalah ruang belajar berbasis AI yang membantu mengubah catatan, dokumen PDF, dan materi YouTube menjadi ringkasan, flashcard, kuis, serta pengalaman belajar yang terorganisasi. Aplikasi menggunakan Next.js App Router, TypeScript, Drizzle ORM, dan PostgreSQL.
 
 ## Fitur
 
-- **Google Sign-In:** login satu klik melalui OAuth 2.0 / OpenID Connect; password Google tidak pernah diterima atau disimpan Cendekia.ai.
-- **Materi multi-sumber:** catatan, dokumen PDF, dan tautan YouTube.
-- **Belajar dengan AI:** ringkasan materi, flashcard, kuis pilihan ganda, tutor, mind map, dan naskah podcast.
-- **Catatan Cornell:** cue/kata kunci, catatan utama, ringkasan, dan refleksi yang tersimpan.
-- **Berbagi dokumen:** tautan baca-saja yang kedaluwarsa dan dapat dicabut.
-- **Spaced repetition:** jadwal review menggunakan algoritma SuperMemo SM-2.
-- **Dashboard responsif:** statistik progres dan navigasi untuk desktop maupun perangkat seluler.
-- **Self-hosted:** database dan provider LLM dikonfigurasi di environment pemilik deployment.
+### Belajar dan progres
+- Materi belajar dari teks/catatan, PDF, dan tautan YouTube.
+- Ringkasan AI, flashcard, kuis pilihan ganda, dan chat/tutor berbasis materi.
+- Spaced repetition berbasis algoritma SuperMemo SM-2.
+- Progres belajar, review yang jatuh tempo, streak/tujuan, dan statistik dashboard.
+
+### Catatan dan berbagi
+- Cornell Notes tersimpan per materi.
+- Mind map hierarkis yang dibuat saat diminta dari materi sumber.
+- Naskah podcast tersimpan dan dapat dibacakan menggunakan text-to-speech bawaan browser.
+- Tautan berbagi baca-saja yang berlaku 1, 7, atau 30 hari dan dapat dicabut.
+- Ekspor data pribadi dalam file JSON, termasuk profil, materi, hasil belajar, catatan, naskah, chat, progres, dan metadata tautan berbagi.
+
+### Akun dan keamanan
+- Login Google OAuth 2.0 / OpenID Connect dengan state, nonce, PKCE S256, dan verifikasi ID token.
+- Session cookie HTTP-only dan pengaturan profil.
+- Penghapusan akun dan data terkait.
+- Rahasia provider AI, OAuth, database, dan session diambil dari environment variables.
 
 ## Teknologi
 
 | Bagian | Teknologi |
 | --- | --- |
 | Framework | Next.js App Router |
-| Bahasa | TypeScript |
-| UI | React, Tailwind CSS v4 |
+| Bahasa/UI | TypeScript, React, Tailwind CSS v4 |
 | Database | PostgreSQL, Drizzle ORM |
 | Login | Google OAuth 2.0 / OpenID Connect |
 | Session | JWT menggunakan `jose`, cookie HTTP-only |
-| AI | Vercel AI SDK, endpoint kompatibel OpenAI |
-| Pengujian | Node.js Test Runner, TypeScript, production build, HTTP smoke test |
+| AI | Vercel AI SDK dan endpoint kompatibel OpenAI |
+| Pemeriksaan | Node.js Test Runner, TypeScript, production build, HTTP smoke tests |
 
 ## Persyaratan
 
-- Node.js 22 dan npm (versi yang dipakai CI).
+- Node.js 22 dan npm.
 - PostgreSQL yang dapat diakses aplikasi.
-- Endpoint LLM yang kompatibel dengan OpenAI.
-- Google Cloud OAuth 2.0 Web Client untuk login.
+- Endpoint LLM yang kompatibel dengan OpenAI dan API key.
+- Google Cloud OAuth 2.0 Web Client.
 
 ## Menjalankan secara lokal
 
@@ -63,7 +58,7 @@ npm ci
 cp .env.example .env
 ```
 
-Isi environment variables pada file `.env`, siapkan database, lalu sinkronkan skema (termasuk tabel Cornell Notes dan tautan berbagi) dengan `npx drizzle-kit push`. Untuk deployment yang dikelola manual, terapkan SQL `drizzle/0001_stage3_learning_features.sql` pada database PostgreSQL sebelum memakai fitur tahap 3. Lalu jalankan:
+Isi variabel di `.env`, pastikan PostgreSQL tersedia, lalu sinkronkan skema database:
 
 ```bash
 npx drizzle-kit push
@@ -72,18 +67,19 @@ npm run dev
 
 Buka [http://localhost:3000](http://localhost:3000).
 
+**Sebelum menjalankan `drizzle-kit push` pada database yang berisi data penting, buat backup dan tinjau perubahan skema.** Untuk fitur tahap 3 yang ditambahkan ke database lama, SQL manual tersedia di [`drizzle/0001_stage3_learning_features.sql`](drizzle/0001_stage3_learning_features.sql). Jangan menjalankan SQL manual itu sebagai pengganti sinkronisasi skema lengkap pada database yang benar-benar kosong.
+
 ## Menyiapkan Google OAuth
 
-1. Buka [Google Cloud Console](https://console.cloud.google.com/).
-2. Pilih atau buat project, lalu konfigurasi Google Auth Platform / OAuth consent screen.
+1. Buka [Google Cloud Console](https://console.cloud.google.com/) dan pilih/buat project.
+2. Konfigurasikan Google Auth Platform / OAuth consent screen.
 3. Buat OAuth Client ID bertipe **Web application**.
-4. Tambahkan origin aplikasi pada **Authorized JavaScript origins** (contoh lokal: `http://localhost:3000`).
-5. Tambahkan URI berikut ke **Authorized redirect URIs**:
-   `http://localhost:3000/api/auth/google/callback`
-6. Salin Client ID dan Client Secret ke environment. Untuk production, gunakan domain HTTPS milikmu dan daftarkan callback HTTPS yang sama persis.
-7. Restart atau redeploy aplikasi setelah mengubah environment variables.
+4. Tambahkan origin aplikasi pada **Authorized JavaScript origins**, misalnya `http://localhost:3000`.
+5. Tambahkan URI callback ke **Authorized redirect URIs**: `http://localhost:3000/api/auth/google/callback`.
+6. Isi `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI`, dan `NEXT_PUBLIC_APP_URL` pada environment.
+7. Untuk production, daftarkan callback HTTPS dengan domain yang benar-benar dipakai dan redeploy aplikasi.
 
-Flow menggunakan authorization code, PKCE S256, state, nonce, verifikasi ID token menggunakan Google JWKS, pemeriksaan issuer/audience, dan klaim email terverifikasi. Akun dipetakan berdasarkan email yang dinormalisasi, lalu Cendekia.ai menerbitkan session cookie sendiri.
+Flow login menggunakan authorization code, PKCE S256, state, nonce, verifikasi ID token melalui Google JWKS, pemeriksaan issuer/audience, dan klaim email terverifikasi. Password Google tidak pernah diterima atau disimpan oleh Cendekia.ai.
 
 ## Environment variables
 
@@ -93,77 +89,72 @@ Flow menggunakan authorization code, PKCE S256, state, nonce, verifikasi ID toke
 | `LLM_BASE_URL` | Base URL provider LLM kompatibel OpenAI |
 | `LLM_API_KEY` | API key provider LLM |
 | `LLM_MODEL` | Nama model provider |
-| `GOOGLE_CLIENT_ID` | Client ID OAuth aplikasi Web Google |
-| `GOOGLE_CLIENT_SECRET` | Client Secret OAuth; simpan hanya di environment/secret manager |
-| `GOOGLE_REDIRECT_URI` | Callback OAuth lengkap dan harus cocok dengan Google Cloud Console |
-| `NEXT_PUBLIC_APP_URL` | Base URL aplikasi; digunakan untuk callback jika `GOOGLE_REDIRECT_URI` tidak diisi |
-| `JWT_SECRET` | Secret acak, minimal 32 karakter di production |
+| `GOOGLE_CLIENT_ID` | Client ID OAuth Web Google |
+| `GOOGLE_CLIENT_SECRET` | Client Secret OAuth; rahasiakan |
+| `GOOGLE_REDIRECT_URI` | Callback OAuth lengkap yang terdaftar di Google Cloud |
+| `NEXT_PUBLIC_APP_URL` | URL publik aplikasi; fallback untuk callback |
+| `JWT_SECRET` | Secret acak minimal 32 karakter di production |
 
-**Login Google memerlukan Client ID, Client Secret, dan URL callback yang sesuai.** Jika belum dikonfigurasi, halaman login menampilkan pesan error dan tidak mengaku berhasil. Jangan commit file `.env`, client secret, atau JWT secret ke Git.
-
-SMTP tidak diperlukan untuk tombol login utama. Endpoint email OTP lama tetap ada sebagai kompatibilitas API, tetapi UI login tidak menggunakannya. Konfigurasi SMTP hanya dibutuhkan bila endpoint legacy itu sengaja dipakai.
+SMTP tidak diperlukan untuk login utama Google. Endpoint email OTP lama masih tersedia sebagai kompatibilitas API; SMTP hanya dibutuhkan bila endpoint tersebut sengaja digunakan.
 
 ## Pengujian dan CI
 
-Jalankan pemeriksaan berikut sebelum mengirim perubahan:
+Jalankan sebelum merilis perubahan:
 
 ```bash
 npm ci
 npm test
 npm run typecheck
 npm run build
-npm start
+npm run start
 ```
 
-Unit test mencakup helper OTP lama serta helper OAuth (token acak, PKCE S256, perbandingan state, normalisasi email, dan aturan callback). Smoke test CI menjalankan production server dan memeriksa halaman serta respons API; ia tidak memakai akun Google sungguhan atau membuktikan konfigurasi OAuth deployment.
+GitHub Actions juga menjalankan smoke tests terhadap server production untuk pemeriksaan autentikasi API material, progres belajar, fitur belajar, dan respons endpoint OTP legacy. Workflow berjalan pada push ke `main` dan pull request: [riwayat CI](https://github.com/shadowroot32/cendekia-ai/actions/workflows/ci.yml).
 
-Workflow [GitHub Actions](.github/workflows/ci.yml) berjalan saat push ke `main` dan pull request. [Lihat riwayat CI](https://github.com/shadowroot32/cendekia-ai/actions/workflows/ci.yml).
+CI **tidak** membuktikan bahwa Google OAuth, kredensial provider AI, database production, atau konfigurasi hosting sungguhan sudah benar. Lihat [checklist deployment](DEPLOYMENT_CHECKLIST.md) untuk langkah sebelum rilis.
 
 ## Struktur repository
 
 ```text
 .
-├── .github/
-│   ├── pull_request_template.md
-│   └── workflows/ci.yml
-├── scripts/
-│   └── smoke-otp-api.cjs
+├── .github/workflows/ci.yml
+├── drizzle/
+│   └── 0001_stage3_learning_features.sql
+├── scripts/                       # HTTP smoke tests
 ├── src/
 │   ├── app/
-│   │   ├── (auth)/login/                 # Halaman login Google
-│   │   ├── (dashboard)/                 # Dashboard, subjects, library, study, settings
-│   │   └── api/auth/google/              # OAuth start dan callback
+│   │   ├── (auth)/login/          # Login
+│   │   ├── (dashboard)/           # Dashboard, library, study, settings
+│   │   ├── api/auth/google/       # OAuth start dan callback
+│   │   ├── api/study-sets/        # Materi, review, dan fitur belajar
+│   │   ├── api/user/              # Profil, penghapusan akun, ekspor data
+│   │   └── share/                 # Halaman berbagi baca-saja
 │   ├── components/
-│   │   ├── auth/LoginForm.tsx
-│   │   └── layout/Navbar.tsx
+│   │   ├── layout/
+│   │   └── study/                 # Flashcard, quiz, Cornell, mind map, podcast
 │   └── lib/
-│       ├── ai/                           # Integrasi LLM
-│       ├── db/                           # Drizzle client dan skema PostgreSQL
-│       ├── auth.ts                       # Session JWT
-│       ├── google-oauth-utils.ts          # PKCE, state comparison, redirect URI
-│       ├── email.ts                       # SMTP endpoint OTP legacy
-│       └── rate-limit.ts
-├── tests/
-│   └── otp.test.cjs
+│       ├── ai/                    # Integrasi provider LLM dan validasi output
+│       ├── db/                    # Drizzle client dan skema
+│       └── auth.ts                # Session
+├── tests/                         # Unit tests
 ├── .env.example
+├── CHANGELOG.md
 ├── CONTRIBUTING.md
-├── LICENSE
-├── README.md
-└── SECURITY.md
+├── DEPLOYMENT_CHECKLIST.md
+├── SECURITY.md
+└── README.md
 ```
 
-## Fitur belajar dan berbagi\n\n- Halaman belajar menyediakan tab Cornell Notes, Mind map, dan Podcast. Cornell Notes disimpan di database; mind map dibuat sesuai permintaan dari ringkasan/materi.\n- Podcast menghasilkan naskah tersimpan dan menggunakan text-to-speech bawaan browser untuk membacakannya. Fitur ini **belum** membuat atau menyimpan file audio MP3.\n- Berbagi dokumen menghasilkan tautan acak yang hanya menyimpan hash token di database, berlaku 1, 7, atau 30 hari, dan dapat dicabut. Siapa pun yang memiliki tautan aktif dapat membaca ringkasan dan isi materi; jangan bagikan materi rahasia.\n\n## Keamanan dan deployment
+## Keamanan dan deployment
 
-- Gunakan Google OAuth Client Secret dan JWT secret dari secret manager/environment variables; jangan simpan di repository.
-- Di production, callback wajib HTTPS dan URL-nya harus sama persis dengan yang terdaftar di Google Cloud.
-- Gunakan `JWT_SECRET` acak minimal 32 karakter; jangan gunakan nilai contoh.
-- Jangan log authorization code, ID token, OAuth secret, token sesi, API key, password, atau cookie sesi.
-- Rate limiter saat ini berbasis memori; deployment multi-instance memerlukan rate limiter bersama (misalnya Redis).
-- CI tidak memakai kredensial Google sungguhan. Uji login sungguhan hanya pada environment dan akun yang kamu kendalikan.
+- Atur secrets menggunakan environment variables/secret manager. Jangan commit `.env`, API key, OAuth secret, atau `JWT_SECRET`.
+- Production wajib menggunakan HTTPS, callback OAuth yang tepat, dan `JWT_SECRET` acak minimal 32 karakter.
+- Tautan berbagi dapat dibuka oleh siapa pun yang memilikinya hingga kedaluwarsa atau dicabut. Jangan membagikan materi rahasia.
+- Rate limiter saat ini berbasis memori; deployment multi-instance membutuhkan rate limiter bersama, misalnya Redis.
+- Text-to-speech podcast masih menggunakan kemampuan browser dan **belum** menghasilkan file MP3 yang di-host.
+- Ekspor JSON berisi data belajar pribadi. Simpan file hasil unduhan secara aman dan hapus jika tidak lagi diperlukan.
 
-## Kontribusi
-
-Baca [CONTRIBUTING.md](CONTRIBUTING.md) sebelum membuka pull request. Sertakan hasil test, type-check, build, dan catatan konfigurasi jika diperlukan.
+Baca [SECURITY.md](SECURITY.md) untuk panduan pelaporan dan [CONTRIBUTING.md](CONTRIBUTING.md) untuk alur kontribusi.
 
 ## Lisensi
 
