@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { db } from '@/lib/db';
 import { otpCodes } from '@/lib/db/schema';
 import { sendOtpEmail, isSmtpConfigured } from '@/lib/email';
+import { hashOtpCode } from '@/lib/auth';
 import { checkRateLimit } from '@/lib/rate-limit';
 
 const schema = z.object({
@@ -23,8 +24,12 @@ export async function POST(req: NextRequest) {
 
   const forwardedFor = req.headers.get('x-forwarded-for');
   const ip = forwardedFor?.split(',')[0]?.trim() || req.headers.get('x-real-ip') || 'unknown';
-  const { allowed } = checkRateLimit(ip, 'send-otp', 5, 60_000);
-  if (!allowed) return NextResponse.json({ error: 'Too many attempts. Please wait a minute and try again.' }, { status: 429 });
+  const { allowed: ipAllowed } = checkRateLimit(ip, 'send-otp', 5, 60_000);
+  if (!ipAllowed) return NextResponse.json({ error: 'Too many attempts. Please wait a minute and try again.' }, { status: 429 });
+
+  const { email, name } = parsed.data;
+  const { allowed: emailAllowed } = checkRateLimit(email, 'send-otp-email', 3, 10 * 60_000);
+  if (!emailAllowed) return NextResponse.json({ error: 'Too many codes requested for this address. Please wait 10 minutes.' }, { status: 429 });
 
   if (!isSmtpConfigured()) {
     return NextResponse.json({
@@ -32,7 +37,6 @@ export async function POST(req: NextRequest) {
     }, { status: 503 });
   }
 
-  const { email, name } = parsed.data;
   const id = randomUUID();
   const code = generateOtp();
   const now = new Date();
@@ -41,7 +45,7 @@ export async function POST(req: NextRequest) {
 
   try {
     await db.insert(otpCodes).values({
-      id, email, code, action: 'login', name: name || null, ipAddress: ip, expiresAt,
+      id, email, code: hashOtpCode(code), action: 'login', name: name || null, ipAddress: ip, expiresAt,
     });
     stored = true;
     await sendOtpEmail(email, code, name);
