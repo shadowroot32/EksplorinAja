@@ -13,6 +13,9 @@ import {
   generateSummary,
   AIRequestTimeoutError,
   InvalidAIOutputError,
+  PDFOCRNoTextError,
+  PDFOCRTimeoutError,
+  PDFOCRUnavailableError,
 } from '@/lib/ai/engine';
 import {
   getPdfUploadError,
@@ -85,7 +88,16 @@ export async function POST(req: NextRequest) {
       content = await extractPDF(buffer);
     } catch (error) {
       console.error('[STUDY SETS] PDF extraction failed:', error instanceof Error ? error.name : 'unknown error');
-      return inputError('PDF tidak dapat dibaca. Pastikan PDF tidak rusak dan berisi teks.', 422);
+      if (error instanceof PDFOCRTimeoutError) {
+        return inputError('OCR PDF scan terlalu lama. Coba PDF yang lebih pendek atau pecah dokumen menjadi beberapa bagian.', 504);
+      }
+      if (error instanceof PDFOCRUnavailableError) {
+        return inputError('PDF tampaknya berupa scan, tetapi layanan OCR belum tersedia. Coba lagi nanti atau hubungi administrator aplikasi.', 503);
+      }
+      if (error instanceof PDFOCRNoTextError) {
+        return inputError('Teks PDF tidak berhasil dikenali. Pastikan halaman cukup jelas dan tidak terlalu buram.', 422);
+      }
+      return inputError('PDF tidak dapat dibaca. Pastikan PDF tidak rusak atau dilindungi kata sandi.', 422);
     }
   } else {
     const body = await req.json().catch(() => null);
