@@ -3,6 +3,13 @@ import { z } from 'zod';
 export const MAX_PDF_BYTES = 4 * 1024 * 1024;
 export const MAX_SOURCE_CHARS = 60_000;
 export const AI_REQUEST_TIMEOUT_MS = 15_000;
+export const MIN_NATIVE_PDF_TEXT_CHARS = 40;
+export const MAX_PDF_OCR_PAGES = 8;
+export const PDF_OCR_TIMEOUT_MS = 25_000;
+
+export function shouldRunPdfOcr(extractedText: string): boolean {
+  return extractedText.trim().length < MIN_NATIVE_PDF_TEXT_CHARS;
+}
 
 const titleSchema = z.string().trim().min(1).max(200);
 const subjectIdSchema = z.string().trim().min(1).max(200).optional();
