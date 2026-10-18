@@ -3,10 +3,10 @@ import { jwtVerify } from 'jose';
 
 function secret() {
   const configured = process.env.JWT_SECRET;
-  if (!configured || (process.env.NODE_ENV === 'production' && configured.length < 32)) {
+  if (process.env.NODE_ENV === 'production' && (!configured || configured.length < 32)) {
     throw new Error('A JWT_SECRET of at least 32 characters must be configured');
   }
-  return new TextEncoder().encode(configured);
+  return new TextEncoder().encode(configured || 'dev-secret-change-me');
 }
 
 export async function middleware(request: NextRequest) {
