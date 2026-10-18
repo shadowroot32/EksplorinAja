@@ -47,26 +47,26 @@ export default function LibraryPage() {
     setSets(p => p.filter(s => s.id !== id));
   }
 
-  const tabCls = (t: Tab) => `px-4 py-2 rounded-lg text-sm font-medium transition-colors ${tab === t ? 'bg-emerald-500/20 text-emerald-400' : 'text-slate-400 hover:text-slate-200'}`;
+  const tabCls = (t: Tab) => `px-4 py-2 rounded-lg text-sm font-medium transition-colors ${tab === t ? 'bg-emerald-50 text-emerald-700' : 'text-slate-600 hover:text-slate-800'}`;
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-100">Library</h1>
+        <h1 className="text-2xl font-bold text-slate-900">Library</h1>
         <Button onClick={() => setOpen(true)}>+ New Study Set</Button>
       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {sets.map(s => (
-          <Card key={s.id} className="hover:border-emerald-500/30 transition-colors">
+          <Card key={s.id} className="hover:border-emerald-200 transition-colors">
             <CardContent className="pt-6">
               <div className="flex items-start justify-between mb-2">
                 <Badge>{s.sourceType}</Badge>
-                <button onClick={() => remove(s.id)} className="text-slate-600 hover:text-red-400 text-sm transition-colors">✕</button>
+                <button onClick={() => remove(s.id)} className="text-slate-600 hover:text-red-600 text-sm transition-colors">✕</button>
               </div>
-              <h3 className="font-semibold text-slate-100 mb-1">{s.title}</h3>
-              <p className="text-sm text-slate-400 line-clamp-2 mb-4">{s.summary || 'Processing…'}</p>
-              <Link href={`/study/${s.id}`} className="text-emerald-400 text-sm hover:underline">Study →</Link>
+              <h3 className="font-semibold text-slate-900 mb-1">{s.title}</h3>
+              <p className="text-sm text-slate-600 line-clamp-2 mb-4">{s.summary || 'Processing…'}</p>
+              <Link href={`/study/${s.id}`} className="text-emerald-700 text-sm hover:underline">Study →</Link>
             </CardContent>
           </Card>
         ))}
@@ -80,14 +80,14 @@ export default function LibraryPage() {
             <Label>Title *</Label>
             <Input value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} placeholder="Study set title" required />
           </div>
-          <div className="flex gap-1 bg-slate-800 p-1 rounded-lg">
+          <div className="flex gap-1 bg-slate-100 p-1 rounded-lg">
             {(['text', 'youtube', 'pdf'] as Tab[]).map(t => <button key={t} type="button" onClick={() => setTab(t)} className={tabCls(t)}>{t === 'text' ? '📝 Text' : t === 'youtube' ? '▶️ YouTube' : '📄 PDF'}</button>)}
           </div>
-          {tab === 'text' && <div className="space-y-1.5"><Label>Content *</Label><textarea className="w-full min-h-[120px] rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none" value={form.content} onChange={e => setForm(p => ({ ...p, content: e.target.value }))} placeholder="Paste your study material…" required /></div>}
+          {tab === 'text' && <div className="space-y-1.5"><Label>Content *</Label><textarea className="w-full min-h-[120px] rounded-lg border border-slate-300 bg-slate-100 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none" value={form.content} onChange={e => setForm(p => ({ ...p, content: e.target.value }))} placeholder="Paste your study material…" required /></div>}
           {tab === 'youtube' && <div className="space-y-1.5"><Label>YouTube URL *</Label><Input value={form.url} onChange={e => setForm(p => ({ ...p, url: e.target.value }))} placeholder="https://youtube.com/watch?v=..." required /></div>}
-          {tab === 'pdf' && <div className="space-y-1.5"><Label>PDF File *</Label><input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] ?? null)} className="text-sm text-slate-300" required /></div>}
-          {error && <p className="text-red-400 text-sm">{error}</p>}
-          {loading && <p className="text-emerald-400 text-sm">Generating AI content… this may take a moment.</p>}
+          {tab === 'pdf' && <div className="space-y-1.5"><Label>PDF File *</Label><input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] ?? null)} className="text-sm text-slate-700" required /></div>}
+          {error && <p className="text-red-600 text-sm">{error}</p>}
+          {loading && <p className="text-emerald-700 text-sm">Generating AI content… this may take a moment.</p>}
           <div className="flex gap-3 justify-end">
             <Button variant="outline" type="button" onClick={() => setOpen(false)}>Cancel</Button>
             <Button type="submit" disabled={loading}>{loading ? 'Processing…' : 'Create'}</Button>
