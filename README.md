@@ -7,7 +7,7 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql)](https://www.postgresql.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-**Cendekia.ai** adalah ruang belajar berbasis AI untuk mengubah catatan, dokumen PDF, dan materi YouTube menjadi ringkasan, flashcard, kuis, serta pengalaman belajar yang terorganisasi. Project ini dibangun dengan Next.js App Router, TypeScript, Drizzle ORM, dan PostgreSQL.
+**Cendekia.ai** adalah ruang belajar berbasis AI yang mengubah catatan, PDF, dan materi YouTube menjadi ringkasan, flashcard, kuis, serta pengalaman belajar yang terorganisasi. Dibangun dengan Next.js App Router, TypeScript, Drizzle ORM, dan PostgreSQL.
 
 ## Daftar isi
 
@@ -15,22 +15,22 @@
 - [Teknologi](#teknologi)
 - [Persyaratan](#persyaratan)
 - [Menjalankan secara lokal](#menjalankan-secara-lokal)
-- [Konfigurasi environment](#konfigurasi-environment)
-- [Pengujian dan build](#pengujian-dan-build)
-- [Continuous integration](#continuous-integration)
+- [Menyiapkan Google OAuth](#menyiapkan-google-oauth)
+- [Environment variables](#environment-variables)
+- [Pengujian dan CI](#pengujian-dan-ci)
 - [Struktur repository](#struktur-repository)
-- [Catatan keamanan dan deployment](#catatan-keamanan-dan-deployment)
+- [Keamanan dan deployment](#keamanan-dan-deployment)
 - [Kontribusi](#kontribusi)
 - [Lisensi](#lisensi)
 
 ## Fitur
 
+- **Google Sign-In:** login satu klik melalui OAuth 2.0 / OpenID Connect; password Google tidak pernah diterima atau disimpan Cendekia.ai.
 - **Materi multi-sumber:** catatan, dokumen PDF, dan tautan YouTube.
 - **Belajar dengan AI:** ringkasan materi, flashcard, kuis pilihan ganda, dan tutor berbasis konteks materi.
-- **Spaced repetition:** penjadwalan review menggunakan algoritma SuperMemo SM-2.
-- **Login tanpa password:** OTP email enam digit dengan masa berlaku, hashing OTP saat disimpan, batas percobaan, dan session cookie HTTP-only.
-- **Dashboard responsif:** ringkasan progres dan navigasi yang disesuaikan untuk desktop maupun perangkat seluler.
-- **Self-hosted:** konfigurasi database, penyedia email, dan LLM berada di environment milik pengguna.
+- **Spaced repetition:** jadwal review menggunakan algoritma SuperMemo SM-2.
+- **Dashboard responsif:** statistik progres dan navigasi untuk desktop maupun perangkat seluler.
+- **Self-hosted:** database dan provider LLM dikonfigurasi di environment pemilik deployment.
 
 ## Teknologi
 
@@ -39,123 +39,83 @@
 | Framework | Next.js App Router |
 | Bahasa | TypeScript |
 | UI | React, Tailwind CSS v4 |
-| Database | PostgreSQL |
-| ORM | Drizzle ORM |
-| Autentikasi | JWT menggunakan `jose`, email OTP menggunakan Nodemailer |
-| AI | Vercel AI SDK dengan endpoint yang kompatibel dengan OpenAI |
+| Database | PostgreSQL, Drizzle ORM |
+| Login | Google OAuth 2.0 / OpenID Connect |
+| Session | JWT menggunakan `jose`, cookie HTTP-only |
+| AI | Vercel AI SDK, endpoint kompatibel OpenAI |
 | Pengujian | Node.js Test Runner, TypeScript, production build, HTTP smoke test |
 
 ## Persyaratan
 
-- Node.js 22 direkomendasikan (versi yang dipakai CI).
-- npm.
+- Node.js 22 dan npm (versi yang dipakai CI).
 - PostgreSQL yang dapat diakses aplikasi.
 - Endpoint LLM yang kompatibel dengan OpenAI.
-- Kredensial SMTP aktif untuk menguji login OTP lewat email.
+- Google Cloud OAuth 2.0 Web Client untuk login.
 
 ## Menjalankan secara lokal
 
-1. **Clone repository dan masuk ke folder project.**
+```bash
+git clone https://github.com/shadowroot32/cendekia-ai.git
+cd cendekia-ai
+npm ci
+cp .env.example .env
+```
 
-   ```bash
-   git clone https://github.com/shadowroot32/cendekia-ai.git
-   cd cendekia-ai
-   ```
+Isi environment variables pada file `.env`, siapkan database pengembangan, lalu jalankan:
 
-2. **Pasang dependensi.**
+```bash
+npx drizzle-kit push
+npm run dev
+```
 
-   ```bash
-   npm ci
-   ```
+Buka [http://localhost:3000](http://localhost:3000).
 
-3. **Siapkan environment.**
+## Menyiapkan Google OAuth
 
-   ```bash
-   cp .env.example .env
-   ```
+1. Buka [Google Cloud Console](https://console.cloud.google.com/).
+2. Pilih atau buat project, lalu konfigurasi Google Auth Platform / OAuth consent screen.
+3. Buat OAuth Client ID bertipe **Web application**.
+4. Tambahkan origin aplikasi pada **Authorized JavaScript origins** (contoh lokal: `http://localhost:3000`).
+5. Tambahkan URI berikut ke **Authorized redirect URIs**:
+   `http://localhost:3000/api/auth/google/callback`
+6. Salin Client ID dan Client Secret ke environment. Untuk production, gunakan domain HTTPS milikmu dan daftarkan callback HTTPS yang sama persis.
+7. Restart atau redeploy aplikasi setelah mengubah environment variables.
 
-   Buka `.env` dan isi nilai yang sesuai dengan lingkunganmu. Rincian variabel tersedia pada bagian [Konfigurasi environment](#konfigurasi-environment).
+Flow menggunakan authorization code, PKCE S256, state, nonce, verifikasi ID token menggunakan Google JWKS, pemeriksaan issuer/audience, dan klaim email terverifikasi. Akun dipetakan berdasarkan email yang dinormalisasi, lalu Cendekia.ai menerbitkan session cookie sendiri.
 
-4. **Siapkan skema database.**
-
-   Untuk pengembangan lokal, jalankan:
-
-   ```bash
-   npx drizzle-kit push
-   ```
-
-   Pastikan `DATABASE_URL` mengarah ke database pengembangan yang benar sebelum menjalankan perintah ini.
-
-5. **Jalankan aplikasi.**
-
-   ```bash
-   npm run dev
-   ```
-
-   Buka [http://localhost:3000](http://localhost:3000).
-
-## Konfigurasi environment
-
-Salin `.env.example` menjadi `.env`, lalu konfigurasi variabel berikut.
+## Environment variables
 
 | Variabel | Kegunaan |
 | --- | --- |
 | `DATABASE_URL` | Connection string PostgreSQL |
-| `LLM_BASE_URL` | Base URL provider LLM yang kompatibel dengan OpenAI |
-| `LLM_API_KEY` | API key provider LLM; gunakan nilai sesuai provider |
-| `LLM_MODEL` | Nama model yang tersedia pada provider |
-| `SMTP_HOST` | Host SMTP untuk email OTP |
-| `SMTP_PORT` | Port SMTP; umum digunakan 587 untuk STARTTLS atau 465 untuk TLS |
-| `SMTP_USER` | Username SMTP / alamat email pengirim |
-| `SMTP_PASSWORD` | Password SMTP atau app password dari provider |
-| `SMTP_FROM` | Alamat pengirim yang ditampilkan; opsional |
-| `JWT_SECRET` | Secret untuk sesi JWT dan hash OTP; di production minimal 32 karakter |
-| `NEXT_PUBLIC_APP_URL` | URL aplikasi untuk konfigurasi aplikasi |
+| `LLM_BASE_URL` | Base URL provider LLM kompatibel OpenAI |
+| `LLM_API_KEY` | API key provider LLM |
+| `LLM_MODEL` | Nama model provider |
+| `GOOGLE_CLIENT_ID` | Client ID OAuth aplikasi Web Google |
+| `GOOGLE_CLIENT_SECRET` | Client Secret OAuth; simpan hanya di environment/secret manager |
+| `GOOGLE_REDIRECT_URI` | Callback OAuth lengkap dan harus cocok dengan Google Cloud Console |
+| `NEXT_PUBLIC_APP_URL` | Base URL aplikasi; digunakan untuk callback jika `GOOGLE_REDIRECT_URI` tidak diisi |
+| `JWT_SECRET` | Secret acak, minimal 32 karakter di production |
 
-### Gmail dan OTP
+**Login Google memerlukan Client ID, Client Secret, dan URL callback yang sesuai.** Jika belum dikonfigurasi, halaman login menampilkan pesan error dan tidak mengaku berhasil. Jangan commit file `.env`, client secret, atau JWT secret ke Git.
 
-Untuk memakai Gmail, aktifkan 2-Step Verification pada akun Google dan buat **Google App Password**. Gunakan app password tersebut sebagai `SMTP_PASSWORD`; jangan gunakan password akun Google biasa. Untuk provider lain, gunakan hostname, port, username, dan password SMTP yang diberikan provider.
+SMTP tidak diperlukan untuk tombol login utama. Endpoint email OTP lama tetap ada sebagai kompatibilitas API, tetapi UI login tidak menggunakannya. Konfigurasi SMTP hanya dibutuhkan bila endpoint legacy itu sengaja dipakai.
 
-Alur OTP dirancang agar tidak menyatakan berhasil bila SMTP tidak dikonfigurasi atau pengiriman gagal:
-
-- Konfigurasi SMTP yang hilang menghasilkan HTTP 503.
-- Kegagalan pengiriman menghasilkan HTTP 502 dan OTP yang dibuat untuk pengiriman tersebut dinonaktifkan.
-- OTP disimpan sebagai HMAC hash dan diverifikasi dengan secret aplikasi.
-- OTP kedaluwarsa setelah 10 menit dan batas percobaan diterapkan per IP serta alamat email.
-
-Jika API mengembalikan error pengiriman, periksa log server (tanpa mencatat kode OTP atau kredensial), pastikan konfigurasi SMTP benar, dan periksa folder Spam. Jangan pernah menambahkan file `.env` berisi kredensial ke Git.
-
-## Pengujian dan build
+## Pengujian dan CI
 
 Jalankan pemeriksaan berikut sebelum mengirim perubahan:
 
 ```bash
-# Unit test helper OTP
+npm ci
 npm test
-
-# Pemeriksaan tipe TypeScript
 npm run typecheck
-
-# Production build
 npm run build
-
-# Jalankan build production secara lokal
 npm start
 ```
 
-Unit test mencakup format OTP enam digit, normalisasi email, dan perilaku hash. Smoke test HTTP yang dipakai di CI berada di `scripts/smoke-otp-api.cjs`; script ini memeriksa landing page dan respons validasi OTP pada server production. Smoke test tersebut **tidak** mengirim email nyata dan tidak membuktikan kredensial SMTP deployment sudah benar.
+Unit test mencakup helper OTP lama serta helper OAuth (token acak, PKCE S256, perbandingan state, normalisasi email, dan aturan callback). Smoke test CI menjalankan production server dan memeriksa halaman serta respons API; ia tidak memakai akun Google sungguhan atau membuktikan konfigurasi OAuth deployment.
 
-## Continuous integration
-
-Workflow [GitHub Actions](.github/workflows/ci.yml) berjalan saat ada push ke `main` atau pull request menuju `main`. Workflow melakukan:
-
-1. Instalasi bersih dependensi melalui `npm ci`.
-2. Unit test helper OTP.
-3. Type-check TypeScript.
-4. Production build Next.js.
-5. Menjalankan server hasil build dan melakukan HTTP smoke test terhadap landing page serta penanganan error API OTP.
-
-[**Lihat status CI dan riwayat pengujian**](https://github.com/shadowroot32/cendekia-ai/actions/workflows/ci.yml).
+Workflow [GitHub Actions](.github/workflows/ci.yml) berjalan saat push ke `main` dan pull request. [Lihat riwayat CI](https://github.com/shadowroot32/cendekia-ai/actions/workflows/ci.yml).
 
 ## Struktur repository
 
@@ -163,25 +123,26 @@ Workflow [GitHub Actions](.github/workflows/ci.yml) berjalan saat ada push ke `m
 .
 ├── .github/
 │   ├── pull_request_template.md
-│   └── workflows/ci.yml          # Test, type-check, build, HTTP smoke test
+│   └── workflows/ci.yml
 ├── scripts/
-│   └── smoke-otp-api.cjs         # Smoke test terhadap server production lokal
+│   └── smoke-otp-api.cjs
 ├── src/
 │   ├── app/
-│   │   ├── (auth)/login/         # Login OTP
-│   │   ├── (dashboard)/          # Dashboard, subjects, library, study, settings
-│   │   └── api/                  # API autentikasi dan fitur belajar
-│   ├── components/               # Komponen UI, navigasi, dan belajar
+│   │   ├── (auth)/login/                 # Halaman login Google
+│   │   ├── (dashboard)/                 # Dashboard, subjects, library, study, settings
+│   │   └── api/auth/google/              # OAuth start dan callback
+│   ├── components/
+│   │   ├── auth/LoginForm.tsx
+│   │   └── layout/Navbar.tsx
 │   └── lib/
-│       ├── ai/                   # Integrasi provider LLM
-│       ├── db/                   # Drizzle client dan skema PostgreSQL
-│       ├── auth.ts               # Session JWT dan helper hash OTP
-│       ├── email.ts              # Transport SMTP dan template email OTP
-│       ├── otp.ts                # Generator, normalisasi, dan hashing OTP
-│       ├── rate-limit.ts         # Pembatasan percobaan in-memory
-│       └── sm2.ts                # Algoritma spaced repetition SM-2
+│       ├── ai/                           # Integrasi LLM
+│       ├── db/                           # Drizzle client dan skema PostgreSQL
+│       ├── auth.ts                       # Session JWT
+│       ├── google-oauth-utils.ts          # PKCE, state comparison, redirect URI
+│       ├── email.ts                       # SMTP endpoint OTP legacy
+│       └── rate-limit.ts
 ├── tests/
-│   └── otp.test.cjs              # Unit test helper OTP
+│   └── otp.test.cjs
 ├── .env.example
 ├── CONTRIBUTING.md
 ├── LICENSE
@@ -189,17 +150,18 @@ Workflow [GitHub Actions](.github/workflows/ci.yml) berjalan saat ada push ke `m
 └── SECURITY.md
 ```
 
-## Catatan keamanan dan deployment
+## Keamanan dan deployment
 
-- Konfigurasikan `JWT_SECRET` yang panjang, acak, dan unik untuk production. Jangan menggunakan secret contoh di `.env.example`.
-- Mengganti secret dapat membuat sesi lama tidak valid dan OTP yang masih aktif tidak bisa diverifikasi.
-- Rate limiter saat ini menyimpan hitungan di memori proses. Untuk deployment multi-instance, gunakan rate limiter bersama seperti Redis agar batas percobaan konsisten antar-instance.
-- CI menggunakan kredensial dummy dan sengaja tidak mengirim email sungguhan. Verifikasi pengiriman OTP dengan environment SMTP pada deployment.
-- Untuk production, kelola perubahan skema database secara terencana dan lakukan backup sebelum perubahan skema yang berisiko.
+- Gunakan Google OAuth Client Secret dan JWT secret dari secret manager/environment variables; jangan simpan di repository.
+- Di production, callback wajib HTTPS dan URL-nya harus sama persis dengan yang terdaftar di Google Cloud.
+- Gunakan `JWT_SECRET` acak minimal 32 karakter; jangan gunakan nilai contoh.
+- Jangan log authorization code, ID token, OAuth secret, token sesi, API key, password, atau cookie sesi.
+- Rate limiter saat ini berbasis memori; deployment multi-instance memerlukan rate limiter bersama (misalnya Redis).
+- CI tidak memakai kredensial Google sungguhan. Uji login sungguhan hanya pada environment dan akun yang kamu kendalikan.
 
 ## Kontribusi
 
-Baca [CONTRIBUTING.md](CONTRIBUTING.md) sebelum membuat pull request. Pastikan test, type-check, dan build lulus serta jangan sertakan rahasia atau file environment.
+Baca [CONTRIBUTING.md](CONTRIBUTING.md) sebelum membuka pull request. Sertakan hasil test, type-check, build, dan catatan konfigurasi jika diperlukan.
 
 ## Lisensi
 

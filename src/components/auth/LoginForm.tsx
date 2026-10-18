@@ -1,75 +1,23 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 
-type Step = 'email' | 'otp';
+const loginErrors: Record<string, string> = {
+  google_not_configured: 'Google sign-in belum dikonfigurasi. Isi GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, dan URL callback pada environment hosting.',
+  google_cancelled: 'Proses masuk dengan Google dibatalkan. Kamu bisa mencoba lagi kapan saja.',
+  google_invalid_state: 'Sesi keamanan Google tidak cocok atau sudah kedaluwarsa. Silakan coba masuk lagi.',
+  google_email_unverified: 'Akun Google ini belum memberikan alamat email terverifikasi.',
+  google_auth_failed: 'Kami belum bisa memverifikasi akun Google. Silakan coba lagi.',
+};
 
 export default function LoginForm() {
-  const router = useRouter();
-  const [step, setStep] = useState<Step>('email');
-  const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
-  const [code, setCode] = useState('');
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [notice, setNotice] = useState('');
 
-  async function requestOtp() {
-    setError('');
-    setNotice('');
-    setLoading(true);
-    try {
-      const response = await fetch('/api/auth/send-otp', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim(), name: name.trim() }),
-      });
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok) {
-        setError(data.error ?? 'We could not send the code. Please try again.');
-        return;
-      }
-      setStep('otp');
-      setNotice('Verification code sent. It expires in 10 minutes.');
-    } catch {
-      setError('A network error interrupted the request. Check your connection and try again.');
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function handleSendOtp(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    await requestOtp();
-  }
-
-  async function handleVerify(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setError('');
-    setNotice('');
-    setLoading(true);
-    try {
-      const response = await fetch('/api/auth/verify-otp', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim(), code, name: name.trim() }),
-      });
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok) {
-        setError(data.error ?? 'That code did not work. Please request a new one.');
-        return;
-      }
-      router.push('/dashboard');
-      router.refresh();
-    } catch {
-      setError('A network error interrupted verification. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  }
+  useEffect(() => {
+    const code = new URLSearchParams(window.location.search).get('error');
+    if (code) setError(loginErrors[code] ?? 'Login tidak berhasil. Silakan coba lagi.');
+  }, []);
 
   return (
     <div className="mx-auto grid w-full max-w-6xl overflow-hidden rounded-[2rem] border border-white/80 bg-white shadow-2xl shadow-blue-900/10 lg:grid-cols-2">
@@ -80,7 +28,7 @@ export default function LoginForm() {
         <div className="relative z-10">
           <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1.5 text-xs font-semibold tracking-wide backdrop-blur"><span aria-hidden="true">✦</span> YOUR PERSONAL AI STUDY SPACE</div>
           <h1 className="max-w-lg text-4xl font-black leading-tight tracking-tight xl:text-5xl">Every big goal starts with one small lesson.</h1>
-          <p className="mt-5 max-w-md text-base leading-7 text-blue-50">Turn class notes, PDFs, and videos into a learning routine that actually sticks.</p>
+          <p className="mt-5 max-w-md text-base leading-7 text-blue-50">Sign in securely with Google and pick up where your curiosity left off.</p>
           <div className="mt-9 space-y-3">
             { [['🧠', 'Smart flashcards and quizzes'], ['⚡', 'AI summaries in a few clicks'], ['📈', 'Progress that keeps you motivated']].map(([icon, label]) =>
               <div key={label} className="flex items-center gap-3 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 backdrop-blur"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/15 text-lg" aria-hidden="true">{icon}</span><span className="text-sm font-medium text-white">{label}</span></div>
@@ -93,33 +41,32 @@ export default function LoginForm() {
       <section className="flex min-h-[620px] flex-col justify-center px-6 py-10 sm:px-10 lg:px-12 xl:px-16">
         <div className="mb-10 lg:hidden"><Brand /></div>
         <div className="mx-auto w-full max-w-md">
-          <div className="mb-7">
+          <div className="mb-8">
             <span className="inline-flex items-center gap-2 rounded-full bg-sky-50 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-sky-700"><span aria-hidden="true">🔐</span> Secure sign in</span>
-            <h2 className="mt-4 text-3xl font-black tracking-tight text-slate-950">{step === 'email' ? 'Welcome back' : 'Check your inbox'}</h2>
-            <p className="mt-2 leading-6 text-slate-500">{step === 'email' ? 'Enter your email and we’ll send you a one-time login code.' : 'Enter the six-digit code sent to your email address.'}</p>
+            <h2 className="mt-4 text-3xl font-black tracking-tight text-slate-950">Welcome to Cendekia.ai</h2>
+            <p className="mt-2 leading-6 text-slate-500">One tap to your personal AI learning space. Use your Google account to continue securely.</p>
           </div>
-          {step === 'email' ? (
-            <form onSubmit={handleSendOtp} className="space-y-5">
-              <div className="space-y-2"><Label htmlFor="name">Your name <span className="font-normal text-slate-400">(optional)</span></Label><Input id="name" name="name" autoComplete="name" placeholder="How should we call you?" value={name} onChange={(event) => setName(event.target.value)} /></div>
-              <div className="space-y-2"><Label htmlFor="email">Email address</Label><Input id="email" name="email" type="email" autoComplete="email" inputMode="email" placeholder="you@example.com" value={email} onChange={(event) => setEmail(event.target.value)} required /></div>
-              {error && <p role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>}
-              <Button type="submit" size="lg" className="w-full rounded-xl bg-blue-600 shadow-lg shadow-blue-600/20 hover:bg-blue-700" disabled={loading}>{loading ? 'Sending code…' : 'Email me a login code'} <span className="ml-2" aria-hidden="true">→</span></Button>
-            </form>
-          ) : (
-            <form onSubmit={handleVerify} className="space-y-5">
-              <div className="rounded-2xl border border-sky-100 bg-sky-50 p-4"><p className="text-sm text-slate-600">Code sent to</p><p className="mt-1 break-all font-semibold text-slate-900">{email}</p></div>
-              <div className="space-y-2"><Label htmlFor="code">6-digit verification code</Label><Input id="code" name="code" type="text" inputMode="numeric" autoComplete="one-time-code" pattern="[0-9]{6}" aria-describedby="code-help" placeholder="000000" value={code} onChange={(event) => setCode(event.target.value.replace(/\D/g, '').slice(0, 6))} maxLength={6} required className="h-14 rounded-xl text-center text-2xl font-bold tracking-[0.55em]" /><p id="code-help" className="text-xs text-slate-500">For your security, the code expires after 10 minutes.</p></div>
-              {error && <p role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>}
-              <Button type="submit" size="lg" className="w-full rounded-xl bg-blue-600 shadow-lg shadow-blue-600/20 hover:bg-blue-700" disabled={loading || code.length !== 6}>{loading ? 'Verifying…' : 'Verify and continue'} <span className="ml-2" aria-hidden="true">→</span></Button>
-              <button type="button" onClick={requestOtp} disabled={loading} className="w-full text-sm font-semibold text-blue-700 transition hover:text-blue-900 disabled:opacity-50">Didn’t receive it? Resend code</button>
-              <button type="button" onClick={() => { setStep('email'); setCode(''); setError(''); setNotice(''); }} className="w-full text-sm text-slate-500 transition hover:text-slate-900">← Use a different email</button>
-            </form>
-          )}
-          {notice && <p role="status" className="mt-4 text-center text-sm text-emerald-700">{notice}</p>}
-          <div className="mt-8 flex items-center justify-center gap-2 border-t border-slate-100 pt-6 text-xs text-slate-400"><span aria-hidden="true">🛡️</span>Passwordless sign-in, protected by a one-time code</div>
+          {error && <p role="alert" className="mb-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-900">{error}</p>}
+          <a href="/api/auth/google" className="flex min-h-14 w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white px-5 py-3.5 text-sm font-bold text-slate-800 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 hover:shadow-md focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100">
+            <GoogleMark />
+            Continue with Google
+          </a>
+          <p className="mt-5 text-center text-xs leading-5 text-slate-400">By continuing, you’ll use Google to verify your identity. Cendekia.ai never receives your Google password.</p>
+          <div className="mt-8 flex items-center justify-center gap-2 border-t border-slate-100 pt-6 text-xs text-slate-400"><span aria-hidden="true">🛡️</span> Secure OAuth 2.0 sign-in</div>
         </div>
       </section>
     </div>
+  );
+}
+
+function GoogleMark() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 48 48" className="h-5 w-5" role="img">
+      <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.76 7.18l7.73 6C44.42 38.03 46.98 31.94 46.98 24.55z" />
+      <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.91-5.8l-7.73-6c-2.14 1.45-4.89 2.3-8.18 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+      <path fill="#FBBC05" d="M10.53 28.59A14.4 14.4 0 0 1 9.75 24c0-1.59.27-3.13.76-4.59l-7.98-6.19A23.9 23.9 0 0 0 0 24c0 3.87.93 7.52 2.56 10.78l7.97-6.19z" />
+      <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+    </svg>
   );
 }
 
