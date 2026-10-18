@@ -3,7 +3,11 @@ import { createOpenAI } from '@ai-sdk/openai';
 import { InvalidMindMapError, parseMindMapOutput } from '@/lib/feature-utils';
 import {
   AI_REQUEST_TIMEOUT_MS,
+  MAX_PDF_OCR_PAGES,
+  MAX_SOURCE_CHARS,
+  PDF_OCR_TIMEOUT_MS,
   InvalidAIOutputError,
+  shouldRunPdfOcr,
   getYouTubeVideoId,
   parseFlashcardsOutput,
   parseQuizOutput,
@@ -80,13 +84,110 @@ export async function generatePodcastScript(content: string): Promise<string> {
   );
 }
 
+export class PDFOCRUnavailableError extends Error {
+  constructor() {
+    super('OCR engine could not be initialized');
+    this.name = 'PDFOCRUnavailableError';
+  }
+}
+
+export class PDFOCRNoTextError extends Error {
+  constructor() {
+    super('OCR did not recognize enough readable text');
+    this.name = 'PDFOCRNoTextError';
+  }
+}
+
+export class PDFOCRTimeoutError extends Error {
+  constructor() {
+    super('PDF OCR exceeded the configured time limit');
+    this.name = 'PDFOCRTimeoutError';
+  }
+}
+
 export async function extractPDF(buffer: Buffer): Promise<string> {
   const { PDFParse } = await import('pdf-parse');
   const parser = new PDFParse({ data: buffer });
+  let worker: Awaited<ReturnType<(typeof import('tesseract.js'))['createWorker']>> | null = null;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  let timedOut = false;
+
   try {
     const result = await parser.getText();
-    return result.text.trim();
+    const nativeText = result.text.trim();
+    if (!shouldRunPdfOcr(nativeText)) return nativeText;
+
+    // Rendering is kept bounded: large PDFs are OCRed page-by-page, and only the first
+    // MAX_PDF_OCR_PAGES pages are considered for a scanned document.
+    const rendered = await parser.getScreenshot({
+      first: MAX_PDF_OCR_PAGES,
+      scale: 1.5,
+      imageBuffer: true,
+      imageDataUrl: false,
+    });
+    if (!rendered.pages.length) {
+      if (nativeText.length >= 10) return nativeText;
+      throw new PDFOCRNoTextError();
+    }
+
+    const { createWorker } = await import('tesseract.js');
+    const languages = process.env.PDF_OCR_LANGS?.trim() || 'eng+ind';
+
+    const deadline = new Promise<never>((_, reject) => {
+      timer = setTimeout(() => {
+        timedOut = true;
+        reject(new PDFOCRTimeoutError());
+      }, PDF_OCR_TIMEOUT_MS);
+    });
+
+    const recognizePages = async (): Promise<string> => {
+      let createdWorker;
+      try {
+        createdWorker = await createWorker(languages, 1, {
+          cachePath: process.env.PDF_OCR_CACHE_PATH?.trim() || '/tmp/cendekia-tesseract',
+        });
+      } catch {
+        throw new PDFOCRUnavailableError();
+      }
+
+      // If initialization finishes after the timeout wins, terminate the late worker too.
+      if (timedOut) {
+        await createdWorker.terminate();
+        throw new PDFOCRTimeoutError();
+      }
+
+      worker = createdWorker;
+      const pageTexts: string[] = [];
+      let totalChars = 0;
+      for (const page of rendered.pages) {
+        if (timedOut) throw new PDFOCRTimeoutError();
+        const { data } = await createdWorker.recognize(page.data);
+        const pageText = data.text.trim();
+        if (pageText) {
+          pageTexts.push(pageText);
+          totalChars += pageText.length;
+        }
+        if (totalChars >= MAX_SOURCE_CHARS) break;
+      }
+      return pageTexts.join('\\n\\n').slice(0, MAX_SOURCE_CHARS).trim();
+    };
+
+    let ocrText: string;
+    try {
+      ocrText = await Promise.race([recognizePages(), deadline]);
+    } catch (error) {
+      if (error instanceof PDFOCRTimeoutError || error instanceof PDFOCRUnavailableError) throw error;
+      throw new PDFOCRUnavailableError();
+    }
+
+    if (ocrText.replace(/\\s/g, '').length < 10) {
+      if (nativeText.length >= 10) return nativeText;
+      throw new PDFOCRNoTextError();
+    }
+    return ocrText;
   } finally {
+    if (timer) clearTimeout(timer);
+    if (worker) await worker.terminate().catch(() => undefined);
     await parser.destroy();
   }
 }
