@@ -67,5 +67,8 @@ export function parseMindMapOutput(raw: string): { title: string; nodes: MindMap
       parentId = parent.parentId;
     }
   }
-  return parsed.data;
+  return {
+    title: parsed.data.title,
+    nodes: parsed.data.nodes.map((node) => ({ id: node.id, label: node.label, parentId: node.parentId ?? null })),
+  };
 }
