@@ -108,7 +108,7 @@ export class PDFOCRTimeoutError extends Error {
 export async function extractPDF(buffer: Buffer): Promise<string> {
   const { PDFParse } = await import('pdf-parse');
   const parser = new PDFParse({ data: buffer });
-  let worker: Awaited<ReturnType<(typeof import('tesseract.js'))['createWorker']>> | null = null;
+  let worker: Awaited<ReturnType<typeof import('tesseract.js').createWorker>> | null = null;
   let timer: ReturnType<typeof setTimeout> | undefined;
   let timedOut = false;
 
