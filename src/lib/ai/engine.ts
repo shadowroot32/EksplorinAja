@@ -108,7 +108,7 @@ export class PDFOCRTimeoutError extends Error {
 export async function extractPDF(buffer: Buffer): Promise<string> {
   const { PDFParse } = await import('pdf-parse');
   const parser = new PDFParse({ data: buffer });
-  let worker: Awaited<ReturnType<typeof import('tesseract.js').createWorker>> | null = null;
+  const workerRef: { current: Awaited<ReturnType<typeof import('tesseract.js').createWorker>> | null } = { current: null };
   let timer: ReturnType<typeof setTimeout> | undefined;
   let timedOut = false;
 
@@ -156,12 +156,12 @@ export async function extractPDF(buffer: Buffer): Promise<string> {
         throw new PDFOCRTimeoutError();
       }
 
-      worker = createdWorker;
+      workerRef.current = createdWorker;
       const pageTexts: string[] = [];
       let totalChars = 0;
       for (const page of rendered.pages) {
         if (timedOut) throw new PDFOCRTimeoutError();
-        const { data } = await createdWorker.recognize(page.data);
+        const { data } = await createdWorker.recognize(Buffer.from(page.data));
         const pageText = data.text.trim();
         if (pageText) {
           pageTexts.push(pageText);
@@ -187,7 +187,7 @@ export async function extractPDF(buffer: Buffer): Promise<string> {
     return ocrText;
   } finally {
     if (timer) clearTimeout(timer);
-    if (worker) await worker.terminate().catch(() => undefined);
+    if (workerRef.current) await workerRef.current.terminate().catch(() => undefined);
     await parser.destroy();
   }
 }
