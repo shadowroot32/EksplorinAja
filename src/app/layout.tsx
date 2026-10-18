@@ -6,14 +6,14 @@ const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
 const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Cendekia.ai — AI Learning Workspace',
-  description: 'Turn any content into flashcards, quizzes, and summaries with AI.',
+  title: 'Cendekia.ai — Your AI Learning Workspace',
+  description: 'Turn notes, PDFs, and videos into flashcards, quizzes, and clear learning progress with AI.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full`}>
-      <body className="min-h-full bg-slate-950 text-slate-100 antialiased">{children}</body>
+    <html lang="en" className={geistSans.variable + ' ' + geistMono.variable + ' h-full'}>
+      <body className="min-h-full bg-sky-50 text-slate-900 antialiased">{children}</body>
     </html>
   );
 }
