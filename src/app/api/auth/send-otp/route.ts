@@ -1,52 +1,64 @@
+import { randomInt, randomUUID } from 'crypto';
+import { and, eq, isNull } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { db } from '@/lib/db';
 import { otpCodes } from '@/lib/db/schema';
-import { sendOtpEmail } from '@/lib/email';
+import { sendOtpEmail, isSmtpConfigured } from '@/lib/email';
 import { checkRateLimit } from '@/lib/rate-limit';
-import { randomUUID } from 'crypto';
 
 const schema = z.object({
-  email: z.string().email(),
-  name: z.string().optional(),
+  email: z.string().trim().email().transform((value) => value.toLowerCase()),
+  name: z.string().trim().max(100).optional(),
 });
 
-function generateOtp() {
-  return String(Math.floor(100000 + Math.random() * 900000));
+function generateOtp(): string {
+  return String(randomInt(100000, 1_000_000));
 }
 
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({}));
   const parsed = schema.safeParse(body);
-  if (!parsed.success) return NextResponse.json({ error: 'Invalid email' }, { status: 400 });
+  if (!parsed.success) return NextResponse.json({ error: 'Enter a valid email address.' }, { status: 400 });
 
-  const ip = req.headers.get('x-forwarded-for') ?? 'unknown';
+  const forwardedFor = req.headers.get('x-forwarded-for');
+  const ip = forwardedFor?.split(',')[0]?.trim() || req.headers.get('x-real-ip') || 'unknown';
   const { allowed } = checkRateLimit(ip, 'send-otp', 5, 60_000);
-  if (!allowed) return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+  if (!allowed) return NextResponse.json({ error: 'Too many attempts. Please wait a minute and try again.' }, { status: 429 });
+
+  if (!isSmtpConfigured()) {
+    return NextResponse.json({
+      error: 'Email delivery is not configured on the server. Set SMTP_HOST, SMTP_PORT, SMTP_USER, and SMTP_PASSWORD.',
+    }, { status: 503 });
+  }
 
   const { email, name } = parsed.data;
+  const id = randomUUID();
   const code = generateOtp();
-  const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
-
-  await db.insert(otpCodes).values({
-    id: randomUUID(),
-    email,
-    code,
-    action: 'login',
-    name: name ?? null,
-    ipAddress: ip,
-    expiresAt,
-  });
+  const now = new Date();
+  const expiresAt = new Date(now.getTime() + 10 * 60 * 1000);
+  let stored = false;
 
   try {
-    if (process.env.SMTP_PASSWORD) {
-      await sendOtpEmail(email, code, name);
-    } else {
-      console.log(`[AUTH OTP CONSOLE] To: ${email} | OTP: ${code}`);
+    await db.insert(otpCodes).values({
+      id, email, code, action: 'login', name: name || null, ipAddress: ip, expiresAt,
+    });
+    stored = true;
+    await sendOtpEmail(email, code, name);
+  } catch (error) {
+    if (stored) {
+      try {
+        await db.update(otpCodes).set({ usedAt: new Date() })
+          .where(and(eq(otpCodes.id, id), isNull(otpCodes.usedAt)));
+      } catch {
+        // Keep the delivery failure response even if invalidating the code also fails.
+      }
     }
-  } catch (err) {
-    console.error('[AUTH OTP ERROR] Failed to send email, logging to console:', err);
-    console.log(`[AUTH OTP FALLBACK] To: ${email} | OTP: ${code}`);
+    console.error('[AUTH OTP] Email delivery failed:', error instanceof Error ? error.name : 'UnknownError');
+    return NextResponse.json({
+      error: 'We could not deliver your verification code. Check the email address and SMTP provider settings, then try again.',
+    }, { status: 502 });
   }
-  return NextResponse.json({ success: true });
+
+  return NextResponse.json({ success: true, message: 'Verification code sent.' });
 }
