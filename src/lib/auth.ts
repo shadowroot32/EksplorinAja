@@ -1,3 +1,4 @@
+import { createHmac } from 'crypto';
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 import { db } from './db';
@@ -5,15 +6,31 @@ import { userSessions, users } from './db/schema';
 import { eq, and, gt } from 'drizzle-orm';
 
 const COOKIE = 'cendekia_session';
-const secret = () => new TextEncoder().encode(process.env.JWT_SECRET ?? 'dev-secret-change-me');
+
+function secretValue(): string {
+  const configured = process.env.JWT_SECRET;
+  if (!configured) {
+    if (process.env.NODE_ENV === 'production') throw new Error('JWT_SECRET must be configured in production');
+    return 'dev-secret-change-me';
+  }
+  if (process.env.NODE_ENV === 'production' && configured.length < 32) {
+    throw new Error('JWT_SECRET must be at least 32 characters in production');
+  }
+  return configured;
+}
+
+const secret = () => new TextEncoder().encode(secretValue());
+
+export function hashOtpCode(code: string): string {
+  return createHmac('sha256', secretValue()).update(code).digest('hex');
+}
 
 export async function createSession(userId: string): Promise<string> {
-  const token = await new SignJWT({ sub: userId })
+  return new SignJWT({ sub: userId })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('30d')
     .sign(secret());
-  return token;
 }
 
 export async function verifyToken(token: string): Promise<string | null> {
