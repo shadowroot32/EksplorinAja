@@ -31,25 +31,25 @@ export default function SubjectsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-100">Subjects</h1>
+        <h1 className="text-2xl font-bold text-slate-900">Subjects</h1>
         <Button onClick={() => setOpen(true)}>+ New Subject</Button>
       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {subjects.map(s => (
-          <Card key={s.id} className="hover:border-emerald-500/30 transition-colors">
+          <Card key={s.id} className="hover:border-emerald-200 transition-colors">
             <CardContent className="pt-6">
               <div className="flex items-start justify-between mb-3">
                 <span className="text-3xl">{s.emoji}</span>
-                <button onClick={() => remove(s.id)} className="text-slate-600 hover:text-red-400 text-sm transition-colors">✕</button>
+                <button onClick={() => remove(s.id)} className="text-slate-600 hover:text-red-600 text-sm transition-colors">✕</button>
               </div>
-              <h3 className="font-semibold text-slate-100 mb-1">{s.name}</h3>
-              <p className="text-sm text-slate-400 mb-3">{s.description || 'No description'}</p>
+              <h3 className="font-semibold text-slate-900 mb-1">{s.name}</h3>
+              <p className="text-sm text-slate-600 mb-3">{s.description || 'No description'}</p>
               <div className="flex items-center gap-2">
-                <div className="h-1.5 flex-1 bg-slate-800 rounded-full overflow-hidden">
-                  <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${s.masteryLevel * 100}%` }} />
+                <div className="h-1.5 flex-1 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="h-full bg-blue-600 rounded-full" style={{ width: `${s.masteryLevel * 100}%` }} />
                 </div>
-                <span className="text-xs text-slate-400">{Math.round(s.masteryLevel * 100)}%</span>
+                <span className="text-xs text-slate-600">{Math.round(s.masteryLevel * 100)}%</span>
               </div>
             </CardContent>
           </Card>
