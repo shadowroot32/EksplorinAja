@@ -17,7 +17,7 @@
 - 🧠 **AI-Powered Learning Assets**: Ringkasan berstruktur, kartu hafalan (*flashcards*), kuis pilihan ganda, dan AI chat tutor berbasis konteks dokumen.
 - 🗂️ **SuperMemo SM-2 Spaced Repetition**: Algoritma interval pengulangan memori adaptif dengan antarmuka 3D flip card.
 - 🔐 **Passwordless OTP Email Auth**: Autentikasi berbasis kode OTP 6 digit via SMTP/Gmail, tanpa password, dengan sesi secure JWT (`jose`) dan cookie `httpOnly`.
-- 🎨 **Modern Minimalist UI**: Palet warna gelap terfokus (Emerald `#10b981`, Teal `#14b8a6`, Dark Slate `#0f172a`) dengan Tailwind CSS v4.
+- 🎨 **Modern Learning Workspace**: Antarmuka responsif bernuansa biru-langit dan putih, navigasi sidebar, kartu progres, serta tampilan belajar yang ramah di desktop dan perangkat seluler.
 - ⚡ **Production-Ready & Self-Hosted**: 100% open-source, bebas biaya langganan, dan siap di-deploy secara mandiri di Proxmox/Linux VM atau cloud provider.
 
 ---
