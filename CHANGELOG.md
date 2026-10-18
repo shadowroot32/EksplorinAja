@@ -11,6 +11,7 @@ Catatan ini merangkum fitur yang telah ditambahkan pada tahapan pengembangan Cen
 - Membatasi panjang field profil dan menolak update profil kosong/field tak dikenal.
 - Menonaktifkan cache untuk respons privat profil dan ekspor.
 - Memperbarui smoke test autentikasi agar mencakup endpoint ekspor data.
+- Memigrasikan route guard dari konvensi `middleware.ts` ke `proxy.ts` yang didukung Next.js 16.
 - Merapikan README dan menambahkan checklist deployment ini.
 
 ## Tahap 3 — Fitur belajar tambahan
