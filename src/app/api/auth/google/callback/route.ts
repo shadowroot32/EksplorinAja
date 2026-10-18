@@ -7,8 +7,6 @@ import { db } from '@/lib/db';
 import { users } from '@/lib/db/schema';
 import { normalizeOAuthEmail, resolveGoogleRedirectUri, safeStringEqual } from '@/lib/google-oauth-utils';
 
-export const dynamic = 'force-dynamic';
-
 const GOOGLE_JWKS = createRemoteJWKSet(new URL('https://www.googleapis.com/oauth2/v3/certs'));
 const CALLBACK_PATH = '/api/auth/google/callback';
 const OAUTH_COOKIES = ['google_oauth_state', 'google_oauth_nonce', 'google_oauth_verifier'] as const;

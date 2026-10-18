@@ -6,8 +6,6 @@ import {
   resolveGoogleRedirectUri,
 } from '@/lib/google-oauth-utils';
 
-export const dynamic = 'force-dynamic';
-
 const CALLBACK_PATH = '/api/auth/google/callback';
 const COOKIE_OPTIONS = {
   httpOnly: true,
