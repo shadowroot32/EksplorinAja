@@ -5,7 +5,7 @@ export function Separator({ className, orientation = 'horizontal', ...props }: R
   return (
     <div
       className={cn(
-        'shrink-0 bg-slate-800',
+        'shrink-0 bg-slate-200',
         orientation === 'horizontal' ? 'h-px w-full' : 'h-full w-px',
         className,
       )}
