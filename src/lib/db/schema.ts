@@ -1,5 +1,5 @@
 import {
-  pgTable, text, timestamp, integer, real, boolean, jsonb, date, serial,
+  pgTable, text, timestamp, integer, real, boolean, jsonb, date, serial, uniqueIndex,
 } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
@@ -117,3 +117,29 @@ export const podcasts = pgTable('podcasts', {
   audioUrl: text('audio_url'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
 });
+
+
+export const cornellNotes = pgTable('cornell_notes', {
+  id: text('id').primaryKey(),
+  studySetId: text('study_set_id').notNull().references(() => studySets.id, { onDelete: 'cascade' }),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  cues: text('cues').notNull().default(''),
+  notes: text('notes').notNull().default(''),
+  summary: text('summary').notNull().default(''),
+  reflection: text('reflection').notNull().default(''),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+}, (table) => ({
+  studySetUnique: uniqueIndex('cornell_notes_study_set_unique').on(table.studySetId),
+}));
+
+export const studySetShares = pgTable('study_set_shares', {
+  id: text('id').primaryKey(),
+  studySetId: text('study_set_id').notNull().references(() => studySets.id, { onDelete: 'cascade' }),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  tokenHash: text('token_hash').notNull(),
+  expiresAt: timestamp('expires_at').notNull(),
+  revokedAt: timestamp('revoked_at'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+}, (table) => ({
+  tokenHashUnique: uniqueIndex('study_set_shares_token_hash_unique').on(table.tokenHash),
+}));

@@ -4,8 +4,12 @@ import { use } from 'react';
 import FlashcardViewer from '@/components/study/FlashcardViewer';
 import QuizPlayer from '@/components/study/QuizPlayer';
 import ChatInterface from '@/components/study/ChatInterface';
+import CornellNotesPanel from '@/components/study/CornellNotesPanel';
+import MindMapPanel from '@/components/study/MindMapPanel';
+import PodcastPanel from '@/components/study/PodcastPanel';
+import ShareDocumentButton from '@/components/study/ShareDocumentButton';
 
-type Tab = 'summary' | 'flashcards' | 'quiz' | 'chat';
+type Tab = 'summary' | 'flashcards' | 'quiz' | 'cornell' | 'mindmap' | 'podcast' | 'chat';
 interface StudySet { id: string; title: string; summary: string; sourceType: string; }
 
 export default function StudyClient({ paramsPromise }: { paramsPromise: Promise<{ setId: string }> }) {
@@ -23,6 +27,9 @@ export default function StudyClient({ paramsPromise }: { paramsPromise: Promise<
     { key: 'summary', label: '📄 Summary' },
     { key: 'flashcards', label: '🧠 Flashcards' },
     { key: 'quiz', label: '📝 Quiz' },
+    { key: 'cornell', label: '📓 Cornell Notes' },
+    { key: 'mindmap', label: '🧠 Mind map' },
+    { key: 'podcast', label: '🎙️ Podcast' },
     { key: 'chat', label: '💬 Chat' },
   ];
 
@@ -33,10 +40,13 @@ export default function StudyClient({ paramsPromise }: { paramsPromise: Promise<
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">{set.title}</h1>
-        <p className="text-slate-600 text-sm mt-1">Source: {set.sourceType}</p>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">{set.title}</h1>
+          <p className="text-slate-600 text-sm mt-1">Source: {set.sourceType}</p>
+        </div>
       </div>
+      <ShareDocumentButton studySetId={setId} />
       <div className="flex gap-1 bg-white border border-slate-200 p-1 rounded-xl flex-wrap">
         {tabs.map(t => <button key={t.key} onClick={() => setTab(t.key)} className={tabCls(t.key)}>{t.label}</button>)}
       </div>
@@ -48,6 +58,9 @@ export default function StudyClient({ paramsPromise }: { paramsPromise: Promise<
       )}
       {tab === 'flashcards' && <FlashcardViewer studySetId={setId} />}
       {tab === 'quiz' && <QuizPlayer studySetId={setId} />}
+      {tab === 'cornell' && <CornellNotesPanel studySetId={setId} />}
+      {tab === 'mindmap' && <MindMapPanel studySetId={setId} />}
+      {tab === 'podcast' && <PodcastPanel studySetId={setId} />}
       {tab === 'chat' && <ChatInterface studySetId={setId} />}
     </div>
   );

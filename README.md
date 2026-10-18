@@ -27,7 +27,9 @@
 
 - **Google Sign-In:** login satu klik melalui OAuth 2.0 / OpenID Connect; password Google tidak pernah diterima atau disimpan Cendekia.ai.
 - **Materi multi-sumber:** catatan, dokumen PDF, dan tautan YouTube.
-- **Belajar dengan AI:** ringkasan materi, flashcard, kuis pilihan ganda, dan tutor berbasis konteks materi.
+- **Belajar dengan AI:** ringkasan materi, flashcard, kuis pilihan ganda, tutor, mind map, dan naskah podcast.
+- **Catatan Cornell:** cue/kata kunci, catatan utama, ringkasan, dan refleksi yang tersimpan.
+- **Berbagi dokumen:** tautan baca-saja yang kedaluwarsa dan dapat dicabut.
 - **Spaced repetition:** jadwal review menggunakan algoritma SuperMemo SM-2.
 - **Dashboard responsif:** statistik progres dan navigasi untuk desktop maupun perangkat seluler.
 - **Self-hosted:** database dan provider LLM dikonfigurasi di environment pemilik deployment.
@@ -61,7 +63,7 @@ npm ci
 cp .env.example .env
 ```
 
-Isi environment variables pada file `.env`, siapkan database pengembangan, lalu jalankan:
+Isi environment variables pada file `.env`, siapkan database, lalu sinkronkan skema (termasuk tabel Cornell Notes dan tautan berbagi) dengan `npx drizzle-kit push`. Untuk deployment yang dikelola manual, terapkan SQL `drizzle/0001_stage3_learning_features.sql` pada database PostgreSQL sebelum memakai fitur tahap 3. Lalu jalankan:
 
 ```bash
 npx drizzle-kit push
@@ -150,7 +152,7 @@ Workflow [GitHub Actions](.github/workflows/ci.yml) berjalan saat push ke `main`
 └── SECURITY.md
 ```
 
-## Keamanan dan deployment
+## Fitur belajar dan berbagi\n\n- Halaman belajar menyediakan tab Cornell Notes, Mind map, dan Podcast. Cornell Notes disimpan di database; mind map dibuat sesuai permintaan dari ringkasan/materi.\n- Podcast menghasilkan naskah tersimpan dan menggunakan text-to-speech bawaan browser untuk membacakannya. Fitur ini **belum** membuat atau menyimpan file audio MP3.\n- Berbagi dokumen menghasilkan tautan acak yang hanya menyimpan hash token di database, berlaku 1, 7, atau 30 hari, dan dapat dicabut. Siapa pun yang memiliki tautan aktif dapat membaca ringkasan dan isi materi; jangan bagikan materi rahasia.\n\n## Keamanan dan deployment
 
 - Gunakan Google OAuth Client Secret dan JWT secret dari secret manager/environment variables; jangan simpan di repository.
 - Di production, callback wajib HTTPS dan URL-nya harus sama persis dengan yang terdaftar di Google Cloud.

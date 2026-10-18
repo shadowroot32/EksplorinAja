@@ -1,5 +1,6 @@
 import { generateText } from 'ai';
 import { createOpenAI } from '@ai-sdk/openai';
+import { InvalidMindMapError, parseMindMapOutput } from '@/lib/feature-utils';
 import {
   AI_REQUEST_TIMEOUT_MS,
   InvalidAIOutputError,
@@ -99,3 +100,11 @@ export async function extractYouTube(url: string): Promise<string> {
 }
 
 export { InvalidAIOutputError };
+
+
+export async function generateMindMap(content: string): Promise<{ title: string; nodes: { id: string; label: string; parentId: string | null }[] }> {
+  const raw = await ask(
+    languageInstruction + '\n\nBuat mind map hierarkis ringkas. Keluarkan HANYA JSON: {"title":"topik utama","nodes":[{"id":"root","label":"Topik utama","parentId":null},{"id":"n1","label":"Cabang","parentId":"root"}]}. Minimal 3, maksimal 30 node, tepat satu root, id unik, parentId valid.\n\nMATERI SUMBER:\n' + content.slice(0, 12_000),
+  );
+  return parseMindMapOutput(raw);
+}
