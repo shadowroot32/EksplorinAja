@@ -42,7 +42,7 @@ test('PDF OCR fallback only activates when native text extraction returns too li
   assert.equal(shouldRunPdfOcr('  \\n  '), true);
   assert.equal(shouldRunPdfOcr('A'.repeat(MIN_NATIVE_PDF_TEXT_CHARS - 1)), true);
   assert.equal(shouldRunPdfOcr('A'.repeat(MIN_NATIVE_PDF_TEXT_CHARS)), false);
-  assert.equal(shouldRunPdfOcr('A useful page of extracted PDF text.'), false);
+  assert.equal(shouldRunPdfOcr('A useful page of extracted PDF text with headings and complete sentences.'), false);
 });
 
 test('PDF signature checks actual bytes rather than trusting filename or MIME type', () => {
