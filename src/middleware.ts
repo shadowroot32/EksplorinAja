@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
 
-const secret = () => new TextEncoder().encode(process.env.JWT_SECRET ?? 'dev-secret-change-me');
+function secret() {
+  const configured = process.env.JWT_SECRET;
+  if (!configured || (process.env.NODE_ENV === 'production' && configured.length < 32)) {
+    throw new Error('A JWT_SECRET of at least 32 characters must be configured');
+  }
+  return new TextEncoder().encode(configured);
+}
 
 export async function middleware(request: NextRequest) {
   const token = request.cookies.get('cendekia_session')?.value;
