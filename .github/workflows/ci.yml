@@ -42,3 +42,18 @@ jobs:
         run: npm run typecheck
       - name: Build production application
         run: npm run build
+      - name: Start production server
+        run: |
+          npm run start -- --hostname 127.0.0.1 > /tmp/cendekia-next.log 2>&1 &
+          echo $! > /tmp/cendekia-next.pid
+          for attempt in $(seq 1 30); do
+            if curl --silent --fail http://127.0.0.1:3000/ > /dev/null; then
+              echo "Production server is ready"
+              exit 0
+            fi
+            sleep 2
+          done
+          cat /tmp/cendekia-next.log
+          exit 1
+      - name: Smoke-test live OTP API error handling
+        run: node scripts/smoke-otp-api.cjs
