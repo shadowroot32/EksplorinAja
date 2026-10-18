@@ -62,6 +62,10 @@ cendekia-ai-v2/
 cp .env.example .env
 ```
 Sesuaikan konfigurasi di berkas `.env`:
+
+Untuk Gmail, aktifkan 2-Step Verification lalu gunakan Google App Password (bukan password akun biasa). `SMTP_FROM` bersifat opsional. OTP hanya dianggap terkirim setelah SMTP menerima email; saat konfigurasi tidak lengkap atau pengiriman gagal, endpoint akan mengembalikan error dan tidak mencetak OTP ke log server.
+
+
 ```env
 DATABASE_URL=postgresql://user:password@localhost:5432/cendekia
 LLM_BASE_URL=http://localhost:20128/v1
@@ -70,7 +74,8 @@ LLM_MODEL=your_model_name
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=your_email@gmail.com
-SMTP_PASSWORD=your_app_specific_password
+SMTP_PASSWORD=your_google_app_password
+SMTP_FROM=Cendekia.ai <your_email@gmail.com>
 JWT_SECRET=generate_a_random_32_character_string_here
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
