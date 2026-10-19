@@ -71,7 +71,7 @@ export default function Navbar() {
           <div className="mb-10 flex items-center justify-between gap-2">
             <Link href="/dashboard" className="inline-flex min-w-0 items-center gap-3 px-1">
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 to-blue-700 text-xl font-black text-white shadow-lg shadow-blue-600/20">E</span>
-              <span className="min-w-0"><span className="block text-lg font-extrabold tracking-tight text-slate-950 dark:text-slate-100" >Explorin</span><span className="block text-xs text-slate-500 dark:text-slate-400">{locale === 'id' ? 'Belajar · Latihan · Berkembang' : 'Learn · Practice · Grow'}</span></span>
+              <span className="min-w-0"><span className="block text-lg font-extrabold tracking-tight text-slate-950 dark:text-slate-100">Explorin</span><span className="block text-xs text-slate-500 dark:text-slate-400">{locale === 'id' ? 'Belajar · Latihan · Berkembang' : 'Learn · Practice · Grow'}</span></span>
             </Link>
             {collapseButton}
           </div>
@@ -118,7 +118,7 @@ export default function Navbar() {
       </aside>
 
       <header className="fixed inset-x-0 top-0 z-40 flex h-16 items-center justify-between border-b border-slate-200/80 bg-white/95 px-3 shadow-sm backdrop-blur dark:border-slate-800 dark:bg-[#0b1220]/95 sm:px-4 lg:hidden">
-        <Link href="/dashboard" className="inline-flex shrink-0 items-center gap-2"><span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-sky-500 to-blue-700 font-black text-white">E</span><span className="text-sm font-extrabold tracking-tight text-slate-950 dark:text-slate-100" >Explorin</span></Link>
+        <Link href="/dashboard" className="inline-flex shrink-0 items-center gap-2"><span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-sky-500 to-blue-700 font-black text-white">E</span><span className="text-sm font-extrabold tracking-tight text-slate-950 dark:text-slate-100">Explorin</span></Link>
         <div className="flex items-center gap-1.5">
           <ThemeLanguageControls compact />
           <button onClick={logout} aria-label={t('nav.signOut')} title={t('nav.signOut')} className="rounded-xl px-2 py-2 text-sm font-bold text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">↗</button>
