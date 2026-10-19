@@ -45,8 +45,8 @@ export default function ShareDocumentButton({ studySetId }: { studySetId: string
     <h2 className="font-extrabold text-slate-100">Share this document</h2>
     <p className="mt-1 text-xs leading-5 text-slate-400">Tautan dapat dibuka siapa pun yang memilikinya. Kamu dapat mencabut semua tautan aktif kapan saja.</p>
     <div className="mt-3 flex flex-wrap gap-2">
-      <label className="flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-300">Expires in
-        <select value={expiresInDays} onChange={(event) => setExpiresInDays(Number(event.target.value))} className="rounded-lg bg-white py-1 font-bold text-slate-100"><option value={1}>1 day</option><option value={7}>7 days</option><option value={30}>30 days</option></select>
+      <label className="flex items-center gap-2 rounded-xl border border-slate-700 px-3 py-2 text-sm text-slate-300">Expires in
+        <select value={expiresInDays} onChange={(event) => setExpiresInDays(Number(event.target.value))} className="rounded-lg bg-slate-800 py-1 font-bold text-slate-100"><option value={1}>1 day</option><option value={7}>7 days</option><option value={30}>30 days</option></select>
       </label>
       <button type="button" disabled={loading} onClick={() => void createLink()} className="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-blue-500 disabled:opacity-50">{loading ? 'Creating…' : 'Create share link'}</button>
       <button type="button" disabled={revoking} onClick={() => void revokeLinks()} className="rounded-xl border border-rose-900 px-4 py-2.5 text-sm font-bold text-rose-300 hover:bg-rose-950/50 disabled:opacity-50">{revoking ? 'Revoking…' : 'Revoke all links'}</button>
