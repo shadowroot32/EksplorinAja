@@ -30,8 +30,8 @@ const contentByLocale: Record<Locale, {
   errors: Record<string, string>;
 }> = {
   en: {
-    tagline: 'Learn · Practice · Grow',
-    eyebrow: 'YOUR PERSONAL AI STUDY SPACE',
+    tagline: 'Your personal AI study space',
+    eyebrow: 'LEARN SMARTER EVERY DAY',
     title: 'Every big goal starts with one small lesson.',
     description: 'Sign in securely and pick up where your curiosity left off.',
     featuresTitle: 'Make learning feel lighter',
@@ -65,8 +65,8 @@ const contentByLocale: Record<Locale, {
     },
   },
   id: {
-    tagline: 'Belajar · Latihan · Berkembang',
-    eyebrow: 'RUANG BELAJAR AI PRIBADIMU',
+    tagline: 'Ruang belajar AI pribadimu',
+    eyebrow: 'BELAJAR LEBIH CERDAS SETIAP HARI',
     title: 'Setiap tujuan besar berawal dari satu pelajaran kecil.',
     description: 'Masuk dengan aman dan lanjutkan perjalanan belajar yang membuatmu penasaran.',
     featuresTitle: 'Belajar terasa lebih ringan',
@@ -163,9 +163,9 @@ export default function LoginForm() {
 
           <p className="mt-5 text-center text-sm leading-6 text-[var(--public-muted)]">
             {mode === 'register' ? text.existingAccountPrompt : text.newAccountPrompt}{' '}
-            <Link href={mode === 'register' ? '/login' : '/login?mode=register'} className="font-bold text-sky-700 underline-offset-4 hover:underline dark:text-sky-300">
+            <a href={mode === 'register' ? '/login' : '/login?mode=register'} className="font-bold text-sky-700 underline-offset-4 hover:underline dark:text-sky-300">
               {mode === 'register' ? text.switchToSignIn : text.switchToRegister}
-            </Link>
+            </a>
           </p>
 
           <div className="mt-5 flex items-start gap-3 rounded-2xl bg-[var(--public-soft)] px-4 py-4">
