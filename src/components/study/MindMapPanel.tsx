@@ -17,10 +17,10 @@ export default function MindMapPanel({ studySetId }: { studySetId: string }) {
     try {
       const response = await fetch(`/api/study-sets/${studySetId}/mind-map`, { method: 'POST' });
       const payload = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(payload.error || 'Mind map could not be generated');
+      if (!response.ok) throw new Error(payload.error || t('mind.failed'));
       setMapData(payload as MindMapData);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Mind map could not be generated');
+      setError(cause instanceof Error ? cause.message : t('mind.failed'));
     } finally { setLoading(false); }
   }
 
