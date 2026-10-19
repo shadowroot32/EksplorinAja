@@ -1,8 +1,8 @@
 # Changelog
 
-## Explorin brand and public pages
+## EksplorinAja brand and public pages
 
-- Mengganti nama tampilan website menjadi Explorin pada landing page, dashboard navigation, login, metadata, dokumen berbagi, dan email verifikasi.
+- Mengganti nama tampilan website menjadi EksplorinAja pada landing page, dashboard navigation, login, metadata, dokumen berbagi, dan email verifikasi.
 - Menambahkan kontrol tema terang/gelap dan bahasa Indonesia/English pada landing page sebelum login.
 - Mendesain ulang login dengan panel manfaat, tombol Google yang lebih rapi, pesan error dua bahasa, dan kontrol preferensi yang konsisten.
 - Menyatukan token warna halaman publik agar mengikuti tema tersimpan di browser.
