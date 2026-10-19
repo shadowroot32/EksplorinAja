@@ -1,6 +1,10 @@
 # Changelog
 
-## Tema, bahasa, dan mode fokus
+## Tema, bahasa, sidebar, dan mode fokus
+
+- Memperbaiki pemilihan tema agar varian gelap Tailwind mengikuti tema aplikasi, bukan preferensi gelap sistem operasi.
+- Mengganti select bahasa bawaan browser dengan menu pilihan bahasa bergaya aplikasi.
+- Menambahkan sidebar desktop yang dapat diciutkan menjadi icon rail; lebar konten dan header mengikuti perubahan, preferensi tersimpan.
 
 - Menambahkan pengalih tema terang/gelap global yang menyimpan preferensi di localStorage.
 - Menambahkan pilihan bahasa Bahasa Indonesia/English yang berlaku di navigasi, dasbor, perpustakaan, mata pelajaran, ulasan, pengaturan, dan workspace belajar.

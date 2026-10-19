@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Use the app-selected theme instead of the operating-system preference. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #f4f8ff;
   --foreground: #0f172a;
@@ -159,12 +162,6 @@ html:not(.dark) .study-workspace .bg-slate-800\/90 .bg-\[\#0b1220\] {
   background-color: #e2e8f0 !important;
 }
 
-html.dark .bg-gradient-to-br,
-html.dark .bg-gradient-to-r,
-html.dark .bg-gradient-to-b {
-  background-color: #172338 !important;
-  background-image: none !important;
-}
 html:not(.dark) .study-workspace .bg-\[\#0b1220\].text-white {
   color: #0f172a !important;
 }
@@ -190,4 +187,15 @@ html:not(.dark) .study-workspace .border-violet-200 {
 }
 html:not(.dark) .study-workspace .hover\:bg-slate-800:hover {
   background-color: #f1f5f9 !important;
+}
+
+
+/* The main content follows the persisted sidebar state. */
+@media (min-width: 1024px) {
+  html[data-sidebar-collapsed="true"] .dashboard-main {
+    margin-left: 84px !important;
+  }
+  html[data-sidebar-collapsed="false"] .dashboard-main {
+    margin-left: 16rem !important;
+  }
 }

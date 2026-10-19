@@ -9,6 +9,9 @@ type Preferences = {
   locale: Locale;
   theme: Theme;
   ready: boolean;
+  sidebarCollapsed: boolean;
+  setSidebarCollapsed: (collapsed: boolean) => void;
+  toggleSidebar: () => void;
   setLocale: (locale: Locale) => void;
   setTheme: (theme: Theme) => void;
   toggleTheme: () => void;
@@ -22,12 +25,14 @@ const en: Record<string, string> = {
   'nav.library': 'Study library',
   'nav.settings': 'Settings',
   'nav.workspace': 'Your workspace',
+  'nav.collapse': 'Collapse sidebar',
+  'nav.expand': 'Expand sidebar',
   'nav.habitTitle': 'Small steps add up',
   'nav.habitBody': 'Turn a few focused minutes into a habit you can keep.',
   'nav.makeSet': 'Make a study set',
   'nav.signOut': 'Sign out',
   'dashboard.heading': 'Your learning dashboard',
-  'dashboard.greeting': 'Welcome back, learner! 👋',
+  'dashboard.greeting': 'Welcome back, learner!',
   'dashboard.intro': 'A little progress today goes a long way. What will you discover?',
   'dashboard.reviewDue': 'Review due cards',
   'dashboard.createSet': 'Create study set',
@@ -49,6 +54,7 @@ const en: Record<string, string> = {
   'dashboard.mastery': 'Mastery level',
   'dashboard.streak': 'Study streak',
   'dashboard.days': 'days',
+  'dashboard.dayStreak': '{n} day streak',
   'dashboard.continueTitle': 'Continue learning',
   'dashboard.continueBody': 'Pick up where your curiosity left off.',
   'dashboard.viewLibrary': 'View library',
@@ -312,12 +318,14 @@ const id: Record<string, string> = {
   'nav.library': 'Perpustakaan belajar',
   'nav.settings': 'Pengaturan',
   'nav.workspace': 'Ruang belajarmu',
+  'nav.collapse': 'Ciutkan sidebar',
+  'nav.expand': 'Perluas sidebar',
   'nav.habitTitle': 'Langkah kecil berarti',
   'nav.habitBody': 'Ubah beberapa menit fokus menjadi kebiasaan baik.',
   'nav.makeSet': 'Buat set belajar',
   'nav.signOut': 'Keluar',
   'dashboard.heading': 'Dasbor belajarmu',
-  'dashboard.greeting': 'Selamat datang kembali! 👋',
+  'dashboard.greeting': 'Selamat datang kembali!',
   'dashboard.intro': 'Kemajuan kecil hari ini akan berarti. Apa yang ingin kamu pelajari?',
   'dashboard.reviewDue': 'Ulas kartu jatuh tempo',
   'dashboard.createSet': 'Buat set belajar',
@@ -339,6 +347,7 @@ const id: Record<string, string> = {
   'dashboard.mastery': 'Tingkat penguasaan',
   'dashboard.streak': 'Konsistensi belajar',
   'dashboard.days': 'hari',
+  'dashboard.dayStreak': '{n} hari berturut-turut',
   'dashboard.continueTitle': 'Lanjutkan belajar',
   'dashboard.continueBody': 'Lanjutkan dari tempat kamu berhenti.',
   'dashboard.viewLibrary': 'Lihat perpustakaan',
@@ -602,13 +611,16 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
   const [locale, setLocaleState] = useState<Locale>('en');
   const [theme, setThemeState] = useState<Theme>('light');
   const [ready, setReady] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsedState] = useState(false);
 
   useEffect(() => {
     try {
       const savedLocale = window.localStorage.getItem('cendekia-locale');
       const savedTheme = window.localStorage.getItem('cendekia-theme');
+      const savedSidebar = window.localStorage.getItem('cendekia-sidebar-collapsed');
       if (savedLocale === 'id' || savedLocale === 'en') setLocaleState(savedLocale);
       if (savedTheme === 'light' || savedTheme === 'dark') setThemeState(savedTheme);
+      if (savedSidebar === 'true' || savedSidebar === 'false') setSidebarCollapsedState(savedSidebar === 'true');
     } catch {
       // Preferences continue to work for the current tab if storage is unavailable.
     } finally {
@@ -621,19 +633,22 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
     document.documentElement.lang = locale;
     document.documentElement.classList.toggle('dark', theme === 'dark');
     document.documentElement.dataset.theme = theme;
+    document.documentElement.dataset.sidebarCollapsed = String(sidebarCollapsed);
     try {
       window.localStorage.setItem('cendekia-locale', locale);
       window.localStorage.setItem('cendekia-theme', theme);
+      window.localStorage.setItem('cendekia-sidebar-collapsed', String(sidebarCollapsed));
     } catch {
       // Some privacy modes disable localStorage; in-memory controls still work.
     }
-  }, [locale, theme, ready]);
+  }, [locale, theme, sidebarCollapsed, ready]);
 
   useEffect(() => {
     if (!ready) return;
     function onStorage(event: StorageEvent) {
       if (event.key === 'cendekia-locale' && (event.newValue === 'id' || event.newValue === 'en')) setLocaleState(event.newValue);
       if (event.key === 'cendekia-theme' && (event.newValue === 'light' || event.newValue === 'dark')) setThemeState(event.newValue);
+      if (event.key === 'cendekia-sidebar-collapsed' && (event.newValue === 'true' || event.newValue === 'false')) setSidebarCollapsedState(event.newValue === 'true');
     }
     window.addEventListener('storage', onStorage);
     return () => window.removeEventListener('storage', onStorage);
@@ -641,16 +656,21 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
 
   const translate = useCallback((key: string) => dictionaries[locale][key] ?? en[key] ?? key, [locale]);
   const toggleTheme = useCallback(() => setThemeState((current) => current === 'light' ? 'dark' : 'light'), []);
+  const setSidebarCollapsed = useCallback((collapsed: boolean) => setSidebarCollapsedState(collapsed), []);
+  const toggleSidebar = useCallback(() => setSidebarCollapsedState((current) => !current), []);
 
   const value = useMemo<Preferences>(() => ({
     locale,
     theme,
     ready,
+    sidebarCollapsed,
+    setSidebarCollapsed,
+    toggleSidebar,
     setLocale: setLocaleState,
     setTheme: setThemeState,
     toggleTheme,
     t: translate,
-  }), [locale, theme, ready, toggleTheme, translate]);
+  }), [locale, theme, ready, sidebarCollapsed, setSidebarCollapsed, toggleSidebar, toggleTheme, translate]);
 
   return <PreferencesContext.Provider value={value}>{children}</PreferencesContext.Provider>;
 }
