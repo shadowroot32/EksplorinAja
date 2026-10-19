@@ -24,6 +24,7 @@ const copy = {
     progress: 'Progress',
     everyDay: 'A little every day',
     curious: 'Hello, curious mind!',
+    keepGoing: 'Keep going!',
     session: 'One focused session can move you forward.',
     continue: 'Continue learning',
     streak: 'Study streak',
@@ -70,6 +71,7 @@ const copy = {
     progress: 'Progres',
     everyDay: 'Sedikit setiap hari',
     curious: 'Halo, pemikir penasaran!',
+    keepGoing: 'Terus semangat!',
     session: 'Satu sesi fokus bisa membawamu maju.',
     continue: 'Lanjutkan belajar',
     streak: 'Konsistensi belajar',
@@ -151,7 +153,7 @@ export default function LandingPage() {
                 <div className="px-3 py-2 text-xs font-medium text-[var(--public-muted)]">▤ {text.subjects}</div>
                 <div className="px-3 py-2 text-xs font-medium text-[var(--public-muted)]">✧ {text.studySets}</div>
                 <div className="px-3 py-2 text-xs font-medium text-[var(--public-muted)]">◷ {text.progress}</div>
-                <div className="mt-8 rounded-xl bg-gradient-to-br from-amber-100 to-orange-50 p-3 text-center dark:from-amber-950/50 dark:to-orange-950/40"><div className="text-xl" aria-hidden="true">🏆</div><div className="mt-1 text-[10px] font-bold text-amber-800 dark:text-amber-200">Keep going!</div></div>
+                <div className="mt-8 rounded-xl bg-gradient-to-br from-amber-100 to-orange-50 p-3 text-center dark:from-amber-950/50 dark:to-orange-950/40"><div className="text-xl" aria-hidden="true">🏆</div><div className="mt-1 text-[10px] font-bold text-amber-800 dark:text-amber-200">{text.keepGoing}</div></div>
               </aside>
               <div className="min-w-0 space-y-3">
                 <div className="rounded-2xl bg-gradient-to-br from-sky-100 via-blue-100 to-cyan-50 p-4 dark:from-[#193452] dark:via-[#172b4a] dark:to-[#10243a] sm:p-5">
