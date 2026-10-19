@@ -109,7 +109,7 @@ export default function FlashcardViewer({ studySetId, tags = [] }: { studySetId:
           return (
             <article key={card.id} className="flex min-w-0 flex-col overflow-hidden rounded-2xl border border-slate-800 bg-[#0f1829] transition-colors hover:border-slate-700">
               <header className="flex items-center justify-between gap-3 border-b border-slate-800 px-5 py-4">
-                <span className="text-sm font-medium text-slate-300">{revealed ? t(revealed ? 'flash.answer' : 'flash.question')}</span>
+                <span className="text-sm font-medium text-slate-300">{t(revealed ? 'flash.answer' : 'flash.question')}</span>
                 <span className="rounded-full bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-400">#{index + 1}</span>
               </header>
               <button type="button" onClick={() => toggleReveal(card.id)} aria-expanded={revealed} className="flex min-h-52 flex-1 flex-col items-center justify-center gap-5 px-5 py-8 text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-sky-500">
