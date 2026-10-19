@@ -109,8 +109,9 @@ export default function LandingPage() {
 
   return (
     <main className="public-site relative min-h-screen overflow-hidden bg-[var(--public-bg)] text-[var(--public-text)] transition-colors duration-300">
+      <a href="#main-content" className="sr-only z-50 rounded-lg bg-white px-4 py-3 font-bold text-blue-700 focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:outline-none focus:ring-2 focus:ring-sky-500">{locale === 'id' ? 'Lewati ke konten utama' : 'Skip to main content'}</a>
       <header className="sticky top-0 z-30 border-b border-white/60 bg-white/75 shadow-[0_8px_30px_-24px_rgba(15,23,42,0.35)] backdrop-blur-2xl dark:border-slate-800/70 dark:bg-slate-950/75">
-        <nav className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-4 sm:px-8 lg:py-5">
+        <nav aria-label={locale === 'id' ? 'Navigasi utama' : 'Main navigation'} className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-4 sm:px-8 lg:py-5">
           <Link href="/" className="inline-flex shrink-0 items-center gap-3" aria-label="EksplorinAja home">
             <span className="flex h-11 w-11 items-center justify-center rounded-[1.15rem] bg-gradient-to-br from-blue-600 via-blue-600 to-sky-400 text-xl font-black text-white shadow-lg shadow-blue-600/25">E</span>
             <span><span className="block text-lg font-extrabold tracking-tight text-[var(--public-text)]">EksplorinAja</span><span className="block text-xs text-[var(--public-muted)]">{text.tagline}</span></span>
@@ -124,11 +125,11 @@ export default function LandingPage() {
         </nav>
       </header>
 
-      <section className="relative mx-auto grid max-w-7xl items-center gap-12 px-5 pb-20 pt-12 sm:px-8 sm:pb-24 sm:pt-16 lg:grid-cols-[0.92fr_1.08fr] lg:gap-10 lg:pb-28 lg:pt-20">
+      <section id="main-content" aria-labelledby="landing-heading" className="relative mx-auto grid max-w-7xl items-center gap-12 px-5 pb-20 pt-12 sm:px-8 sm:pb-24 sm:pt-16 lg:grid-cols-[0.92fr_1.08fr] lg:gap-10 lg:pb-28 lg:pt-20">
         <div aria-hidden="true" className="pointer-events-none absolute -left-24 top-8 h-72 w-72 rounded-full bg-sky-400/10 blur-3xl" />
         <div className="relative z-10">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/75 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-blue-700 shadow-[0_8px_30px_-18px_rgba(37,99,235,0.35)] backdrop-blur-xl dark:border-slate-700 dark:bg-slate-900/70 dark:text-sky-300"><span aria-hidden="true">✦</span> {text.eyebrow}</div>
-          <h1 className="mt-7 max-w-2xl text-5xl font-black leading-[1.02] tracking-[-0.045em] text-[var(--public-text)] sm:text-6xl lg:text-[4.25rem]">
+          <h1 id="landing-heading" className="mt-7 max-w-2xl text-5xl font-black leading-[1.02] tracking-[-0.045em] text-[var(--public-text)] sm:text-6xl lg:text-[4.25rem]">
             {text.headlineOne}<br /><span className="bg-gradient-to-r from-blue-600 via-sky-500 to-emerald-400 bg-clip-text text-transparent dark:from-sky-300 dark:via-blue-300 dark:to-emerald-300">{text.headlineTwo}</span>
           </h1>
           <p className="mt-6 max-w-xl text-[1.05rem] leading-8 text-[var(--public-muted)]">{text.hero}</p>

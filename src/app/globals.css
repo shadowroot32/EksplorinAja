@@ -4,11 +4,35 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
+  color-scheme: light;
   --background: #f4f8ff;
   --foreground: #0f172a;
   --brand-blue: #2563eb;
   --brand-sky: #0ea5e9;
   --brand-mint: #10b981;
+  --surface: #ffffff;
+  --surface-muted: #eff6ff;
+  --border-subtle: #dce7f4;
+  --text-muted: #64748b;
+  --focus-ring: #0284c7;
+  --radius-card: 1.5rem;
+  --motion-fast: 150ms;
+  --motion-normal: 250ms;
+}
+
+html.dark {
+  color-scheme: dark;
+  --background: #0b1220;
+  --foreground: #e2e8f0;
+  --surface: #111c30;
+  --surface-muted: #172940;
+  --border-subtle: #293b58;
+  --text-muted: #a5b4c8;
+  --focus-ring: #38bdf8;
+}
+
+html[data-theme='system'] {
+  color-scheme: light dark;
 }
 
 @theme inline {
