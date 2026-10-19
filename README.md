@@ -175,3 +175,10 @@ Baca [SECURITY.md](SECURITY.md) untuk panduan pelaporan dan [CONTRIBUTING.md](CO
 ## Lisensi
 
 Project ini dirilis di bawah [MIT License](LICENSE).
+
+
+## Eksperimental: ekspor podcast MP3 dan video MP4
+
+Ada worker opsional yang membuat narasi Bahasa Indonesia dan video kartu materi memakai Piper TTS + FFmpeg. Fitur ini **tidak aktif** sampai worker dikonfigurasi; jika belum siap, tombol akan memberi pesan konfigurasi, dan fitur lain tetap berfungsi. Worker tidak memakai API TTS berbayar dan tidak menambah paket premium/kuota pengguna.
+
+Panduan instalasi, lisensi model suara, kebutuhan CPU/RAM, dan batas prototipe ada di [media-worker/README.md](media-worker/README.md). Atur MEDIA_WORKER_URL dan MEDIA_WORKER_TOKEN di environment server Next.js, dan pasang model suara di host worker. Jangan commit file model atau token. MP4 saat ini adalah slide kartu teks dengan narasi, bukan video ilustratif penuh seperti NotebookLM. Kualitas suara dan performa harus diuji di server target sebelum fitur dipakai secara luas.
