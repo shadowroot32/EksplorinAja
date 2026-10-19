@@ -8,7 +8,7 @@ import MindMapPanel from '@/components/study/MindMapPanel';
 import PodcastPanel from '@/components/study/PodcastPanel';
 import ShareDocumentButton from '@/components/study/ShareDocumentButton';
 import { usePreferences } from '@/components/providers/PreferencesProvider';
-import { buildDocumentBlocks, type DocumentBlock } from '@/lib/document-formatting';
+import { buildDocumentBlocks } from '@/lib/document-formatting';
 
 type WorkspaceTab = 'document' | 'summaries' | 'notes' | 'flashcards' | 'mindmap' | 'artifacts';
 type ArtifactTab = 'quiz' | 'podcast';
