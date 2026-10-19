@@ -1,4 +1,4 @@
-# Checklist Deployment Cendekia.ai
+# Checklist Deployment EksplorinAja
 
 Gunakan checklist ini untuk deployment baru atau saat merilis perubahan yang menyentuh login, database, atau fitur belajar.
 
