@@ -81,7 +81,7 @@ const contentByLocale: Record<Locale, {
 };
 
 export default function LoginForm() {
-  const { locale, theme } = usePreferences();
+  const { locale } = usePreferences();
   const text = contentByLocale[locale];
   const [errorCode, setErrorCode] = useState('');
 
