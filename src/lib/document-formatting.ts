@@ -105,3 +105,16 @@ export function buildDocumentBlocks(content: string): DocumentBlock[] {
   flushParagraph();
   return blocks;
 }
+
+
+export function normalizeOcrPageText(text: string): string {
+  return text
+    .normalize('NFKC')
+    .replace(/\u0000/g, '')
+    .replace(/\r\n?/g, '\n')
+    .split('\n')
+    .map((line) => line.replace(/[ \t]+/g, ' ').trim())
+    .join('\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
