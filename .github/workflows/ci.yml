@@ -55,7 +55,7 @@ jobs:
           done
           cat /tmp/cendekia-next.log
           exit 1
-      - name: Smoke-test Explorin public pages
+      - name: Smoke-test EksplorinAja public pages
         run: node scripts/smoke-public-pages.cjs
       - name: Smoke-test legacy OTP API error handling
         run: node scripts/smoke-otp-api.cjs
