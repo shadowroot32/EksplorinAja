@@ -118,7 +118,7 @@ export default function LoginForm() {
 
   return (
     <main className="public-auth-card mx-auto grid w-full max-w-6xl overflow-hidden rounded-[2rem] border border-[var(--public-border)] bg-[var(--public-surface)] shadow-2xl shadow-blue-950/10 lg:grid-cols-[0.92fr_1.08fr]">
-      <section className="relative hidden min-h-[650px] flex-col justify-between gap-8 overflow-hidden bg-gradient-to-br from-sky-500 via-blue-600 to-indigo-700 p-10 text-white dark:from-slate-950 dark:via-blue-950 dark:to-indigo-950 lg:flex xl:p-14">
+      <section className="relative hidden min-h-[760px] flex-col justify-between gap-10 overflow-hidden bg-gradient-to-br from-sky-500 via-blue-600 to-indigo-700 p-10 text-white dark:from-slate-950 dark:via-blue-950 dark:to-indigo-950 lg:flex xl:p-14">
         <div aria-hidden="true" className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-cyan-300/25 blur-3xl" />
         <div aria-hidden="true" className="absolute -bottom-24 -left-16 h-80 w-80 rounded-full bg-indigo-300/25 blur-3xl" />
         <Brand light tagline={text.tagline} />
@@ -126,7 +126,9 @@ export default function LoginForm() {
           <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1.5 text-xs font-semibold tracking-wide backdrop-blur"><span aria-hidden="true">✦</span> {text.eyebrow}</div>
           <h1 className="max-w-lg text-4xl font-black leading-[1.12] tracking-tight xl:text-5xl">{text.title}</h1>
           <p className="mt-5 max-w-md text-base leading-7 text-blue-50 dark:text-slate-300">{text.description}</p>
-          <div className="mt-9"><div className="space-y-3">
+          <div className="mt-9">
+            <h2 className="mb-3 text-xs font-extrabold uppercase tracking-[0.16em] text-blue-100 dark:text-slate-400">{text.featuresTitle}</h2>
+            <div className="space-y-3">
             {text.features.map(([icon, label]) => (
               <div key={label} className="flex items-center gap-3 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 backdrop-blur dark:border-white/10 dark:bg-white/5">
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15 text-lg" aria-hidden="true">{icon}</span>
@@ -136,10 +138,13 @@ export default function LoginForm() {
             </div>
           </div>
         </div>
-        <div className="relative z-10 flex items-center gap-3 text-sm text-blue-100 dark:text-slate-300"><span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/15 text-lg" aria-hidden="true">🌱</span>{text.footerLine}</div>
+        <div className="relative z-10 flex items-center gap-3 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm text-blue-50 backdrop-blur dark:border-white/10 dark:bg-white/5 dark:text-slate-200">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15 text-lg" aria-hidden="true">🌱</span>
+          <p className="min-w-0 max-w-xs leading-6">{text.footerLine}</p>
+        </div>
       </section>
 
-      <section className="flex min-h-[650px] flex-col justify-center px-6 py-10 sm:px-10 lg:min-h-[650px] lg:px-12 xl:px-16">
+      <section className="flex min-h-[760px] flex-col justify-center px-6 py-10 sm:px-10 lg:min-h-[760px] lg:px-12 xl:px-16">
         <div className="mb-9 lg:hidden"><Brand tagline={text.tagline} /></div>
         <div className="mx-auto w-full max-w-md">
           <div className="mb-8">
@@ -168,7 +173,7 @@ export default function LoginForm() {
             <p className="text-xs leading-5 text-[var(--public-muted)]">{text.privacy}</p>
           </div>
 
-          <div className="mt-8 flex items-center justify-center gap-2 border-t border-[var(--public-border)] pt-6 text-xs text-[var(--public-muted)]"><span aria-hidden="true">🛡</span>{text.oauth}</div>
+          <div className="mt-8 flex items-center justify-center gap-2 border-t border-[var(--public-border)] pt-6 text-xs font-medium text-[var(--public-muted)]"><span aria-hidden="true">🛡</span>{text.oauth}</div>
           <div className="mt-6 text-center"><Link href="/" className="inline-flex rounded-xl px-3 py-2 text-sm font-semibold text-sky-700 transition hover:bg-sky-50 dark:text-sky-300 dark:hover:bg-slate-800">← {text.back}</Link></div>
         </div>
       </section>
