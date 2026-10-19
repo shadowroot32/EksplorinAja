@@ -34,7 +34,7 @@ export default function PodcastPanel({ studySetId }: { studySetId: string }) {
     try {
       const response = await fetch(`/api/study-sets/${studySetId}/podcast`, { method: 'POST' });
       const payload = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(payload.error || 'Podcast could not be generated');
+      if (!response.ok) throw new Error(payload.error || t('podcast.loadFailed'));
       setPodcast(payload as PodcastData);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : t('podcast.loadFailed'));
@@ -50,7 +50,7 @@ export default function PodcastPanel({ studySetId }: { studySetId: string }) {
       window.speechSynthesis.cancel(); setPlaying(false); return;
     }
     const utterance = new SpeechSynthesisUtterance(podcast.script);
-    utterance.lang = 'id-ID';
+    utterance.lang = locale === 'id' ? 'id-ID' : 'en-US';
     utterance.onend = () => setPlaying(false);
     utterance.onerror = () => setPlaying(false);
     window.speechSynthesis.cancel();
