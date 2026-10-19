@@ -26,7 +26,7 @@ export default function SharedDocumentClient({ params }: { params: Promise<{ tok
 
   return <main className="min-h-screen bg-sky-50 px-4 py-10 sm:px-6">
     <div className="mx-auto max-w-4xl space-y-5">
-      <header className="flex items-center justify-between gap-3"><Link href="/" className="font-black tracking-tight text-slate-950">Explorin</Link><span className="rounded-full border border-blue-100 bg-white px-3 py-1 text-xs font-bold text-blue-700">Shared study material</span></header>
+      <header className="flex items-center justify-between gap-3"><Link href="/" className="font-black tracking-tight text-slate-950">EksplorinAja</Link><span className="rounded-full border border-blue-100 bg-white px-3 py-1 text-xs font-bold text-blue-700">Shared study material</span></header>
       {loading ? <div className="rounded-3xl border border-slate-200 bg-white p-10 text-center text-slate-500">Loading shared material…</div>
         : notFound || !document ? <div className="rounded-3xl border border-slate-200 bg-white p-10 text-center"><h1 className="text-xl font-black text-slate-950">Link not found or expired</h1><p className="mt-2 text-sm text-slate-600">The owner may have revoked the link or its expiration date has passed.</p></div>
         : <article className="space-y-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-10">
