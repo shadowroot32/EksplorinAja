@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { usePreferences } from '@/components/providers/PreferencesProvider';
 
 export default function ThemeLanguageControls({ compact = false }: { compact?: boolean }) {
-  const { locale, theme, setLocale, toggleTheme, t } = usePreferences();
+  const { locale, theme, setLocale, setTheme, toggleTheme, t } = usePreferences();
   const [languageOpen, setLanguageOpen] = useState(false);
   const languageRef = useRef<HTMLDivElement>(null);
 
@@ -40,9 +40,19 @@ export default function ThemeLanguageControls({ compact = false }: { compact?: b
         title={theme === 'dark' ? t('prefs.switchLight') : t('prefs.switchDark')}
       >
         <span className="flex h-6 w-6 items-center justify-center rounded-xl bg-amber-100 text-sm transition-colors group-hover:bg-amber-200 dark:bg-slate-800 dark:group-hover:bg-slate-700" aria-hidden="true">
-          {theme === 'dark' ? '☀' : '☾'}
+          {theme === 'dark' ? '☀' : theme === 'system' ? '◐' : '☾'}
         </span>
-        <span>{t(theme === 'dark' ? 'prefs.dark' : 'prefs.light')}</span>
+        <span>{t(theme === 'dark' ? 'prefs.dark' : theme === 'system' ? 'prefs.system' : 'prefs.light')}</span>
+      </button>
+      <button
+        type="button"
+        onClick={() => setTheme('system')}
+        aria-pressed={theme === 'system'}
+        aria-label={t('prefs.system')}
+        title={t('prefs.system')}
+        className={'inline-flex shrink-0 items-center rounded-2xl border font-semibold shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 ' + (compact ? 'px-2.5 py-2 text-xs' : 'px-3 py-2.5 text-sm ') + (theme === 'system' ? 'border-sky-400 bg-sky-50 text-sky-800 dark:border-sky-700 dark:bg-sky-950/60 dark:text-sky-200' : 'border-slate-200/90 bg-white/90 text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900/90 dark:text-slate-200 dark:hover:bg-slate-800')}
+      >
+        {compact ? 'Auto' : t('prefs.system')}
       </button>
 
       <div className="relative" ref={languageRef}>
