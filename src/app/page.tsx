@@ -109,9 +109,9 @@ export default function LandingPage() {
     <main className="public-site min-h-screen overflow-hidden bg-[var(--public-bg)] text-[var(--public-text)] transition-colors duration-300">
       <header className="sticky top-0 z-30 border-b border-[var(--public-border)] bg-[var(--public-bg)]/90 backdrop-blur-xl">
         <nav className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-4 sm:px-8">
-          <Link href="/" className="inline-flex shrink-0 items-center gap-3" aria-label="Explorin home">
+          <Link href="/" className="inline-flex shrink-0 items-center gap-3" aria-label="EksplorinAja home">
             <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 to-blue-700 text-xl font-black text-white shadow-lg shadow-blue-600/20">E</span>
-            <span><span className="block text-lg font-extrabold tracking-tight text-[var(--public-text)]">Explorin</span><span className="block text-xs text-[var(--public-muted)]">{text.tagline}</span></span>
+            <span><span className="block text-lg font-extrabold tracking-tight text-[var(--public-text)]">EksplorinAja</span><span className="block text-xs text-[var(--public-muted)]">{text.tagline}</span></span>
           </Link>
           <div className="flex flex-wrap items-center justify-end gap-2">
             <div className="hidden lg:block"><ThemeLanguageControls /></div>
@@ -185,7 +185,7 @@ export default function LandingPage() {
       </section>
 
       <section className="mx-auto max-w-5xl px-5 py-20 text-center sm:px-8 sm:py-24"><div className="rounded-[2rem] bg-gradient-to-br from-blue-700 via-blue-600 to-sky-500 px-6 py-12 text-white shadow-2xl shadow-blue-900/15 sm:px-12 sm:py-16"><div className="text-4xl" aria-hidden="true">🚀</div><h2 className="mt-4 text-3xl font-black tracking-tight sm:text-4xl">{text.bottomTitle}</h2><p className="mx-auto mt-4 max-w-xl leading-7 text-blue-50">{text.bottomBody}</p><Link href="/login" className="mt-8 inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-7 py-3.5 text-sm font-extrabold text-blue-700 shadow-lg transition hover:-translate-y-0.5 hover:bg-blue-50">{text.bottomCta} <span aria-hidden="true">→</span></Link></div></section>
-      <footer className="border-t border-[var(--public-border)] bg-[var(--public-surface)]/70 px-5 py-7 text-center text-sm text-[var(--public-muted)]">© 2026 Explorin · {text.footer}</footer>
+      <footer className="border-t border-[var(--public-border)] bg-[var(--public-surface)]/70 px-5 py-7 text-center text-sm text-[var(--public-muted)]">© 2026 EksplorinAja · {text.footer}</footer>
     </main>
   );
 }
