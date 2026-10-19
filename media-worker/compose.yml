@@ -1,0 +1,21 @@
+services:
+  media-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      PIPER_MODEL_PATH: /models/id_ID-news_tts-medium.onnx
+      MAX_TEXT_CHARS: "12000"
+    volumes:
+      - ./models:/models:ro
+    expose:
+      - "8090"
+    networks:
+      - app-private
+networks:
+  app-private:
+    external: true
+    name: ${MEDIA_PRIVATE_NETWORK:-eksplorinaja-private}
