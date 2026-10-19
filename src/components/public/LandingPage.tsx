@@ -18,6 +18,7 @@ const copy = {
     trustOne: 'Secure Google sign-in',
     trustTwo: 'One home for your study material',
     preview: 'Your learning space',
+    previewSample: 'Sample preview · not account data',
     overview: 'Overview',
     subjects: 'Subjects',
     studySets: 'Study sets',
@@ -65,6 +66,7 @@ const copy = {
     trustOne: 'Masuk aman dengan Google',
     trustTwo: 'Semua materi di satu tempat',
     preview: 'Ruang belajarmu',
+    previewSample: 'Contoh tampilan · bukan data akun',
     overview: 'Beranda',
     subjects: 'Pelajaran',
     studySets: 'Materi belajar',
@@ -117,7 +119,7 @@ export default function LandingPage() {
             <div className="hidden lg:block"><ThemeLanguageControls /></div>
             <div className="lg:hidden"><ThemeLanguageControls compact /></div>
             <Link href="/login" className="hidden rounded-xl px-3 py-2.5 text-sm font-semibold text-[var(--public-muted)] transition hover:bg-[var(--public-soft)] hover:text-blue-600 sm:inline-flex">{text.signIn}</Link>
-            <Link href="/login" className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-blue-700 sm:px-5">{text.getStarted} <span aria-hidden="true">→</span></Link>
+            <Link href="/login?mode=register" className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-blue-700 sm:px-5">{text.getStarted} <span aria-hidden="true">→</span></Link>
           </div>
         </nav>
       </header>
@@ -131,7 +133,7 @@ export default function LandingPage() {
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-8 text-[var(--public-muted)]">{text.hero}</p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link href="/login" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-blue-600 px-7 py-4 text-sm font-bold text-white shadow-xl shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-blue-700">{text.start} <span aria-hidden="true">→</span></Link>
+            <Link href="/login?mode=register" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-blue-600 px-7 py-4 text-sm font-bold text-white shadow-xl shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-blue-700">{text.start} <span aria-hidden="true">→</span></Link>
             <Link href="#features" className="inline-flex items-center justify-center rounded-2xl border border-[var(--public-border)] bg-[var(--public-surface)] px-7 py-4 text-sm font-bold text-[var(--public-text)] shadow-sm transition hover:border-sky-300 hover:bg-[var(--public-soft)]">{text.explore}</Link>
           </div>
           <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-[var(--public-muted)]">
@@ -146,6 +148,9 @@ export default function LandingPage() {
             <div className="flex items-center justify-between rounded-t-[1.4rem] border-b border-[var(--public-border)] px-3 py-3 sm:px-4">
               <div className="flex items-center gap-2"><span className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-600 font-black text-white">E</span><span className="text-sm font-extrabold">{text.preview}</span></div>
               <div className="flex gap-1.5" aria-hidden="true"><span className="h-2.5 w-2.5 rounded-full bg-rose-400" /><span className="h-2.5 w-2.5 rounded-full bg-amber-400" /><span className="h-2.5 w-2.5 rounded-full bg-emerald-400" /></div>
+            </div>
+            <div className="px-3 pt-3 sm:px-4">
+              <span className="inline-flex max-w-full rounded-full border border-[var(--public-border)] bg-[var(--public-soft)] px-3 py-1.5 text-[10px] font-semibold leading-4 text-[var(--public-muted)] sm:text-xs">{text.previewSample}</span>
             </div>
             <div className="grid gap-3 p-2 sm:grid-cols-[112px_1fr] sm:gap-4 sm:p-3">
               <aside className="hidden space-y-2 rounded-2xl bg-[var(--public-soft)] p-3 sm:block">
@@ -184,7 +189,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-5xl px-5 py-20 text-center sm:px-8 sm:py-24"><div className="rounded-[2rem] bg-gradient-to-br from-blue-700 via-blue-600 to-sky-500 px-6 py-12 text-white shadow-2xl shadow-blue-900/15 sm:px-12 sm:py-16"><div className="text-4xl" aria-hidden="true">🚀</div><h2 className="mt-4 text-3xl font-black tracking-tight sm:text-4xl">{text.bottomTitle}</h2><p className="mx-auto mt-4 max-w-xl leading-7 text-blue-50">{text.bottomBody}</p><Link href="/login" className="mt-8 inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-7 py-3.5 text-sm font-extrabold text-blue-700 shadow-lg transition hover:-translate-y-0.5 hover:bg-blue-50">{text.bottomCta} <span aria-hidden="true">→</span></Link></div></section>
+      <section className="mx-auto max-w-5xl px-5 py-20 text-center sm:px-8 sm:py-24"><div className="rounded-[2rem] bg-gradient-to-br from-blue-700 via-blue-600 to-sky-500 px-6 py-12 text-white shadow-2xl shadow-blue-900/15 sm:px-12 sm:py-16"><div className="text-4xl" aria-hidden="true">🚀</div><h2 className="mt-4 text-3xl font-black tracking-tight sm:text-4xl">{text.bottomTitle}</h2><p className="mx-auto mt-4 max-w-xl leading-7 text-blue-50">{text.bottomBody}</p><Link href="/login?mode=register" className="mt-8 inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-7 py-3.5 text-sm font-extrabold text-blue-700 shadow-lg transition hover:-translate-y-0.5 hover:bg-blue-50">{text.bottomCta} <span aria-hidden="true">→</span></Link></div></section>
       <footer className="border-t border-[var(--public-border)] bg-[var(--public-surface)]/70 px-5 py-7 text-center text-sm text-[var(--public-muted)]">© 2026 EksplorinAja · {text.footer}</footer>
     </main>
   );
