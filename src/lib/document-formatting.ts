@@ -33,7 +33,8 @@ function isCleanHeading(text: string): boolean {
   const looksAllCaps = allCapsRatio >= 0.8 && words.length <= 12;
   const hasSentenceNoise = /[=|_]{2,}|[®©™]/.test(value);
 
-  return !hasSentenceNoise && (looksTitleCase || looksAllCaps || /[?:]$/.test(value));
+  const endsWithHeadingPunctuation = /[?:]$/.test(value) && titleCaseRatio >= 0.6;
+  return !hasSentenceNoise && (looksTitleCase || looksAllCaps || endsWithHeadingPunctuation);
 }
 
 function headingBlock(text: string, index: number): DocumentBlock {
