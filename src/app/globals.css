@@ -158,3 +158,36 @@ html:not(.dark) .study-workspace select {
 html:not(.dark) .study-workspace .bg-slate-800\/90 .bg-\[\#0b1220\] {
   background-color: #e2e8f0 !important;
 }
+
+html.dark .bg-gradient-to-br,
+html.dark .bg-gradient-to-r,
+html.dark .bg-gradient-to-b {
+  background-color: #172338 !important;
+  background-image: none !important;
+}
+html:not(.dark) .study-workspace .bg-\[\#0b1220\].text-white {
+  color: #0f172a !important;
+}
+html:not(.dark) .study-workspace .text-amber-200 {
+  color: #92400e !important;
+}
+html:not(.dark) .study-workspace .border-rose-900 {
+  border-color: #fecaca !important;
+}
+html:not(.dark) .study-workspace .bg-rose-950\/50 {
+  background-color: #fff1f2 !important;
+}
+html:not(.dark) .study-workspace .text-rose-200 {
+  color: #9f1239 !important;
+}
+html:not(.dark) .study-workspace .text-violet-200,
+html:not(.dark) .study-workspace .text-violet-300 {
+  color: #6d28d9 !important;
+}
+html:not(.dark) .study-workspace .border-violet-900,
+html:not(.dark) .study-workspace .border-violet-200 {
+  border-color: #ddd6fe !important;
+}
+html:not(.dark) .study-workspace .hover\:bg-slate-800:hover {
+  background-color: #f1f5f9 !important;
+}
