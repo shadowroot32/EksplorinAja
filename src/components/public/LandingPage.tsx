@@ -108,35 +108,35 @@ export default function LandingPage() {
   const text = copy[locale];
 
   return (
-    <main className="public-site min-h-screen overflow-hidden bg-[var(--public-bg)] text-[var(--public-text)] transition-colors duration-300">
-      <header className="relative z-20 mx-auto max-w-7xl px-5 sm:px-8">
-        <nav className="flex flex-wrap items-center justify-between gap-3 py-5">
+    <main className="public-site relative min-h-screen overflow-hidden bg-[var(--public-bg)] text-[var(--public-text)] transition-colors duration-300">
+      <header className="sticky top-0 z-30 border-b border-white/60 bg-white/75 shadow-[0_8px_30px_-24px_rgba(15,23,42,0.35)] backdrop-blur-2xl dark:border-slate-800/70 dark:bg-slate-950/75">
+        <nav className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-4 sm:px-8 lg:py-5">
           <Link href="/" className="inline-flex shrink-0 items-center gap-3" aria-label="EksplorinAja home">
-            <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 to-blue-700 text-xl font-black text-white shadow-lg shadow-blue-600/20">E</span>
+            <span className="flex h-11 w-11 items-center justify-center rounded-[1.15rem] bg-gradient-to-br from-blue-600 via-blue-600 to-sky-400 text-xl font-black text-white shadow-lg shadow-blue-600/25">E</span>
             <span><span className="block text-lg font-extrabold tracking-tight text-[var(--public-text)]">EksplorinAja</span><span className="block text-xs text-[var(--public-muted)]">{text.tagline}</span></span>
           </Link>
           <div className="flex flex-wrap items-center justify-end gap-2">
             <div className="hidden lg:block"><ThemeLanguageControls /></div>
             <div className="lg:hidden"><ThemeLanguageControls compact /></div>
             <Link href="/login" className="hidden rounded-xl px-3 py-2.5 text-sm font-semibold text-[var(--public-muted)] transition hover:bg-[var(--public-soft)] hover:text-blue-600 sm:inline-flex">{text.signIn}</Link>
-            <Link href="/login?mode=register" className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-blue-700 sm:px-5">{text.getStarted} <span aria-hidden="true">→</span></Link>
+            <Link href="/login?mode=register" className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-blue-600/25 transition duration-300 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-xl sm:px-6">{text.getStarted} <span aria-hidden="true">→</span></Link>
           </div>
         </nav>
       </header>
 
-      <section className="relative mx-auto grid max-w-7xl items-center gap-12 px-5 pb-20 pt-10 sm:px-8 sm:pt-14 lg:grid-cols-[1.02fr_.98fr] lg:gap-8 lg:pb-28 lg:pt-16">
+      <section className="relative mx-auto grid max-w-7xl items-center gap-12 px-5 pb-20 pt-12 sm:px-8 sm:pb-24 sm:pt-16 lg:grid-cols-[0.92fr_1.08fr] lg:gap-10 lg:pb-28 lg:pt-20">
         <div aria-hidden="true" className="pointer-events-none absolute -left-24 top-8 h-72 w-72 rounded-full bg-sky-400/10 blur-3xl" />
         <div className="relative z-10">
-          <div className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white/80 px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-sky-700 shadow-sm"><span aria-hidden="true">✦</span> {text.eyebrow}</div>
-          <h1 className="mt-6 max-w-2xl text-4xl font-black leading-[1.08] tracking-tight text-[var(--public-text)] sm:text-5xl lg:text-6xl">
-            {text.headlineOne}<br /><span className="bg-gradient-to-r from-blue-700 via-sky-600 to-emerald-500 bg-clip-text text-transparent">{text.headlineTwo}</span>
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/75 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-blue-700 shadow-[0_8px_30px_-18px_rgba(37,99,235,0.35)] backdrop-blur-xl dark:border-slate-700 dark:bg-slate-900/70 dark:text-sky-300"><span aria-hidden="true">✦</span> {text.eyebrow}</div>
+          <h1 className="mt-7 max-w-2xl text-5xl font-black leading-[1.02] tracking-[-0.045em] text-[var(--public-text)] sm:text-6xl lg:text-[4.25rem]">
+            {text.headlineOne}<br /><span className="bg-gradient-to-r from-blue-600 via-sky-500 to-emerald-400 bg-clip-text text-transparent dark:from-sky-300 dark:via-blue-300 dark:to-emerald-300">{text.headlineTwo}</span>
           </h1>
-          <p className="mt-6 max-w-xl text-lg leading-8 text-[var(--public-muted)]">{text.hero}</p>
+          <p className="mt-6 max-w-xl text-[1.05rem] leading-8 text-[var(--public-muted)]">{text.hero}</p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link href="/login?mode=register" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-blue-600 px-7 py-4 text-sm font-bold text-white shadow-xl shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-blue-700">{text.start} <span aria-hidden="true">→</span></Link>
-            <Link href="#features" className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-7 py-4 text-sm font-bold text-slate-700 shadow-sm transition hover:border-sky-200 hover:bg-sky-50">{text.explore}</Link>
+            <Link href="/login?mode=register" className="inline-flex items-center justify-center gap-2 rounded-full bg-blue-600 px-7 py-4 text-sm font-bold text-white shadow-xl shadow-blue-600/25 transition duration-300 hover:-translate-y-1 hover:bg-blue-700 hover:shadow-2xl">{text.start} <span aria-hidden="true">→</span></Link>
+            <Link href="#features" className="inline-flex items-center justify-center rounded-full border border-[var(--public-border)] bg-white/80 px-7 py-4 text-sm font-bold text-[var(--public-text)] shadow-sm backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:border-sky-300 hover:bg-white dark:bg-slate-900/70 dark:hover:bg-slate-900">{text.explore}</Link>
           </div>
-          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-slate-500">
+          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-[var(--public-muted)]">
             <span className="inline-flex items-center gap-2"><span className="text-emerald-500" aria-hidden="true">✓</span>{text.trustOne}</span>
             <span className="inline-flex items-center gap-2"><span className="text-emerald-500" aria-hidden="true">✓</span>{text.trustTwo}</span>
           </div>
@@ -144,13 +144,16 @@ export default function LandingPage() {
 
         <div className="relative mx-auto w-full max-w-2xl lg:pl-3">
           <div aria-hidden="true" className="absolute inset-5 rounded-[2.5rem] bg-gradient-to-br from-sky-400/25 via-blue-400/20 to-emerald-300/20 blur-2xl" />
-          <div className="relative overflow-hidden rounded-[2rem] border border-white/90 bg-white/95 p-3 shadow-2xl shadow-blue-900/15 sm:p-4">
+          <div className="relative overflow-hidden rounded-[2rem] border border-white/80 bg-white/90 p-3 shadow-[0_35px_100px_-42px_rgba(37,99,235,0.42)] backdrop-blur-xl sm:rounded-[2.25rem] sm:p-4 dark:border-slate-700/80 dark:bg-slate-900/90 dark:shadow-black/30">
             <div className="flex items-center justify-between rounded-t-[1.4rem] border-b border-[var(--public-border)] px-3 py-3 sm:px-4">
               <div className="flex items-center gap-2"><span className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-600 font-black text-white">E</span><span className="text-sm font-extrabold">{text.preview}</span></div>
               <div className="flex gap-1.5" aria-hidden="true"><span className="h-2.5 w-2.5 rounded-full bg-rose-400" /><span className="h-2.5 w-2.5 rounded-full bg-amber-400" /><span className="h-2.5 w-2.5 rounded-full bg-emerald-400" /></div>
             </div>
-            <div className="grid gap-3 p-2 sm:grid-cols-[100px_1fr] sm:gap-4 sm:p-3">
-              <aside className="hidden space-y-2 rounded-2xl bg-slate-50 p-3 sm:block">
+            <div className="px-3 pt-2 sm:px-4">
+              <span className="inline-flex max-w-full rounded-full bg-slate-50/90 px-3 py-1.5 text-[10px] font-semibold leading-4 text-slate-500 ring-1 ring-inset ring-slate-200/70 sm:text-xs dark:bg-slate-800/70 dark:text-slate-300 dark:ring-slate-700">{text.previewSample}</span>
+            </div>
+            <div className="grid gap-3 p-2 sm:grid-cols-[112px_1fr] sm:gap-4 sm:p-3">
+              <aside className="hidden space-y-2 rounded-2xl bg-[var(--public-soft)] p-3 sm:block">
                 <div className="mb-4 rounded-xl bg-blue-100 px-3 py-2 text-xs font-bold text-blue-700 dark:bg-blue-950 dark:text-blue-200">⌂ {text.overview}</div>
                 <div className="px-3 py-2 text-xs font-medium text-[var(--public-muted)]">▤ {text.subjects}</div>
                 <div className="px-3 py-2 text-xs font-medium text-[var(--public-muted)]">✧ {text.studySets}</div>
@@ -158,7 +161,7 @@ export default function LandingPage() {
                 <div className="mt-8 rounded-xl bg-gradient-to-br from-amber-100 to-orange-50 p-3 text-center dark:from-amber-950/50 dark:to-orange-950/40"><div className="text-xl" aria-hidden="true">🏆</div><div className="mt-1 text-[10px] font-bold text-amber-800 dark:text-amber-200">{text.keepGoing}</div></div>
               </aside>
               <div className="min-w-0 space-y-3">
-                <div className="rounded-2xl bg-gradient-to-br from-sky-200 via-blue-200 to-cyan-100 p-4 sm:p-5">
+                <div className="rounded-[1.5rem] bg-gradient-to-br from-sky-100 via-blue-50 to-emerald-50 p-4 ring-1 ring-white/80 sm:p-5 dark:from-[#193452] dark:via-[#172b4a] dark:to-[#10243a] dark:ring-slate-700">
                   <div className="flex items-start justify-between gap-3">
                     <div><div className="text-xs font-bold uppercase tracking-wider text-blue-800 dark:text-sky-300">{text.everyDay}</div><div className="mt-2 text-xl font-black leading-tight text-slate-900 dark:text-white sm:text-2xl">{text.curious} 👋</div><div className="mt-2 max-w-xs text-xs leading-5 text-slate-600 dark:text-slate-300 sm:text-sm">{text.session}</div></div>
                     <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[1.4rem] bg-white/70 text-4xl shadow-sm dark:bg-slate-900/60 sm:h-20 sm:w-20">🧠</div>
@@ -177,16 +180,16 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section id="features" className="border-y border-sky-100 bg-white/80 py-20 sm:py-24">
+      <section id="features" className="relative border-y border-white/80 bg-white/75 py-20 sm:py-24 dark:border-slate-800 dark:bg-slate-950/45">
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
           <div className="mx-auto max-w-2xl text-center"><span className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600 dark:text-sky-300">{text.featuresEyebrow}</span><h2 className="mt-4 text-3xl font-black tracking-tight text-[var(--public-text)] sm:text-4xl">{text.featuresTitle}</h2><p className="mt-4 leading-7 text-[var(--public-muted)]">{text.featuresIntro}</p></div>
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {text.features.map((feature) => <article key={feature[1]} className="group rounded-3xl border border-[var(--public-border)] bg-[var(--public-surface)] p-6 shadow-sm transition duration-200 hover:-translate-y-1 hover:border-sky-300 hover:shadow-xl hover:shadow-blue-900/5"><div className={'flex h-12 w-12 items-center justify-center rounded-2xl text-2xl ' + feature[3].split(' ')[0]} aria-hidden="true">{feature[0]}</div><h3 className="mt-5 text-lg font-extrabold text-[var(--public-text)]">{feature[1]}</h3><p className="mt-2 text-sm leading-6 text-[var(--public-muted)]">{feature[2]}</p></article>)}
+            {text.features.map((feature) => <article key={feature[1]} className="group rounded-[1.75rem] border border-slate-200/75 bg-white/90 p-6 shadow-[0_14px_40px_-30px_rgba(15,23,42,0.28)] transition duration-300 hover:-translate-y-1.5 hover:border-sky-200 hover:shadow-[0_24px_60px_-32px_rgba(37,99,235,0.32)] dark:border-slate-700 dark:bg-slate-900/85 dark:hover:border-sky-800"><div className={'flex h-12 w-12 items-center justify-center rounded-2xl text-2xl ' + feature[3].split(' ')[0]} aria-hidden="true">{feature[0]}</div><h3 className="mt-5 text-lg font-extrabold text-[var(--public-text)]">{feature[1]}</h3><p className="mt-2 text-sm leading-6 text-[var(--public-muted)]">{feature[2]}</p></article>)}
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-5xl px-5 py-20 text-center sm:px-8 sm:py-24"><div className="rounded-[2rem] bg-gradient-to-br from-blue-700 via-blue-600 to-sky-500 px-6 py-12 text-white shadow-2xl shadow-blue-900/15 sm:px-12 sm:py-16"><div className="text-4xl" aria-hidden="true">🚀</div><h2 className="mt-4 text-3xl font-black tracking-tight sm:text-4xl">{text.bottomTitle}</h2><p className="mx-auto mt-4 max-w-xl leading-7 text-blue-50">{text.bottomBody}</p><Link href="/login?mode=register" className="mt-8 inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-7 py-3.5 text-sm font-extrabold text-blue-700 shadow-lg transition hover:-translate-y-0.5 hover:bg-blue-50">{text.bottomCta} <span aria-hidden="true">→</span></Link></div></section>
+      <section className="mx-auto max-w-6xl px-5 py-20 text-center sm:px-8 sm:py-24"><div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-slate-950 via-blue-950 to-blue-700 px-6 py-12 text-white shadow-[0_30px_90px_-40px_rgba(30,64,175,0.5)] sm:px-12 sm:py-16"><div className="text-4xl" aria-hidden="true">🚀</div><h2 className="mt-4 text-3xl font-black tracking-tight sm:text-4xl">{text.bottomTitle}</h2><p className="mx-auto mt-4 max-w-xl leading-7 text-blue-50">{text.bottomBody}</p><Link href="/login?mode=register" className="mt-8 inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-7 py-3.5 text-sm font-extrabold text-blue-700 shadow-lg transition hover:-translate-y-0.5 hover:bg-blue-50">{text.bottomCta} <span aria-hidden="true">→</span></Link></div></section>
       <footer className="border-t border-[var(--public-border)] bg-[var(--public-surface)]/70 px-5 py-7 text-center text-sm text-[var(--public-muted)]">© 2026 EksplorinAja · {text.footer}</footer>
     </main>
   );
