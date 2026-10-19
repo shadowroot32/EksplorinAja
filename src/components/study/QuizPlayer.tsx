@@ -61,11 +61,11 @@ export default function QuizPlayer({ studySetId }: { studySetId: string }) {
         }),
       });
       const payload = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(payload.error || 't('quiz.savedFailed')');
+      if (!response.ok) throw new Error(payload.error || t('quiz.savedFailed'));
       setResults(payload as QuizResults);
       setDone(true);
     } catch (error) {
-      setSaveError(error instanceof Error ? error.message : 'Quiz results could not be saved.');
+      setSaveError(error instanceof Error ? error.message : t('quiz.savedFailed'));
     } finally {
       setSaving(false);
     }
