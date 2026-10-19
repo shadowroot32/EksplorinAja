@@ -82,7 +82,7 @@ Buka [http://localhost:3000](http://localhost:3000).
 6. Isi `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI`, dan `NEXT_PUBLIC_APP_URL` pada environment.
 7. Untuk production, daftarkan callback HTTPS dengan domain yang benar-benar dipakai dan redeploy aplikasi.
 
-Flow login menggunakan authorization code, PKCE S256, state, nonce, verifikasi ID token melalui Google JWKS, pemeriksaan issuer/audience, dan klaim email terverifikasi. Password Google tidak pernah diterima atau disimpan oleh Cendekia.ai.
+Flow login menggunakan authorization code, PKCE S256, state, nonce, verifikasi ID token melalui Google JWKS, pemeriksaan issuer/audience, dan klaim email terverifikasi. Password Google tidak pernah diterima atau disimpan oleh Explorin.
 
 ## Environment variables
 
