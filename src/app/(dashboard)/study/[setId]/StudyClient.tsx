@@ -227,7 +227,7 @@ export default function StudyClient({ paramsPromise }: { paramsPromise: Promise<
   if (loading) return <div className="study-workspace rounded-3xl border border-slate-800 bg-[#0b1220] py-24 text-center text-slate-400">{t('workspace.loading')}</div>;
   if (loadError || !set) return (
     <div className="rounded-3xl border border-rose-900/60 bg-[#0b1220] p-8 text-rose-200">
-      <h1 className="text-xl font-bold">Workspace unavailable</h1>
+      <h1 className="text-xl font-bold">{t('workspace.unavailable')}</h1>
       <p role="alert" className="mt-2 text-sm">{loadError || 'The study set was not found.'}</p>
     </div>
   );
@@ -300,7 +300,7 @@ export default function StudyClient({ paramsPromise }: { paramsPromise: Promise<
                   {aiEditOpen && (
                     <div className="space-y-3 rounded-2xl border border-sky-900 bg-slate-900 p-4">
                       <div>
-                        <h2 className="font-semibold text-slate-100">Edit with AI</h2>
+                        <h2 className="font-semibold text-slate-100">{t('workspace.aiEditor')}</h2>
                         <p className="mt-1 text-sm text-slate-400">{t('workspace.aiDraftHelp')}</p>
                       </div>
                       <textarea value={aiInstruction} onChange={(event) => setAiInstruction(event.target.value)} maxLength={1000} rows={3} className="w-full resize-y rounded-xl border border-slate-700 bg-[#0b1220] p-3 text-sm text-slate-100 placeholder:text-slate-500 focus:border-sky-500 focus:outline-none" placeholder={t('workspace.aiInstructionPlaceholder')} />
