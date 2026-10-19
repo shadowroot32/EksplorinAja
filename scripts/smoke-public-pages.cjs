@@ -27,12 +27,16 @@ async function main() {
   assert.ok(!sitemap.includes('/dashboard') && !sitemap.includes('/api/'), 'sitemap must not include private or API paths');
   assert.doesNotMatch(home, /Cendekia\.ai|Explorin/i, 'landing page must not show the previous brand');
   assert.match(home, /Start learning for free|Mulai belajar gratis/i, 'landing page should render a primary CTA');
+  assert.match(home, /href="\/login\?mode=register"/, 'landing CTAs should lead to the account creation path');
+  assert.match(home, /Sample preview|Contoh tampilan/i, 'dashboard preview should be identified as sample data');
   assert.match(home, /English/, 'landing page should render the language control');
   assert.match(home, /theme/i, 'landing page should render the theme control');
 
   assert.match(login, /EksplorinAja/, 'login page should use the new product name');
   assert.doesNotMatch(login, /Cendekia\.ai|Explorin/i, 'login page must not show the previous brand');
   assert.match(login, /Continue with Google|Lanjutkan dengan Google/i, 'login page should render Google sign-in');
+  assert.match(login, /href="\/login\?mode=register"/, 'login page should offer a clear account creation path');
+  assert.match(login, /New to EksplorinAja|Belum punya akun/i, 'login page should explain how new users can create an account');
   assert.match(login, /Secure OAuth|OAuth 2\.0|Google/, 'login page should explain secure Google sign-in');
   assert.match(login, /English/, 'login page should render the language control');
   assert.match(login, /noindex/i, 'login page should not be indexed by search engines');
