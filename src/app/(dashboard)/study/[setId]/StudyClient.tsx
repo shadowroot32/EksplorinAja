@@ -46,6 +46,15 @@ export default function StudyClient({ paramsPromise }: { paramsPromise: Promise<
   const { locale, t } = usePreferences();
   const [set, setSet] = useState<StudySet | null>(null);
   const [tab, setTab] = useState<WorkspaceTab>('document');
+
+  // Dashboard workspace shortcuts use ?tab=... to open the selected learning tool directly.
+  useEffect(() => {
+    const requestedTab = new URLSearchParams(window.location.search).get('tab');
+    const validTabs: WorkspaceTab[] = ['document', 'summaries', 'notes', 'flashcards', 'mindmap', 'artifacts'];
+    if (requestedTab && validTabs.includes(requestedTab as WorkspaceTab)) {
+      setTab(requestedTab as WorkspaceTab);
+    }
+  }, []);
   const [artifactTab, setArtifactTab] = useState<ArtifactTab>('quiz');
   const [focus, setFocus] = useState(false);
   const [loading, setLoading] = useState(true);
