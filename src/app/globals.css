@@ -188,3 +188,14 @@ html:not(.dark) .study-workspace .border-violet-200 {
 html:not(.dark) .study-workspace .hover\:bg-slate-800:hover {
   background-color: #f1f5f9 !important;
 }
+
+
+/* The main content follows the persisted sidebar state. */
+@media (min-width: 1024px) {
+  html[data-sidebar-collapsed="true"] .dashboard-main {
+    margin-left: 84px !important;
+  }
+  html[data-sidebar-collapsed="false"] .dashboard-main {
+    margin-left: 16rem !important;
+  }
+}
