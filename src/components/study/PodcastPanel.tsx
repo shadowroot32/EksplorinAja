@@ -58,6 +58,19 @@ export default function PodcastPanel({ studySetId }: { studySetId: string }) {
     setPlaying(true);
   }
 
+  function downloadScript() {
+    if (!podcast?.script) return;
+    const blob = new Blob([podcast.script], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'eksplorinaja-podcast-script.txt';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
   return <section className="space-y-5">
     <div className="flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-slate-700 bg-[#0f1829] p-5 sm:p-6">
       <div><p className="text-xs font-extrabold uppercase tracking-[0.2em] text-violet-300">{t('podcast.listen')}</p><h2 className="mt-2 text-xl font-black text-slate-100">{t('podcast.title')}</h2><p className="mt-2 max-w-xl text-sm leading-6 text-slate-500">{t('podcast.help')}</p></div>
@@ -67,7 +80,7 @@ export default function PodcastPanel({ studySetId }: { studySetId: string }) {
     {loading ? <p className="rounded-2xl border border-slate-700 bg-[#0f1829] p-8 text-center text-sm text-slate-500">{t('podcast.loading')}</p>
       : !podcast ? <p className="rounded-3xl border border-dashed border-slate-700 bg-[#0f1829] p-10 text-center text-sm leading-6 text-slate-500">{t('podcast.empty')}</p>
       : <article className="space-y-4 rounded-3xl border border-slate-700 bg-[#0f1829] p-5 shadow-sm sm:p-7">
-        <div className="flex flex-wrap items-center justify-between gap-3"><div><h3 className="font-extrabold text-slate-100">{t('podcast.script')}</h3><p className="mt-1 text-xs text-slate-500">{locale === 'id' ? 'Dibuat ' : 'Created '}{new Date(podcast.createdAt).toLocaleString(locale === 'id' ? 'id-ID' : 'en-US')}</p></div><button type="button" onClick={toggleSpeech} className="rounded-xl border border-violet-200 px-4 py-2.5 text-sm font-bold text-violet-300 hover:bg-violet-50">{playing ? t('podcast.stop') : t('podcast.play')}</button></div>
+        <div className="flex flex-wrap items-center justify-between gap-3"><div><h3 className="font-extrabold text-slate-100">{t('podcast.script')}</h3><p className="mt-1 text-xs text-slate-500">{locale === 'id' ? 'Dibuat ' : 'Created '}{new Date(podcast.createdAt).toLocaleString(locale === 'id' ? 'id-ID' : 'en-US')}</p></div><div className="flex flex-wrap gap-2"><button type="button" onClick={downloadScript} className="rounded-xl border border-slate-600 px-4 py-2.5 text-sm font-bold text-slate-200 hover:bg-slate-800">{locale === 'id' ? 'Unduh naskah' : 'Download script'}</button><button type="button" onClick={toggleSpeech} aria-pressed={playing} className="rounded-xl border border-violet-200 px-4 py-2.5 text-sm font-bold text-violet-300 hover:bg-violet-950/40">{playing ? t('podcast.stop') : t('podcast.play')}</button></div></div>
         <p className="whitespace-pre-wrap text-sm leading-7 text-slate-300">{podcast.script}</p>
         <p className="text-xs text-slate-500">{t('podcast.mp3Notice')}</p>
       </article>}
