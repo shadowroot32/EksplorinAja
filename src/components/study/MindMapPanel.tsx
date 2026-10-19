@@ -1,11 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+import { usePreferences } from '@/components/providers/PreferencesProvider';
 
 interface MindMapNode { id: string; label: string; parentId: string | null; }
 interface MindMapData { title: string; nodes: MindMapNode[]; }
 
 export default function MindMapPanel({ studySetId }: { studySetId: string }) {
+  const { t } = usePreferences();
   const [mapData, setMapData] = useState<MindMapData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -39,12 +41,12 @@ export default function MindMapPanel({ studySetId }: { studySetId: string }) {
 
   return <section className="space-y-5">
     <div className="flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-slate-700 bg-[#0f1829] p-5 sm:p-6">
-      <div><h2 className="text-xl font-black text-slate-100">Mind map</h2><p className="mt-2 text-sm text-slate-400">Buat peta konsep hierarkis dari materi dengan AI.</p></div>
-      <button type="button" onClick={() => void generate()} disabled={loading} className="rounded-xl bg-blue-600 px-5 py-3 text-sm font-extrabold text-white transition hover:bg-blue-700 disabled:opacity-50">{loading ? 'Generating…' : mapData ? 'Regenerate mind map' : 'Generate mind map'}</button>
+      <div><h2 className="text-xl font-black text-slate-100">{t('mind.title')}</h2><p className="mt-2 text-sm text-slate-400">{t('mind.help')}</p></div>
+      <button type="button" onClick={() => void generate()} disabled={loading} className="rounded-xl bg-blue-600 px-5 py-3 text-sm font-extrabold text-white transition hover:bg-blue-700 disabled:opacity-50">{loading ? t('mind.generating') : mapData ? t('mind.regenerate') : t('mind.generate')}</button>
     </div>
     {error && <p role="alert" className="rounded-xl border border-rose-900 bg-rose-950/50 p-3 text-sm text-rose-200">{error}</p>}
-    {!mapData && !loading && <div className="rounded-3xl border border-dashed border-slate-700 bg-[#0f1829] p-10 text-center text-sm leading-6 text-slate-400">Mind map akan tampil di sini. Peta dibuat dari ringkasan atau materi sumber.</div>}
-    {loading && <div className="rounded-3xl border border-slate-700 bg-[#0f1829] p-10 text-center text-sm text-slate-400">AI sedang menyusun hubungan antar-konsep…</div>}
+    {!mapData && !loading && <div className="rounded-3xl border border-dashed border-slate-700 bg-[#0f1829] p-10 text-center text-sm leading-6 text-slate-400">{t('mind.empty')}</div>}
+    {loading && <div className="rounded-3xl border border-slate-700 bg-[#0f1829] p-10 text-center text-sm text-slate-400">{t('mind.wait')}</div>}
     {mapData && <div className="overflow-x-auto rounded-3xl border border-slate-700 bg-[#0f1829] p-5 sm:p-7"><h3 className="mb-5 text-center text-lg font-black text-slate-100">{mapData.title}</h3><ul className="min-w-64 space-y-3">{(childrenByParent.get(null) ?? []).map((root) => renderNode(root, 0))}</ul></div>}
   </section>;
 }
