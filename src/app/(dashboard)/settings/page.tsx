@@ -96,6 +96,28 @@ export default function SettingsPage() {
     }
   }
 
+  async function downloadCsv(type: 'flashcards' | 'quizzes' | 'progress') {
+    setExporting(true);
+    setErrorMessage('');
+    try {
+      const response = await fetch('/api/user/export/csv?type=' + type, { cache: 'no-store' });
+      if (!response.ok) throw new Error('CSV export failed');
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'eksplorinaja-' + type + '-' + new Date().toISOString().slice(0, 10) + '.csv';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => window.URL.revokeObjectURL(url), 1000);
+    } catch {
+      setErrorMessage(tr('settings.exportError'));
+    } finally {
+      setExporting(false);
+    }
+  }
+
   async function deleteAccount() {
     if (!window.confirm(tr('settings.deleteConfirm'))) return;
     setDeleting(true);
@@ -163,6 +185,11 @@ export default function SettingsPage() {
           <Button type="button" variant="outline" onClick={downloadData} disabled={exporting}>
             {exporting ? tr('settings.exporting') : tr('settings.export')}
           </Button>
+          <div className="flex flex-wrap gap-2" aria-label="Download study tables as CSV">
+            <Button type="button" variant="outline" onClick={() => void downloadCsv('flashcards')} disabled={exporting}>Flashcards CSV</Button>
+            <Button type="button" variant="outline" onClick={() => void downloadCsv('quizzes')} disabled={exporting}>Quiz questions CSV</Button>
+            <Button type="button" variant="outline" onClick={() => void downloadCsv('progress')} disabled={exporting}>Study progress CSV</Button>
+          </div>
         </CardContent>
       </Card>
 
