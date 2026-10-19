@@ -1,6 +1,9 @@
+import type { Metadata } from 'next';
 import Navbar from '@/components/layout/Navbar';
 
 export const instant = false;
+
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
