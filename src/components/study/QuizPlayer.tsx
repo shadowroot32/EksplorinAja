@@ -13,7 +13,7 @@ interface QuizResults {
 }
 
 export default function QuizPlayer({ studySetId }: { studySetId: string }) {
-  const { t } = usePreferences();
+  const { locale, t } = usePreferences();
   const [items, setItems] = useState<QuizItem[]>([]);
   const [idx, setIdx] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
@@ -24,6 +24,7 @@ export default function QuizPlayer({ studySetId }: { studySetId: string }) {
   const [loadError, setLoadError] = useState('');
   const [saveError, setSaveError] = useState('');
   const [restored, setRestored] = useState(false);
+  const [resumed, setResumed] = useState(false);
   const storageKey = 'eksplorinaja:quiz-progress:' + studySetId;
 
   useEffect(() => {
@@ -54,6 +55,7 @@ export default function QuizPlayer({ studySetId }: { studySetId: string }) {
             const safeIndex = Math.max(0, Math.min(savedIndex, Math.max(0, quizItems.length - 1)));
             setAnswers(restoredAnswers);
             setIdx(safeIndex);
+            setResumed(safeIndex > 0 || Object.keys(restoredAnswers).length > 0);
             setSelected(quizItems[safeIndex] && validIds.has(quizItems[safeIndex].id)
               ? restoredAnswers[quizItems[safeIndex].id] ?? null
               : null);
@@ -125,7 +127,7 @@ export default function QuizPlayer({ studySetId }: { studySetId: string }) {
         <h2 className="mt-3 text-xl font-black text-slate-100">{t('quiz.complete')}</h2>
         <p className="mt-2 text-slate-400">{results.score} / {results.total} {t('quiz.correct')} ({results.percentage}%)</p>
         <p className="mt-2 text-sm text-slate-400">Your subject mastery has been updated from this result.</p>
-        <Button className="mt-5" onClick={() => { setIdx(0); setSelected(null); setAnswers({}); setResults(null); setDone(false); setSaveError(''); }}>{t('quiz.retry')}</Button>
+        <Button className="mt-5" onClick={() => { setIdx(0); setSelected(null); setAnswers({}); setResults(null); setDone(false); setResumed(false); setSaveError(''); }}>{t('quiz.retry')}</Button>
       </div>
       <div className="space-y-3">
         {results.results.map((result, resultIndex) => {
@@ -146,6 +148,7 @@ export default function QuizPlayer({ studySetId }: { studySetId: string }) {
 
   return (
     <div className="space-y-6">
+      {resumed && <p role="status" className="rounded-xl border border-sky-900 bg-sky-950/40 p-3 text-sm text-sky-200">{locale === 'id' ? 'Progres kuis sebelumnya dipulihkan untuk tab ini.' : 'Your previous quiz progress was restored for this tab.'}</p>}
       <div className="flex justify-between text-sm text-slate-400">
         <span>{t('quiz.questionOf').replace('{i}', String(idx + 1)).replace('{n}', String(items.length))}</span>
         <span>{Object.keys(answers).length} {t('quiz.answered')}</span>
