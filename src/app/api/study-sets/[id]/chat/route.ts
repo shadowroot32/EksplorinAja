@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
 import { db } from '@/lib/db';
 import { chatMessages, studySets } from '@/lib/db/schema';
 import { eq, and } from 'drizzle-orm';
@@ -8,8 +7,7 @@ import { generateText } from 'ai';
 import { createOpenAI } from '@ai-sdk/openai';
 import { randomUUID } from 'crypto';
 import { getChatHistoryFilter } from '@/lib/chat-access';
-
-const schema = z.object({ message: z.string().trim().min(1).max(12_000) });
+import { chatMessageSchema } from '@/lib/chat-validation';
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const user = await getSession();
@@ -34,7 +32,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const { id } = await params;
 
   const body = await req.json().catch(() => ({}));
-  const parsed = schema.safeParse(body);
+  const parsed = chatMessageSchema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: 'Invalid input' }, { status: 400 });
 
   const [set] = await db.select().from(studySets).where(and(eq(studySets.id, id), eq(studySets.userId, user.id))).limit(1);
