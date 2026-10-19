@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 interface CornellFields { cues: string; notes: string; summary: string; reflection: string; }
 const emptyFields: CornellFields = { cues: '', notes: '', summary: '', reflection: '' };
-const inputClass = 'min-h-32 w-full resize-y rounded-2xl border border-slate-200 bg-white p-4 text-sm leading-6 text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-400 focus:ring-4 focus:ring-blue-50';
+const inputClass = 'min-h-32 w-full resize-y rounded-2xl border border-slate-700 bg-[#0f1829] p-4 text-sm leading-6 text-slate-200 outline-none transition placeholder:text-slate-400 focus:border-blue-400 focus:ring-4 focus:ring-blue-50';
 
 export default function CornellNotesPanel({ studySetId }: { studySetId: string }) {
   const [fields, setFields] = useState<CornellFields>(emptyFields);
@@ -52,19 +52,19 @@ export default function CornellNotesPanel({ studySetId }: { studySetId: string }
     }
   }
 
-  if (loading) return <div className="rounded-3xl border border-slate-200 bg-white p-8 text-center text-slate-500">Loading Cornell notes…</div>;
+  if (loading) return <div className="rounded-3xl border border-slate-700 bg-[#0f1829] p-8 text-center text-slate-400">Loading Cornell notes…</div>;
   return <section className="space-y-5">
-    <div className="rounded-3xl border border-blue-100 bg-gradient-to-br from-sky-50 to-white p-5 sm:p-6">
-      <h2 className="text-xl font-black text-slate-950">Cornell Notes</h2>
-      <p className="mt-2 text-sm leading-6 text-slate-600">Pisahkan kata kunci, catatan utama, ringkasan, dan refleksi untuk membantu mengingat materi.</p>
+    <div className="rounded-3xl border border-slate-700 bg-[#0f1829] p-5 sm:p-6">
+      <h2 className="text-xl font-black text-slate-100">Cornell Notes</h2>
+      <p className="mt-2 text-sm leading-6 text-slate-400">Pisahkan kata kunci, catatan utama, ringkasan, dan refleksi untuk membantu mengingat materi.</p>
     </div>
     <div className="grid gap-4 md:grid-cols-[0.8fr_1.2fr]">
-      <label className="block space-y-2 rounded-3xl border border-slate-200 bg-sky-50/70 p-4"><span className="text-sm font-extrabold text-slate-900">Cue / kata kunci</span><textarea maxLength={12000} className={inputClass} value={fields.cues} onChange={(event) => update('cues', event.target.value)} placeholder="Istilah penting, pertanyaan, petunjuk untuk mengingat…" /></label>
-      <label className="block space-y-2 rounded-3xl border border-slate-200 bg-white p-4"><span className="text-sm font-extrabold text-slate-900">Catatan utama</span><textarea maxLength={20000} className={inputClass} value={fields.notes} onChange={(event) => update('notes', event.target.value)} placeholder="Penjelasan, fakta penting, contoh, rumus…" /></label>
-      <label className="block space-y-2 rounded-3xl border border-slate-200 bg-white p-4"><span className="text-sm font-extrabold text-slate-900">Ringkasan dengan kata sendiri</span><textarea maxLength={8000} className={inputClass} value={fields.summary} onChange={(event) => update('summary', event.target.value)} placeholder="Apa inti materi ini dalam beberapa kalimat?" /></label>
-      <label className="block space-y-2 rounded-3xl border border-slate-200 bg-white p-4"><span className="text-sm font-extrabold text-slate-900">Refleksi / pertanyaan lanjutan</span><textarea maxLength={8000} className={inputClass} value={fields.reflection} onChange={(event) => update('reflection', event.target.value)} placeholder="Apa yang masih membingungkan? Apa yang perlu dipelajari lagi?" /></label>
+      <label className="block space-y-2 rounded-3xl border border-slate-700 bg-slate-900 p-4"><span className="text-sm font-extrabold text-slate-100">Cue / kata kunci</span><textarea maxLength={12000} className={inputClass} value={fields.cues} onChange={(event) => update('cues', event.target.value)} placeholder="Istilah penting, pertanyaan, petunjuk untuk mengingat…" /></label>
+      <label className="block space-y-2 rounded-3xl border border-slate-700 bg-[#0f1829] p-4"><span className="text-sm font-extrabold text-slate-100">Catatan utama</span><textarea maxLength={20000} className={inputClass} value={fields.notes} onChange={(event) => update('notes', event.target.value)} placeholder="Penjelasan, fakta penting, contoh, rumus…" /></label>
+      <label className="block space-y-2 rounded-3xl border border-slate-700 bg-[#0f1829] p-4"><span className="text-sm font-extrabold text-slate-100">Ringkasan dengan kata sendiri</span><textarea maxLength={8000} className={inputClass} value={fields.summary} onChange={(event) => update('summary', event.target.value)} placeholder="Apa inti materi ini dalam beberapa kalimat?" /></label>
+      <label className="block space-y-2 rounded-3xl border border-slate-700 bg-[#0f1829] p-4"><span className="text-sm font-extrabold text-slate-100">Refleksi / pertanyaan lanjutan</span><textarea maxLength={8000} className={inputClass} value={fields.reflection} onChange={(event) => update('reflection', event.target.value)} placeholder="Apa yang masih membingungkan? Apa yang perlu dipelajari lagi?" /></label>
     </div>
-    {error && <p role="alert" className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800">{error}</p>}
+    {error && <p role="alert" className="rounded-xl border border-rose-900 bg-rose-950/50 p-3 text-sm text-rose-200">{error}</p>}
     <div className="flex flex-wrap items-center justify-between gap-3"><span className="text-xs text-slate-500">{savedAt ? 'Saved ' + new Date(savedAt).toLocaleString() : 'Not saved yet'}</span><button type="button" disabled={saving} onClick={() => void save()} className="rounded-xl bg-blue-600 px-5 py-3 text-sm font-extrabold text-white transition hover:bg-blue-700 disabled:opacity-50">{saving ? 'Saving…' : 'Save Cornell Notes'}</button></div>
   </section>;
 }
