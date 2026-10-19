@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { usePreferences } from '@/components/providers/PreferencesProvider';
 
 interface User {
   id: string;
@@ -15,6 +16,7 @@ interface User {
 }
 
 export default function SettingsPage() {
+  const { t: tr } = usePreferences();
   const [user, setUser] = useState<User | null>(null);
   const [form, setForm] = useState({ firstName: '', lastName: '', school: '' });
   const [loading, setLoading] = useState(true);
@@ -27,7 +29,6 @@ export default function SettingsPage() {
 
   useEffect(() => {
     let cancelled = false;
-
     async function loadProfile() {
       try {
         const response = await fetch('/api/user', { cache: 'no-store' });
@@ -42,13 +43,12 @@ export default function SettingsPage() {
         if (!cancelled) setLoading(false);
       }
     }
-
     void loadProfile();
     return () => { cancelled = true; };
   }, []);
 
-  async function save(e: React.FormEvent) {
-    e.preventDefault();
+  async function save(event: React.FormEvent) {
+    event.preventDefault();
     setSaving(true);
     setSaved(false);
     setErrorMessage('');
@@ -59,7 +59,7 @@ export default function SettingsPage() {
         body: JSON.stringify(form),
       });
       const payload = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(typeof payload.error === 'string' ? payload.error : 'Profile update failed');
+      if (!response.ok) throw new Error(typeof payload.error === 'string' ? payload.error : tr('settings.saveError'));
       setUser(payload as User);
       setForm({
         firstName: (payload as User).firstName ?? '',
@@ -68,7 +68,7 @@ export default function SettingsPage() {
       });
       setSaved(true);
     } catch {
-      setErrorMessage('Changes could not be saved. Please check your connection and try again.');
+      setErrorMessage(tr('settings.saveError'));
     } finally {
       setSaving(false);
     }
@@ -84,20 +84,20 @@ export default function SettingsPage() {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `cendekia-ai-export-${new Date().toISOString().slice(0, 10)}.json`;
+      link.download = 'cendekia-ai-export-' + new Date().toISOString().slice(0, 10) + '.json';
       document.body.appendChild(link);
       link.click();
       link.remove();
       window.setTimeout(() => window.URL.revokeObjectURL(url), 1000);
     } catch {
-      setErrorMessage('Your data could not be downloaded. Please try again later.');
+      setErrorMessage(tr('settings.exportError'));
     } finally {
       setExporting(false);
     }
   }
 
   async function deleteAccount() {
-    if (!confirm('Delete your account and all data? This cannot be undone.')) return;
+    if (!window.confirm(tr('settings.deleteConfirm'))) return;
     setDeleting(true);
     setErrorMessage('');
     try {
@@ -105,95 +105,73 @@ export default function SettingsPage() {
       if (!response.ok) throw new Error('Account deletion failed');
       window.location.href = '/login';
     } catch {
-      setErrorMessage('The account could not be deleted. Please try again or contact the administrator.');
+      setErrorMessage(tr('settings.deleteError'));
       setDeleting(false);
     }
   }
 
-  if (loading) return <div className="py-20 text-center text-slate-600">Loading settings…</div>;
-
+  if (loading) return <div className="py-20 text-center text-slate-600 dark:text-slate-300">{tr('settings.loading')}</div>;
   if (loadError || !user) {
     return (
       <div className="mx-auto max-w-2xl space-y-4 py-12">
-        <h1 className="text-2xl font-bold text-slate-900">Settings</h1>
-        <p className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800" role="alert">
-          Settings could not be loaded. Please sign in again or reload the page.
-        </p>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{tr('settings.title')}</h1>
+        <p className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-200" role="alert">{tr('settings.loadError')}</p>
       </div>
     );
   }
 
   return (
     <div className="max-w-2xl space-y-6">
-      <h1 className="text-2xl font-bold text-slate-900">Settings</h1>
-
-      {errorMessage && <p className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800" role="alert">{errorMessage}</p>}
+      <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{tr('settings.title')}</h1>
+      {errorMessage && <p className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-200" role="alert">{errorMessage}</p>}
 
       <Card>
-        <CardHeader><CardTitle>Profile</CardTitle></CardHeader>
+        <CardHeader><CardTitle>{tr('settings.profile')}</CardTitle></CardHeader>
         <CardContent>
           <form onSubmit={save} className="space-y-4">
             <div className="space-y-1.5">
-              <Label>Email</Label>
+              <Label>{tr('settings.email')}</Label>
               <Input value={user.email} disabled className="opacity-60" />
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
-                <Label>First Name</Label>
-                <Input
-                  value={form.firstName}
-                  maxLength={100}
-                  required
-                  onChange={e => { setForm(p => ({ ...p, firstName: e.target.value })); setSaved(false); }}
-                />
+                <Label>{tr('settings.firstName')}</Label>
+                <Input value={form.firstName} maxLength={100} required onChange={(event) => { setForm((current) => ({ ...current, firstName: event.target.value })); setSaved(false); }} />
               </div>
               <div className="space-y-1.5">
-                <Label>Last Name</Label>
-                <Input
-                  value={form.lastName}
-                  maxLength={100}
-                  onChange={e => { setForm(p => ({ ...p, lastName: e.target.value })); setSaved(false); }}
-                />
+                <Label>{tr('settings.lastName')}</Label>
+                <Input value={form.lastName} maxLength={100} onChange={(event) => { setForm((current) => ({ ...current, lastName: event.target.value })); setSaved(false); }} />
               </div>
             </div>
             <div className="space-y-1.5">
-              <Label>School / Institution</Label>
-              <Input
-                value={form.school}
-                maxLength={160}
-                onChange={e => { setForm(p => ({ ...p, school: e.target.value })); setSaved(false); }}
-                placeholder="Your school or university"
-              />
+              <Label>{tr('settings.school')}</Label>
+              <Input value={form.school} maxLength={160} onChange={(event) => { setForm((current) => ({ ...current, school: event.target.value })); setSaved(false); }} placeholder={tr('settings.schoolPlaceholder')} />
             </div>
             <div className="flex flex-wrap items-center gap-3">
-              <Button type="submit" disabled={saving}>{saving ? 'Saving…' : 'Save Changes'}</Button>
-              {saved && <span className="text-sm text-emerald-700" role="status">✓ Changes saved</span>}
+              <Button type="submit" disabled={saving}>{saving ? tr('settings.saving') : tr('settings.save')}</Button>
+              {saved && <span className="text-sm text-emerald-700 dark:text-emerald-300" role="status">{tr('settings.saved')}</span>}
             </div>
           </form>
         </CardContent>
       </Card>
 
       <Card>
-        <CardHeader><CardTitle>Data & privacy</CardTitle></CardHeader>
+        <CardHeader><CardTitle>{tr('settings.privacy')}</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          <p className="text-sm leading-6 text-slate-600">
-            Download a JSON copy of your profile, subjects, study materials, flashcards, quizzes, notes, podcast scripts, chat history, progress, and share-link metadata.
-          </p>
-          <p className="text-xs leading-5 text-slate-500">
-            The export does not contain session cookies, OAuth credentials, API keys, or share-token secrets. Store the downloaded file securely.
-          </p>
+          <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">{tr('settings.exportBody')}</p>
+          <p className="text-xs leading-5 text-slate-500 dark:text-slate-400">{tr('settings.exportWarning')}</p>
           <Button type="button" variant="outline" onClick={downloadData} disabled={exporting}>
-            {exporting ? 'Preparing export…' : 'Download my data (JSON)'}
+            {exporting ? tr('settings.exporting') : tr('settings.export')}
           </Button>
         </CardContent>
       </Card>
 
-      <Card className="border-rose-200">
-        <CardHeader><CardTitle className="text-rose-600">Danger zone</CardTitle></CardHeader>
+      <Card className="border-rose-200 dark:border-rose-900">
+        <CardHeader><CardTitle className="text-rose-600 dark:text-rose-300">{tr('settings.danger')}</CardTitle></CardHeader>
         <CardContent>
-          <p className="mb-4 text-sm text-slate-600">Permanently delete your account and all associated data. This action cannot be undone.</p>
+          <p className="mb-4 text-sm text-slate-600 dark:text-slate-300">{tr('settings.deleteBody')}</p>
           <Button variant="destructive" onClick={deleteAccount} disabled={deleting}>
-            {deleting ? 'Deleting account…' : 'Delete Account'}
+            {deleting ? tr('settings.deleting') : tr('settings.delete')}
           </Button>
         </CardContent>
       </Card>
