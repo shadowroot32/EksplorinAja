@@ -19,10 +19,10 @@ export default function ShareDocumentButton({ studySetId }: { studySetId: string
         body: JSON.stringify({ expiresInDays }),
       });
       const payload = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(payload.error || 't('share.create')');
+      if (!response.ok) throw new Error(payload.error || t('share.create'));
       setUrl(payload.url);
-      setMessage('t('share.created')');
-    } catch (cause) { setMessage(cause instanceof Error ? cause.message : 't('share.create')'); }
+      setMessage(t('share.created'));
+    } catch (cause) { setMessage(cause instanceof Error ? cause.message : t('share.create')); }
     finally { setLoading(false); }
   }
 
@@ -31,16 +31,16 @@ export default function ShareDocumentButton({ studySetId }: { studySetId: string
     try {
       const response = await fetch(`/api/study-sets/${studySetId}/share`, { method: 'DELETE' });
       const payload = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(payload.error || 'Could not revoke links');
+      if (!response.ok) throw new Error(payload.error || t('share.revoke'));
       setUrl('');
-      setMessage('t('share.revoked')');
-    } catch (cause) { setMessage(cause instanceof Error ? cause.message : 'Could not revoke links'); }
+      setMessage(t('share.revoked'));
+    } catch (cause) { setMessage(cause instanceof Error ? cause.message : t('share.revoke')); }
     finally { setRevoking(false); }
   }
 
   async function copyLink() {
-    try { await navigator.clipboard.writeText(url); setMessage('t('share.copied')'); }
-    catch { setMessage('t('share.copyFailed')'); }
+    try { await navigator.clipboard.writeText(url); setMessage(t('share.copied')); }
+    catch { setMessage(t('share.copyFailed')); }
   }
 
   return <section className="rounded-2xl border border-slate-700 bg-[#0f1829] p-4 sm:p-5">
