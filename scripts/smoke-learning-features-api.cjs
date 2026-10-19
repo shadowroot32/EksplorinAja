@@ -9,6 +9,7 @@ async function main() {
     ['/api/study-sets/example/podcast', 'GET'],
     ['/api/study-sets/example/mind-map', 'POST'],
     ['/api/study-sets/example/share', 'POST'],
+    ['/api/study-sets/example/edit', 'POST'],
     ['/api/user/export', 'GET'],
   ];
 

@@ -57,17 +57,17 @@ export default function PodcastPanel({ studySetId }: { studySetId: string }) {
   }
 
   return <section className="space-y-5">
-    <div className="flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-violet-100 bg-gradient-to-br from-violet-50 via-white to-sky-50 p-5 sm:p-6">
-      <div><p className="text-xs font-extrabold uppercase tracking-[0.2em] text-violet-700">Listen & learn</p><h2 className="mt-2 text-xl font-black text-slate-950">AI Study Podcast</h2><p className="mt-2 max-w-xl text-sm leading-6 text-slate-600">Ubah materi menjadi naskah percakapan edukatif dan dengarkan melalui fitur suara browser.</p></div>
+    <div className="flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-slate-700 bg-[#0f1829] p-5 sm:p-6">
+      <div><p className="text-xs font-extrabold uppercase tracking-[0.2em] text-violet-300">Listen & learn</p><h2 className="mt-2 text-xl font-black text-slate-100">AI Study Podcast</h2><p className="mt-2 max-w-xl text-sm leading-6 text-slate-500">Ubah materi menjadi naskah percakapan edukatif dan dengarkan melalui fitur suara browser.</p></div>
       <button type="button" onClick={() => void generate()} disabled={generating} className="rounded-xl bg-violet-600 px-5 py-3 text-sm font-extrabold text-white transition hover:bg-violet-700 disabled:opacity-50">{generating ? 'Generating…' : podcast ? 'Regenerate script' : 'Generate podcast'}</button>
     </div>
-    {error && <p role="alert" className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800">{error}</p>}
-    {loading ? <p className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-500">Loading podcast…</p>
-      : !podcast ? <p className="rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center text-sm leading-6 text-slate-500">Belum ada naskah podcast. Pilih Generate podcast untuk membuatnya dari materi ini.</p>
-      : <article className="space-y-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-        <div className="flex flex-wrap items-center justify-between gap-3"><div><h3 className="font-extrabold text-slate-950">Episode script</h3><p className="mt-1 text-xs text-slate-500">Dibuat {new Date(podcast.createdAt).toLocaleString()}</p></div><button type="button" onClick={toggleSpeech} className="rounded-xl border border-violet-200 px-4 py-2.5 text-sm font-bold text-violet-700 hover:bg-violet-50">{playing ? 'Stop narration' : '▶ Play narration'}</button></div>
-        <p className="whitespace-pre-wrap text-sm leading-7 text-slate-700">{podcast.script}</p>
-        <p className="text-xs text-slate-400">Suara menggunakan text-to-speech browser; file audio MP3 belum dibuat atau disimpan di server.</p>
+    {error && <p role="alert" className="rounded-xl border border-rose-900 bg-rose-950/50 p-3 text-sm text-rose-200">{error}</p>}
+    {loading ? <p className="rounded-2xl border border-slate-700 bg-[#0f1829] p-8 text-center text-sm text-slate-500">Loading podcast…</p>
+      : !podcast ? <p className="rounded-3xl border border-dashed border-slate-700 bg-[#0f1829] p-10 text-center text-sm leading-6 text-slate-500">Belum ada naskah podcast. Pilih Generate podcast untuk membuatnya dari materi ini.</p>
+      : <article className="space-y-4 rounded-3xl border border-slate-700 bg-[#0f1829] p-5 shadow-sm sm:p-7">
+        <div className="flex flex-wrap items-center justify-between gap-3"><div><h3 className="font-extrabold text-slate-100">Episode script</h3><p className="mt-1 text-xs text-slate-500">Dibuat {new Date(podcast.createdAt).toLocaleString()}</p></div><button type="button" onClick={toggleSpeech} className="rounded-xl border border-violet-200 px-4 py-2.5 text-sm font-bold text-violet-300 hover:bg-violet-50">{playing ? 'Stop narration' : '▶ Play narration'}</button></div>
+        <p className="whitespace-pre-wrap text-sm leading-7 text-slate-300">{podcast.script}</p>
+        <p className="text-xs text-slate-500">Suara menggunakan text-to-speech browser; file audio MP3 belum dibuat atau disimpan di server.</p>
       </article>}
   </section>;
 }

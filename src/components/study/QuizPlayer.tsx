@@ -69,27 +69,27 @@ export default function QuizPlayer({ studySetId }: { studySetId: string }) {
     }
   }
 
-  if (loadError) return <p role="alert" className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">{loadError}</p>;
-  if (items.length === 0) return <div className="py-20 text-center text-slate-600">No quiz questions yet.</div>;
+  if (loadError) return <p role="alert" className="rounded-xl border border-rose-900 bg-rose-950/50 p-4 text-sm text-rose-200">{loadError}</p>;
+  if (items.length === 0) return <div className="py-20 text-center text-slate-400">No quiz questions yet.</div>;
 
   if (done && results) return (
     <div className="space-y-5">
-      <div className="rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+      <div className="rounded-3xl border border-slate-700 bg-[#0f1829] p-8 text-center shadow-sm">
         <div className="text-5xl" aria-hidden="true">{results.percentage >= 70 ? '🏆' : '📚'}</div>
-        <h2 className="mt-3 text-xl font-black text-slate-950">Quiz complete!</h2>
-        <p className="mt-2 text-slate-600">{results.score} / {results.total} correct ({results.percentage}%)</p>
-        <p className="mt-2 text-sm text-slate-500">Your subject mastery has been updated from this result.</p>
+        <h2 className="mt-3 text-xl font-black text-slate-100">Quiz complete!</h2>
+        <p className="mt-2 text-slate-400">{results.score} / {results.total} correct ({results.percentage}%)</p>
+        <p className="mt-2 text-sm text-slate-400">Your subject mastery has been updated from this result.</p>
         <Button className="mt-5" onClick={() => { setIdx(0); setSelected(null); setAnswers({}); setResults(null); setDone(false); setSaveError(''); }}>Retry quiz</Button>
       </div>
       <div className="space-y-3">
         {results.results.map((result, resultIndex) => {
           const question = items.find((item) => item.id === result.questionId);
           if (!question) return null;
-          return <article key={result.questionId} className="rounded-2xl border border-slate-200 bg-white p-5">
-            <p className="font-bold text-slate-900">{resultIndex + 1}. {question.question}</p>
+          return <article key={result.questionId} className="rounded-2xl border border-slate-700 bg-[#0f1829] p-5">
+            <p className="font-bold text-slate-100">{resultIndex + 1}. {question.question}</p>
             <p className={'mt-3 text-sm ' + (result.isCorrect ? 'text-emerald-700' : 'text-rose-700')}>Your answer: {question.options[result.selectedIndex]}</p>
-            {!result.isCorrect && <p className="mt-1 text-sm font-semibold text-slate-700">Correct answer: {question.options[result.correctIndex]}</p>}
-            <p className="mt-2 text-sm leading-6 text-slate-600">{result.explanation}</p>
+            {!result.isCorrect && <p className="mt-1 text-sm font-semibold text-slate-300">Correct answer: {question.options[result.correctIndex]}</p>}
+            <p className="mt-2 text-sm leading-6 text-slate-400">{result.explanation}</p>
           </article>;
         })}
       </div>
@@ -100,25 +100,25 @@ export default function QuizPlayer({ studySetId }: { studySetId: string }) {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between text-sm text-slate-600">
+      <div className="flex justify-between text-sm text-slate-400">
         <span>Question {idx + 1} of {items.length}</span>
         <span>{Object.keys(answers).length} answered</span>
       </div>
-      <div className="h-1.5 overflow-hidden rounded-full bg-slate-100">
+      <div className="h-1.5 overflow-hidden rounded-full bg-slate-800">
         <div className="h-full rounded-full bg-blue-600 transition-all" style={{ width: ((idx / items.length) * 100) + '%' }} />
       </div>
-      <div className="rounded-xl border border-slate-200 bg-white p-6">
-        <p className="text-lg font-medium leading-relaxed text-slate-900">{question.question}</p>
+      <div className="rounded-xl border border-slate-700 bg-[#0f1829] p-6">
+        <p className="text-lg font-medium leading-relaxed text-slate-100">{question.question}</p>
       </div>
       <div className="space-y-3">
         {question.options.map((option, optionIndex) => {
           const selectedOption = selected === optionIndex;
-          const className = 'w-full rounded-xl border px-4 py-3 text-left text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100 ' +
-            (selectedOption ? 'border-blue-500 bg-blue-50 text-blue-900' : 'border-slate-300 text-slate-700 hover:border-blue-400 hover:bg-slate-50');
+          const className = 'w-full rounded-xl border px-4 py-3 text-left text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-900/50 ' +
+            (selectedOption ? 'border-blue-500 bg-blue-950/60 text-blue-100' : 'border-slate-300 text-slate-300 hover:border-blue-400 hover:bg-slate-50');
           return <button key={optionIndex} type="button" disabled={selected !== null || saving} aria-pressed={selectedOption} className={className} onClick={() => pick(optionIndex)}>{String.fromCharCode(65 + optionIndex)}. {option}</button>;
         })}
       </div>
-      {saveError && <p role="alert" className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800">{saveError}</p>}
+      {saveError && <p role="alert" className="rounded-xl border border-rose-900 bg-rose-950/50 p-3 text-sm text-rose-200">{saveError}</p>}
       {selected !== null && <Button onClick={next} disabled={saving} className="w-full">{saving ? 'Saving results…' : idx + 1 < items.length ? 'Next question →' : 'Submit answers'}</Button>}
     </div>
   );
