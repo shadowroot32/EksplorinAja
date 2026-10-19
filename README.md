@@ -1,4 +1,4 @@
-# Explorin
+# EksplorinAja
 
 [![CI](https://github.com/shadowroot32/cendekia-ai/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/shadowroot32/cendekia-ai/actions/workflows/ci.yml)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org/)
@@ -7,7 +7,7 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql)](https://www.postgresql.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-**Explorin** adalah ruang belajar berbasis AI yang membantu mengubah catatan, dokumen PDF, dan materi YouTube menjadi ringkasan, flashcard, kuis, serta pengalaman belajar yang terorganisasi. Aplikasi menggunakan Next.js App Router, TypeScript, Drizzle ORM, dan PostgreSQL.
+**EksplorinAja** adalah ruang belajar berbasis AI yang membantu mengubah catatan, dokumen PDF, dan materi YouTube menjadi ringkasan, flashcard, kuis, serta pengalaman belajar yang terorganisasi. Aplikasi menggunakan Next.js App Router, TypeScript, Drizzle ORM, dan PostgreSQL.
 
 ## Fitur
 
@@ -82,7 +82,7 @@ Buka [http://localhost:3000](http://localhost:3000).
 6. Isi `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI`, dan `NEXT_PUBLIC_APP_URL` pada environment.
 7. Untuk production, daftarkan callback HTTPS dengan domain yang benar-benar dipakai dan redeploy aplikasi.
 
-Flow login menggunakan authorization code, PKCE S256, state, nonce, verifikasi ID token melalui Google JWKS, pemeriksaan issuer/audience, dan klaim email terverifikasi. Password Google tidak pernah diterima atau disimpan oleh Explorin.
+Flow login menggunakan authorization code, PKCE S256, state, nonce, verifikasi ID token melalui Google JWKS, pemeriksaan issuer/audience, dan klaim email terverifikasi. Password Google tidak pernah diterima atau disimpan oleh EksplorinAja.
 
 ## Environment variables
 
