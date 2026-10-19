@@ -1,5 +1,11 @@
 # Changelog
 
+## Dashboard hero dark theme
+
+- Menyesuaikan gradient kartu pendamping belajar, badge, heading, tombol sekunder, panel target harian, dan lingkaran progres agar kontrasnya konsisten pada tema gelap.
+- Perubahan dibatasi ke kartu hero dan target harian; tema terang dan bagian dashboard lain tidak diubah.
+
+
 ## Perapihan pembaca dokumen dan OCR
 
 - Mengganti heuristik heading yang terlalu agresif dengan deteksi berbasis struktur/penulisan judul; fragmen OCR pendek dan berisik tidak otomatis menjadi heading atau item daftar isi.

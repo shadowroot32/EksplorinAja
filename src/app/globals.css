@@ -194,3 +194,65 @@ html:not(.dark) .study-workspace .hover\:bg-slate-800:hover {
     margin-left: 16rem !important;
   }
 }
+
+
+/* Dashboard hero and daily-goal card have their own dark palette so the
+   light gradient does not leak into the dark theme. */
+html.dark .dashboard-hero {
+  border: 1px solid #334155;
+  background-color: #0f172a !important;
+  background-image: linear-gradient(125deg, #0f172a 0%, #15223a 52%, #0b1220 100%) !important;
+  color: #f8fafc;
+}
+html.dark .dashboard-hero .dashboard-hero-glow {
+  background-color: rgb(56 189 248 / 0.10) !important;
+}
+html.dark .dashboard-hero .dashboard-hero-badge {
+  border-color: #475569 !important;
+  background-color: rgb(15 23 42 / 0.82) !important;
+  color: #bae6fd !important;
+}
+html.dark .dashboard-hero .dashboard-hero-title {
+  color: #f8fafc !important;
+}
+html.dark .dashboard-hero .dashboard-hero-body {
+  color: #cbd5e1 !important;
+}
+html.dark .dashboard-hero .dashboard-hero-secondary {
+  border-color: #475569 !important;
+  background-color: rgb(15 23 42 / 0.68) !important;
+  color: #e2e8f0 !important;
+}
+html.dark .dashboard-hero .dashboard-hero-secondary:hover {
+  background-color: #1e293b !important;
+}
+html.dark .dashboard-hero .dashboard-goal-card {
+  border-color: #475569 !important;
+  background-color: rgb(15 23 42 / 88%) !important;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
+}
+.dashboard-goal-ring {
+  background: conic-gradient(#2563eb var(--goal-progress), #dbeafe var(--goal-progress));
+}
+html.dark .dashboard-goal-ring {
+  background: conic-gradient(#60a5fa var(--goal-progress), #334155 var(--goal-progress)) !important;
+}
+html.dark .dashboard-goal-ring-inner {
+  background-color: #0b1220 !important;
+  box-shadow: inset 0 0 0 1px #334155;
+}
+html.dark .dashboard-goal-count {
+  color: #f8fafc !important;
+}
+html.dark .dashboard-goal-count-label {
+  color: #94a3b8 !important;
+}
+html.dark .dashboard-goal-label {
+  color: #93c5fd !important;
+}
+html.dark .dashboard-goal-title {
+  color: #f8fafc !important;
+}
+html.dark .dashboard-goal-body {
+  color: #cbd5e1 !important;
+}
