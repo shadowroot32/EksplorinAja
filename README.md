@@ -72,6 +72,12 @@ Buka [http://localhost:3000](http://localhost:3000).
 
 **Sebelum menjalankan `drizzle-kit push` pada database yang berisi data penting, buat backup dan tinjau perubahan skema.** Untuk fitur tahap 3 yang ditambahkan ke database lama, SQL manual tersedia di [`drizzle/0001_stage3_learning_features.sql`](drizzle/0001_stage3_learning_features.sql). Jangan menjalankan SQL manual itu sebagai pengganti sinkronisasi skema lengkap pada database yang benar-benar kosong.
 
+## Domain resmi
+
+Domain kanonis yang dipilih adalah [`https://eksplorinaja.com`](https://eksplorinaja.com). Konfigurasi aplikasi menggunakan `NEXT_PUBLIC_APP_URL` untuk canonical metadata, Open Graph, `robots.txt`, sitemap, dan fallback Google OAuth. Nilai `.env.example` tetap untuk localhost agar development lokal tidak rusak; isi production adalah `NEXT_PUBLIC_APP_URL=https://eksplorinaja.com` dan `GOOGLE_REDIRECT_URI=https://eksplorinaja.com/api/auth/google/callback`.
+
+Sebelum domain aktif, domain harus terdaftar pada akun yang kamu kontrol, DNS atau Cloudflare Tunnel/Pages harus diarahkan ke aplikasi, dan Google OAuth Client harus mendapat origin serta callback HTTPS yang persis sama. URL `trycloudflare.com` adalah Quick Tunnel sementara, bukan hostname production tetap. Detail langkah ada di [DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md#domain-custom-eksplorinajacom-belum-diaktifkan). Penambahan konfigurasi repository ini tidak mendaftarkan domain, mengubah DNS, atau melakukan deployment.
+
 ## Menyiapkan Google OAuth
 
 1. Buka [Google Cloud Console](https://console.cloud.google.com/) dan pilih/buat project.
@@ -95,7 +101,7 @@ Flow login menggunakan authorization code, PKCE S256, state, nonce, verifikasi I
 | `GOOGLE_CLIENT_ID` | Client ID OAuth Web Google |
 | `GOOGLE_CLIENT_SECRET` | Client Secret OAuth; rahasiakan |
 | `GOOGLE_REDIRECT_URI` | Callback OAuth lengkap yang terdaftar di Google Cloud |
-| `NEXT_PUBLIC_APP_URL` | URL publik aplikasi; fallback untuk callback |
+| `NEXT_PUBLIC_APP_URL` | URL publik aplikasi; sumber canonical URL, robots/sitemap dan fallback callback; gunakan domain production yang resmi |
 | `JWT_SECRET` | Secret acak minimal 32 karakter di production |
 | `PDF_OCR_LANGS` | Opsional; bahasa OCR Tesseract (default `eng+ind`) |
 
