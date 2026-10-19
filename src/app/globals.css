@@ -256,3 +256,28 @@ html.dark .dashboard-goal-title {
 html.dark .dashboard-goal-body {
   color: #cbd5e1 !important;
 }
+
+
+/* Shared public-site palette: the landing page and sign-in screen follow the
+   same saved light/dark preference as the authenticated app. */
+.public-site,
+.public-auth-shell {
+  --public-bg: #f6faff;
+  --public-surface: #ffffff;
+  --public-text: #0f172a;
+  --public-muted: #64748b;
+  --public-border: #dce7f4;
+  --public-soft: #eff6ff;
+}
+html.dark .public-site,
+html.dark .public-auth-shell {
+  --public-bg: #0b1220;
+  --public-surface: #111c30;
+  --public-text: #f8fafc;
+  --public-muted: #a5b4c8;
+  --public-border: #293b58;
+  --public-soft: #172940;
+}
+html.dark .public-site .bg-white {
+  background-color: #f8fafc !important;
+}
