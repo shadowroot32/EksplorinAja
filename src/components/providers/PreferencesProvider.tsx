@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 export type Locale = 'en' | 'id';
-export type Theme = 'light' | 'dark';
+export type Theme = 'light' | 'dark' | 'system';
 
 type Preferences = {
   locale: Locale;
@@ -621,7 +621,7 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
       const savedTheme = window.localStorage.getItem('cendekia-theme');
       const savedSidebar = window.localStorage.getItem('cendekia-sidebar-collapsed');
       if (savedLocale === 'id' || savedLocale === 'en') setLocaleState(savedLocale);
-      if (savedTheme === 'light' || savedTheme === 'dark') setThemeState(savedTheme);
+      if (savedTheme === 'light' || savedTheme === 'dark' || savedTheme === 'system') setThemeState(savedTheme);
       if (savedSidebar === 'true' || savedSidebar === 'false') setSidebarCollapsedState(savedSidebar === 'true');
     } catch {
       // Preferences continue to work for the current tab if storage is unavailable.
@@ -633,8 +633,11 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
   useEffect(() => {
     if (!ready) return;
     document.documentElement.lang = locale;
-    document.documentElement.classList.toggle('dark', theme === 'dark');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const resolvedTheme = theme === 'system' ? (prefersDark ? 'dark' : 'light') : theme;
+    document.documentElement.classList.toggle('dark', resolvedTheme === 'dark');
     document.documentElement.dataset.theme = theme;
+    document.documentElement.dataset.resolvedTheme = resolvedTheme;
     document.documentElement.dataset.sidebarCollapsed = String(sidebarCollapsed);
     try {
       window.localStorage.setItem('cendekia-locale', locale);
@@ -649,7 +652,7 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
     if (!ready) return;
     function onStorage(event: StorageEvent) {
       if (event.key === 'cendekia-locale' && (event.newValue === 'id' || event.newValue === 'en')) setLocaleState(event.newValue);
-      if (event.key === 'cendekia-theme' && (event.newValue === 'light' || event.newValue === 'dark')) setThemeState(event.newValue);
+      if (event.key === 'cendekia-theme' && (event.newValue === 'light' || event.newValue === 'dark' || event.newValue === 'system')) setThemeState(event.newValue);
       if (event.key === 'cendekia-sidebar-collapsed' && (event.newValue === 'true' || event.newValue === 'false')) setSidebarCollapsedState(event.newValue === 'true');
     }
     window.addEventListener('storage', onStorage);
@@ -657,7 +660,7 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
   }, [ready]);
 
   const translate = useCallback((key: string) => dictionaries[locale][key] ?? en[key] ?? key, [locale]);
-  const toggleTheme = useCallback(() => setThemeState((current) => current === 'light' ? 'dark' : 'light'), []);
+  const toggleTheme = useCallback(() => setThemeState((current) => current === 'dark' ? 'light' : 'dark'), []);
   const setSidebarCollapsed = useCallback((collapsed: boolean) => setSidebarCollapsedState(collapsed), []);
   const toggleSidebar = useCallback(() => setSidebarCollapsedState((current) => !current), []);
 
