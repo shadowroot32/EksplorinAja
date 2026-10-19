@@ -43,3 +43,8 @@ next-env.d.ts
 
 # OTP helper test output
 .test-build/
+
+# Local TTS model weights and worker secrets
+/media-worker/models/*
+!/media-worker/models/.gitkeep
+/media-worker/.env
