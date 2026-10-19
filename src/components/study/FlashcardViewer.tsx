@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { usePreferences } from '@/components/providers/PreferencesProvider';
 
 interface Flashcard {
@@ -20,6 +20,11 @@ const gradeOptions: { grade: Grade; labelKey: string; className: string }[] = [
   { grade: 4, labelKey: 'flash.good', className: 'border-emerald-900 text-emerald-200 hover:bg-emerald-950/50' },
   { grade: 5, labelKey: 'flash.easy', className: 'border-sky-900 text-sky-200 hover:bg-sky-950/50' },
 ];
+
+function isDue(card: Flashcard, now: number) {
+  const dueTime = new Date(card.dueDate).getTime();
+  return !Number.isFinite(dueTime) || dueTime <= now;
+}
 
 export default function FlashcardViewer({ studySetId, tags = [] }: { studySetId: string; tags?: string[] }) {
   const { t } = usePreferences();
@@ -43,6 +48,17 @@ export default function FlashcardViewer({ studySetId, tags = [] }: { studySetId:
     return () => { cancelled = true; };
   }, [studySetId, t]);
 
+  const orderedCards = useMemo(() => {
+    const now = Date.now();
+    return [...cards].sort((a, b) => {
+      const dueDifference = Number(isDue(b, now)) - Number(isDue(a, now));
+      if (dueDifference !== 0) return dueDifference;
+      const aTime = new Date(a.dueDate).getTime();
+      const bTime = new Date(b.dueDate).getTime();
+      return (Number.isFinite(aTime) ? aTime : 0) - (Number.isFinite(bTime) ? bTime : 0);
+    });
+  }, [cards]);
+
   function toggleReveal(id: string) {
     setRevealedIds((current) => {
       const next = new Set(current);
@@ -64,6 +80,7 @@ export default function FlashcardViewer({ studySetId, tags = [] }: { studySetId:
       });
       const payload = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(payload.error || t('flash.saveFailed'));
+      setCards((current) => current.map((item) => item.id === card.id ? { ...item, ...payload } : item));
       setReviewedIds((current) => new Set(current).add(card.id));
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : t('flash.saveFailed'));
@@ -77,6 +94,7 @@ export default function FlashcardViewer({ studySetId, tags = [] }: { studySetId:
   if (cards.length === 0) return <div className="rounded-2xl border border-dashed border-slate-700 bg-[#0f1829] py-20 text-center text-slate-400">{t('flash.empty')}</div>;
 
   const progress = Math.round((reviewedIds.size / cards.length) * 100);
+  const dueCount = cards.filter((card) => isDue(card, Date.now())).length;
   const tagList = tags.filter(Boolean).slice(0, 4);
 
   return (
@@ -87,9 +105,15 @@ export default function FlashcardViewer({ studySetId, tags = [] }: { studySetId:
           <h2 className="mt-1 text-xl font-semibold text-white sm:text-2xl">{t('workspace.flashcards')}</h2>
           <p className="mt-2 text-sm text-slate-400">{t('flash.help')}</p>
         </div>
-        <div className="rounded-xl border border-slate-700 bg-[#0f1829] px-4 py-3 text-sm">
-          <span className="font-bold text-slate-100">{reviewedIds.size} / {cards.length}</span>
-          <span className="ml-2 text-slate-400">{t('flash.reviewedSession')}</span>
+        <div className="flex flex-wrap gap-2">
+          <div className="rounded-xl border border-amber-800/70 bg-amber-950/30 px-4 py-3 text-sm">
+            <span className="font-bold text-amber-200">{dueCount}</span>
+            <span className="ml-2 text-amber-100/80">due now</span>
+          </div>
+          <div className="rounded-xl border border-slate-700 bg-[#0f1829] px-4 py-3 text-sm">
+            <span className="font-bold text-slate-100">{reviewedIds.size} / {cards.length}</span>
+            <span className="ml-2 text-slate-400">{t('flash.reviewedSession')}</span>
+          </div>
         </div>
       </header>
 
@@ -102,15 +126,19 @@ export default function FlashcardViewer({ studySetId, tags = [] }: { studySetId:
       {reviewedIds.size === cards.length && <p role="status" className="rounded-xl border border-emerald-900 bg-emerald-950/40 p-3 text-sm text-emerald-200">{t('flash.allReviewed')}</p>}
 
       <div className="grid items-stretch gap-4 md:grid-cols-2">
-        {cards.map((card, index) => {
+        {orderedCards.map((card, index) => {
           const revealed = revealedIds.has(card.id);
           const reviewed = reviewedIds.has(card.id);
           const saving = savingId === card.id;
+          const due = isDue(card, Date.now());
           return (
             <article key={card.id} className="flex min-w-0 flex-col overflow-hidden rounded-2xl border border-slate-800 bg-[#0f1829] transition-colors hover:border-slate-700">
               <header className="flex items-center justify-between gap-3 border-b border-slate-800 px-5 py-4">
                 <span className="text-sm font-medium text-slate-300">{t(revealed ? 'flash.answer' : 'flash.question')}</span>
-                <span className="rounded-full bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-400">#{index + 1}</span>
+                <div className="flex items-center gap-2">
+                  <span className={'rounded-full px-2.5 py-1 text-xs font-semibold ' + (due ? 'bg-amber-950/60 text-amber-200' : 'bg-emerald-950/50 text-emerald-200')}>{due ? 'Due' : 'Scheduled'}</span>
+                  <span className="rounded-full bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-400">#{index + 1}</span>
+                </div>
               </header>
               <button type="button" onClick={() => toggleReveal(card.id)} aria-expanded={revealed} className="flex min-h-52 flex-1 flex-col items-center justify-center gap-5 px-5 py-8 text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-sky-500">
                 {revealed ? (
