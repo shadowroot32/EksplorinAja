@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 interface CornellFields { cues: string; notes: string; summary: string; reflection: string; }
 const emptyFields: CornellFields = { cues: '', notes: '', summary: '', reflection: '' };
-const inputClass = 'min-h-32 w-full resize-y rounded-2xl border border-slate-700 bg-[#0f1829] p-4 text-sm leading-6 text-slate-200 outline-none transition placeholder:text-slate-400 focus:border-blue-400 focus:ring-4 focus:ring-blue-50';
+const inputClass = 'min-h-32 w-full resize-y rounded-2xl border border-slate-700 bg-[#0f1829] p-4 text-sm leading-6 text-slate-200 outline-none transition placeholder:text-slate-400 focus:border-sky-500 focus:ring-4 focus:ring-sky-900/40';
 
 export default function CornellNotesPanel({ studySetId }: { studySetId: string }) {
   const [fields, setFields] = useState<CornellFields>(emptyFields);
