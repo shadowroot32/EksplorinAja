@@ -28,7 +28,7 @@ export default function QuizPlayer({ studySetId }: { studySetId: string }) {
     let cancelled = false;
     fetch(`/api/study-sets/${studySetId}/quiz`)
       .then(async (response) => {
-        if (!response.ok) throw new Error('Could not load quiz');
+        if (!response.ok) throw new Error(t('quiz.failed'));
         const payload = await response.json();
         if (!cancelled) setItems(Array.isArray(payload) ? payload : []);
       })
