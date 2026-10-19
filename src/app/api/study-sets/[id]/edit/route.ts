@@ -11,6 +11,7 @@ export const maxDuration = 30;
 
 const schema = z.object({
   instruction: z.string().trim().min(3).max(1_000),
+  sourceContent: z.string().trim().min(10).max(MAX_SOURCE_CHARS).optional(),
 });
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -31,7 +32,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   )).limit(1);
   if (!set) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
-  const sourceContent = set.sourceContent.trim();
+  const sourceContent = (parsed.data.sourceContent ?? set.sourceContent).trim();
   if (sourceContent.length < 10) {
     return NextResponse.json({ error: 'There is not enough document text to edit.' }, { status: 422 });
   }
