@@ -8,6 +8,7 @@ import MindMapPanel from '@/components/study/MindMapPanel';
 import PodcastPanel from '@/components/study/PodcastPanel';
 import ShareDocumentButton from '@/components/study/ShareDocumentButton';
 import { usePreferences } from '@/components/providers/PreferencesProvider';
+import { buildDocumentBlocks } from '@/lib/document-formatting';
 
 type WorkspaceTab = 'document' | 'summaries' | 'notes' | 'flashcards' | 'mindmap' | 'artifacts';
 type ArtifactTab = 'quiz' | 'podcast';
@@ -24,35 +25,6 @@ interface WorkspaceStats {
   dueCards: number;
   questions: number;
 }
-interface DocumentBlock {
-  id: string;
-  type: 'heading' | 'paragraph';
-  text: string;
-}
-
-function buildDocumentBlocks(content: string): DocumentBlock[] {
-  return content
-    .replace(/\r\n/g, '\n')
-    .split(/\n[ \t]*\n+/)
-    .map((block) => block.trim())
-    .filter(Boolean)
-    .map((block, index) => {
-      const markdownHeading = block.match(/^#{1,3}\s+(.+)$/);
-      const isNumberedHeading = block.length < 140
-        && /^(?:(?:\d+(?:\.\d+)*[.)]?)|(?:bab\s+\w+))\s+\S+/i.test(block);
-      const isShortHeading = block.length <= 72
-        && block.split(/\s+/).length <= 10
-        && !/[.!?]$/.test(block)
-        && !/[,;]/.test(block);
-      const type = markdownHeading || isNumberedHeading || isShortHeading ? 'heading' : 'paragraph';
-      return {
-        id: 'document-section-' + index,
-        type,
-        text: markdownHeading ? markdownHeading[1].trim() : block,
-      };
-    });
-}
-
 function formattedDate(value: string, locale: 'en' | 'id') {
   const date = new Date(value);
   return Number.isNaN(date.getTime())
@@ -235,13 +207,14 @@ export default function StudyClient({ paramsPromise }: { paramsPromise: Promise<
   const tagWords = set.title.toLowerCase().split(/[^a-z0-9]+/).filter((word) => word.length > 2).slice(0, 2);
   const tags = [...tagWords, set.sourceType, t('workspace.studyMaterial')];
   const outerClass = 'study-workspace ' + (focus
-    ? 'fixed inset-0 z-[100] h-[100dvh] w-screen overflow-y-auto rounded-none bg-[#0b1220] p-3 text-slate-100 sm:p-6'
+    ? 'fixed inset-0 z-[100] h-[100dvh] w-screen overflow-hidden rounded-none bg-[#0b1220] p-2 text-slate-100 sm:p-3'
     : 'rounded-3xl border border-slate-800 bg-[#0b1220] p-3 text-slate-100 shadow-xl sm:p-5');
 
   return (
     <div className={outerClass}>
-      <div className="mx-auto w-full max-w-[1600px] space-y-5">
-        <header className="flex flex-col justify-between gap-4 xl:flex-row xl:items-center">
+      <div className={focus ? "mx-auto flex h-full w-full max-w-[1600px] flex-col gap-3" : "mx-auto w-full max-w-[1600px] space-y-5"}>
+        {!focus ? (
+<header className="flex flex-col justify-between gap-4 xl:flex-row xl:items-center">
           <div className="min-w-0">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-sky-300">{t('workspace.learning')}</p>
             <h1 className="mt-2 break-words text-2xl font-bold tracking-tight text-slate-50 sm:text-3xl">{set.title}</h1>
@@ -266,8 +239,26 @@ export default function StudyClient({ paramsPromise }: { paramsPromise: Promise<
             </button>
           </div>
         </header>
+        ) : (
+          <header className="flex h-11 shrink-0 items-center gap-2 sm:gap-3">
+          <label className="sr-only" htmlFor="focus-workspace-tab">{t('workspace.switchTab')}</label>
+          <select
+            id="focus-workspace-tab"
+            value={tab}
+            onChange={(event) => setTab(event.target.value as WorkspaceTab)}
+            className="max-w-[155px] shrink-0 cursor-pointer rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm font-semibold text-slate-100 outline-none transition hover:bg-slate-800 focus-visible:ring-2 focus-visible:ring-sky-500"
+          >
+            {tabs.map((item) => <option key={item.key} value={item.key}>{t(item.labelKey)}</option>)}
+          </select>
+          <span className="min-w-0 flex-1 truncate text-sm font-medium text-slate-300" title={set.title}>{set.title}</span>
+          <button type="button" onClick={() => setFocus(false)} className="inline-flex shrink-0 items-center gap-2 rounded-xl px-2 py-2 text-sm font-semibold text-slate-300 transition hover:bg-slate-800 hover:text-white sm:px-3" aria-pressed={focus}>
+            <span aria-hidden="true">⛶</span><span>{t('workspace.exitFocus')}</span>
+          </button>
+        </header>
+        )}
 
-        <nav aria-label="Study workspace tabs" className="flex gap-1.5 overflow-x-auto rounded-2xl bg-slate-800/90 p-1.5">
+        {!focus && (
+          <nav aria-label="Study workspace tabs" className="flex gap-1.5 overflow-x-auto rounded-2xl bg-slate-800/90 p-1.5">
           {tabs.map((item) => (
             <button
               key={item.key}
@@ -283,10 +274,11 @@ export default function StudyClient({ paramsPromise }: { paramsPromise: Promise<
             </button>
           ))}
         </nav>
+        )}
 
-        <main className="min-w-0">
+        <main className={focus ? (tab === "document" ? "min-h-0 flex-1 overflow-hidden" : "min-h-0 flex-1 overflow-y-auto") : "min-w-0"}>
           {tab === 'document' && (
-            <section className="overflow-hidden rounded-2xl border border-slate-700 bg-[#0f1829]">
+            <section className={focus ? "flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border border-slate-700 bg-[#0f1829]" : "overflow-hidden rounded-2xl border border-slate-700 bg-[#0f1829]"}>
               <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-700 px-4 py-3 sm:px-6">
                 <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">{t('workspace.originalDocument')}</span>
                 <div className="flex flex-wrap gap-2">
@@ -296,7 +288,7 @@ export default function StudyClient({ paramsPromise }: { paramsPromise: Promise<
               </div>
 
               {isEditing ? (
-                <div className="space-y-4 p-4 sm:p-6">
+                <div className={focus ? "min-h-0 flex-1 space-y-4 overflow-y-auto p-4 sm:p-6" : "space-y-4 p-4 sm:p-6"}>
                   {aiEditOpen && (
                     <div className="space-y-3 rounded-2xl border border-sky-900 bg-slate-900 p-4">
                       <div>
@@ -329,7 +321,7 @@ export default function StudyClient({ paramsPromise }: { paramsPromise: Promise<
                   </div>
                 </div>
               ) : (
-                <div id="document-scroll" className="max-h-[72vh] overflow-y-auto">
+                <div id="document-scroll" className={focus ? "min-h-0 flex-1 overflow-y-auto" : "max-h-[72vh] overflow-y-auto"}>
                   <div className="grid gap-8 p-5 sm:p-8 lg:grid-cols-[minmax(0,1fr)_240px] lg:gap-10 lg:p-10">
                     <article className="min-w-0">
                       <p className="text-sm font-medium text-sky-300">{set.sourceType === 'youtube' ? t('workspace.youtube') : set.sourceType === 'pdf' ? t('workspace.pdf') : t('workspace.text')}</p>
@@ -341,16 +333,21 @@ export default function StudyClient({ paramsPromise }: { paramsPromise: Promise<
                       ) : (
                         <div className="space-y-5">
                           {documentBlocks.map((block) => block.type === 'heading' ? (
-                            <h3 key={block.id} id={block.id} className="scroll-mt-6 break-words pt-2 text-xl font-semibold leading-relaxed text-slate-100 sm:text-2xl">{block.text}</h3>
+                            <h3 key={block.id} id={block.id} className="scroll-mt-6 break-words pt-3 text-xl font-semibold leading-snug tracking-tight text-slate-100 sm:text-2xl">{block.text}</h3>
+                          ) : block.type === 'listItem' ? (
+                            <div key={block.id} className="flex min-w-0 gap-3 pl-2 text-[15px] leading-7 text-slate-300 sm:text-base">
+                              <span className="shrink-0 text-sky-300" aria-hidden="true">{block.marker === '•' ? '•' : block.marker}</span>
+                              <span className="min-w-0 break-words">{block.text}</span>
+                            </div>
                           ) : (
-                            <p key={block.id} className="whitespace-pre-wrap break-words text-[15px] leading-8 text-slate-300 sm:text-base">{block.text}</p>
+                            <p key={block.id} className="break-words text-[15px] leading-8 text-slate-300 sm:text-base">{block.text}</p>
                           ))}
                         </div>
                       )}
                     </article>
                     {outline.length > 0 && (
                       <aside className="hidden lg:block">
-                        <div className="sticky top-5 max-h-[65vh] overflow-y-auto border-l border-slate-700 pl-4">
+                        <div className={focus ? "sticky top-3 max-h-[calc(100dvh-8rem)] overflow-y-auto border-l border-slate-700 pl-4" : "sticky top-5 max-h-[65vh] overflow-y-auto border-l border-slate-700 pl-4"}>
                           <p className="mb-3 text-sm font-semibold text-slate-200">{t('workspace.onPage')}</p>
                           <nav aria-label="Document outline" className="space-y-1">
                             {outline.slice(0, 30).map((item) => (

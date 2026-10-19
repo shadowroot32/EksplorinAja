@@ -1,6 +1,7 @@
 import { generateText } from 'ai';
 import { createOpenAI } from '@ai-sdk/openai';
 import { InvalidMindMapError, parseMindMapOutput } from '@/lib/feature-utils';
+import { normalizeOcrPageText } from '@/lib/document-formatting';
 import {
   AI_REQUEST_TIMEOUT_MS,
   MAX_PDF_OCR_PAGES,
@@ -134,7 +135,7 @@ export async function extractPDF(buffer: Buffer): Promise<string> {
     // MAX_PDF_OCR_PAGES pages are considered for a scanned document.
     const rendered = await parser.getScreenshot({
       first: MAX_PDF_OCR_PAGES,
-      scale: 1.5,
+      scale: 2,
       imageBuffer: true,
       imageDataUrl: false,
     });
@@ -170,12 +171,13 @@ export async function extractPDF(buffer: Buffer): Promise<string> {
       }
 
       workerRef.current = createdWorker;
+      await createdWorker.setParameters({ preserve_interword_spaces: '1' });
       const pageTexts: string[] = [];
       let totalChars = 0;
       for (const page of rendered.pages) {
         if (timedOut) throw new PDFOCRTimeoutError();
         const { data } = await createdWorker.recognize(Buffer.from(page.data));
-        const pageText = data.text.trim();
+        const pageText = normalizeOcrPageText(data.text);
         if (pageText) {
           pageTexts.push(pageText);
           totalChars += pageText.length;

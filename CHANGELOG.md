@@ -1,5 +1,14 @@
 # Changelog
 
+## Perapihan pembaca dokumen dan OCR
+
+- Mengganti heuristik heading yang terlalu agresif dengan deteksi berbasis struktur/penulisan judul; fragmen OCR pendek dan berisik tidak otomatis menjadi heading atau item daftar isi.
+- Menggabungkan baris visual yang terpotong menjadi paragraf yang dapat dibaca, menormalisasi whitespace/karakter kontrol OCR, dan mempertahankan item daftar.
+- Menaikkan skala render PDF untuk OCR dari 1.5 menjadi 2 dan mengaktifkan pelestarian spasi antarkata Tesseract.
+- Merapikan focus mode menjadi toolbar ringkas dengan pemilih bagian workspace serta scroll utama pada area dokumen; toolbar tetap terlihat saat konten digulir.
+- Menambahkan unit test untuk fragmen OCR, heading, paragraf, daftar, dan normalisasi whitespace.
+
+
 ## Tema, bahasa, sidebar, dan mode fokus
 
 - Memperbaiki pemilihan tema agar varian gelap Tailwind mengikuti tema aplikasi, bukan preferensi gelap sistem operasi.

@@ -14,8 +14,8 @@
 ### Belajar dan progres
 - Materi belajar dari teks/catatan, PDF, dan tautan YouTube.
 - Workspace belajar terpadu dengan tab Document, Summaries, Notes, Flashcards berbentuk grid, Mind Map, dan Artifacts.
-- Tampilan dokumen memiliki outline saat heading terdeteksi, mode fokus, editor sumber, dan preview revisi dengan AI sebelum disimpan.
-- OCR fallback untuk PDF scan: ekstraksi teks biasa dicoba terlebih dahulu, lalu Tesseract.js mengenali teks pada maksimal 8 halaman pertama jika hasil ekstraksi terlalu sedikit.
+- Tampilan dokumen menggunakan deteksi heading konservatif agar fragmen OCR tidak memenuhi daftar isi; paragraf hasil ekstraksi dirapikan, baris daftar dipertahankan, serta focus mode memakai toolbar ringkas dan area baca dengan scroll utama.
+- OCR fallback untuk PDF scan: ekstraksi teks biasa dicoba terlebih dahulu, lalu Tesseract.js mengenali teks pada maksimal 8 halaman pertama dengan render resolusi lebih tinggi jika hasil ekstraksi terlalu sedikit.
 - Ringkasan AI, flashcard, kuis pilihan ganda, dan chat/tutor berbasis materi.
 - Spaced repetition berbasis algoritma SuperMemo SM-2.
 - Progres belajar, review yang jatuh tempo, streak/tujuan, dan statistik dashboard.
