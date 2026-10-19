@@ -106,8 +106,8 @@ export default function QuizPlayer({ studySetId }: { studySetId: string }) {
         <span>{t('quiz.questionOf').replace('{i}', String(idx + 1)).replace('{n}', String(items.length))}</span>
         <span>{Object.keys(answers).length} {t('quiz.answered')}</span>
       </div>
-      <div className="h-1.5 overflow-hidden rounded-full bg-slate-800">
-        <div className="h-full rounded-full bg-blue-600 transition-all" style={{ width: ((idx / items.length) * 100) + '%' }} />
+      <div role="progressbar" aria-label="Quiz progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(((idx + (selected !== null ? 1 : 0)) / items.length) * 100)} className="h-1.5 overflow-hidden rounded-full bg-slate-800">
+        <div className="h-full rounded-full bg-blue-600 transition-all" style={{ width: (Math.round(((idx + (selected !== null ? 1 : 0)) / items.length) * 100)) + '%' }} />
       </div>
       <div className="rounded-xl border border-slate-700 bg-[#0f1829] p-6">
         <p className="text-lg font-medium leading-relaxed text-slate-100">{question.question}</p>
