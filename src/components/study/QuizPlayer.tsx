@@ -23,6 +23,8 @@ export default function QuizPlayer({ studySetId }: { studySetId: string }) {
   const [saving, setSaving] = useState(false);
   const [loadError, setLoadError] = useState('');
   const [saveError, setSaveError] = useState('');
+  const [restored, setRestored] = useState(false);
+  const storageKey = 'eksplorinaja:quiz-progress:' + studySetId;
 
   useEffect(() => {
     let cancelled = false;
@@ -30,11 +32,53 @@ export default function QuizPlayer({ studySetId }: { studySetId: string }) {
       .then(async (response) => {
         if (!response.ok) throw new Error(t('quiz.failed'));
         const payload = await response.json();
-        if (!cancelled) setItems(Array.isArray(payload) ? payload : []);
+        if (cancelled) return;
+        const quizItems = Array.isArray(payload) ? payload as QuizItem[] : [];
+        setItems(quizItems);
+        try {
+          const saved = window.sessionStorage.getItem(storageKey);
+          if (saved) {
+            const parsed = JSON.parse(saved) as { idx?: unknown; answers?: unknown };
+            const validIds = new Set(quizItems.map((item) => item.id));
+            const restoredAnswers: Record<string, number> = {};
+            if (parsed.answers && typeof parsed.answers === 'object' && !Array.isArray(parsed.answers)) {
+              for (const [questionId, selectedIndex] of Object.entries(parsed.answers)) {
+                const item = quizItems.find((candidate) => candidate.id === questionId);
+                if (item && typeof selectedIndex === 'number' && Number.isInteger(selectedIndex) &&
+                    selectedIndex >= 0 && selectedIndex < item.options.length) {
+                  restoredAnswers[questionId] = selectedIndex;
+                }
+              }
+            }
+            const savedIndex = typeof parsed.idx === 'number' && Number.isInteger(parsed.idx) ? parsed.idx : 0;
+            const safeIndex = Math.max(0, Math.min(savedIndex, Math.max(0, quizItems.length - 1)));
+            setAnswers(restoredAnswers);
+            setIdx(safeIndex);
+            setSelected(quizItems[safeIndex] && validIds.has(quizItems[safeIndex].id)
+              ? restoredAnswers[quizItems[safeIndex].id] ?? null
+              : null);
+          }
+        } catch {
+          try { window.sessionStorage.removeItem(storageKey); } catch { /* Storage may be unavailable. */ }
+        }
+        setRestored(true);
       })
-      .catch(() => { if (!cancelled) setLoadError(t('quiz.failed')); });
+      .catch(() => { if (!cancelled) { setLoadError(t('quiz.failed')); setRestored(true); } });
     return () => { cancelled = true; };
   }, [studySetId, t]);
+
+  useEffect(() => {
+    if (!restored || items.length === 0) return;
+    try {
+      if (done) {
+        window.sessionStorage.removeItem(storageKey);
+      } else {
+        window.sessionStorage.setItem(storageKey, JSON.stringify({ idx, answers }));
+      }
+    } catch {
+      // The quiz remains usable if session storage is disabled or full.
+    }
+  }, [answers, done, idx, items.length, restored, storageKey]);
 
   function pick(index: number) {
     if (selected !== null) return;
