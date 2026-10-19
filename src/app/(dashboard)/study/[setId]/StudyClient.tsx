@@ -149,9 +149,9 @@ export default function StudyClient({ paramsPromise }: { paramsPromise: Promise<
     if (!set?.summary) return;
     try {
       await navigator.clipboard.writeText(set.summary);
-      setCopyStatus('{t('workspace.summaryCopied')}');
+      setCopyStatus(t('workspace.summaryCopied'));
     } catch {
-      setCopyStatus('{t('workspace.copyUnavailable')}');
+      setCopyStatus(t('workspace.copyUnavailable'));
     }
     window.setTimeout(() => setCopyStatus(''), 2500);
   }
@@ -191,7 +191,7 @@ export default function StudyClient({ paramsPromise }: { paramsPromise: Promise<
       const payload = await response.json().catch(() => ({}));
       if (!response.ok || typeof payload.content !== 'string') throw new Error(payload.error || t('workspace.aiEditFailed'));
       setEditContent(payload.content);
-      setEditNotice('{t('workspace.revisionReady')}');
+      setEditNotice(t('workspace.revisionReady'));
     } catch (error) {
       setEditError(error instanceof Error ? error.message : t('workspace.aiEditFailed'));
     } finally {
@@ -376,7 +376,7 @@ export default function StudyClient({ paramsPromise }: { paramsPromise: Promise<
               </div>
               <article className="overflow-hidden rounded-2xl border border-slate-700 bg-[#0f1829]">
                 <header className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-700 px-5 py-4 sm:px-6">
-                  <div className="min-w-0"><h3 className="break-words text-lg font-semibold text-slate-100">{set.title}</h3><p className="mt-1 text-xs text-slate-400">Summary · {formattedDate(set.createdAt)}</p></div>
+                  <div className="min-w-0"><h3 className="break-words text-lg font-semibold text-slate-100">{set.title}</h3><p className="mt-1 text-xs text-slate-400">Summary · {formattedDate(set.createdAt, locale)}</p></div>
                   <button type="button" onClick={() => void copySummary()} className="rounded-lg border border-slate-700 px-3 py-2 text-sm font-semibold text-slate-300 hover:bg-slate-800">▤ Copy</button>
                 </header>
                 <div className="space-y-5 p-5 sm:p-6">
