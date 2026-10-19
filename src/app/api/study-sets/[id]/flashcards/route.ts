@@ -22,7 +22,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
   if (!studySet) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
   const rows = await db.select().from(flashcards).where(eq(flashcards.studySetId, id));
-  return NextResponse.json(rows);
+  return NextResponse.json(rows, { headers: { 'Cache-Control': 'private, no-store' } });
 }
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
