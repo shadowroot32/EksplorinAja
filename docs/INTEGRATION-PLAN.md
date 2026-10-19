@@ -2,7 +2,7 @@
 
 Tanggal audit: 2026-10-20  
 Basis audit: branch `main` pada repository `shadowroot32/EksplorinAja`.  
-Status dokumen: **Fase 0 — audit awal selesai; implementasi fitur belum dimulai.**
+Status dokumen: **Fase 0 — audit awal selesai; perbaikan keamanan chat dibuat di PR #15 dan CI berhasil. Fase lanjutan dikerjakan bertahap melalui PR terpisah.**
 
 ## 1. Ringkasan eksekutif
 
@@ -61,10 +61,17 @@ Model saat ini berpusat pada `study_sets`; belum terlihat model folder, bab/chap
 
 ## 3. Audit billing, paywall, dan kuota
 
-### Yang sudah terverifikasi
-- Tidak ada dependency Stripe atau library billing pada `package.json` yang diperiksa.
-- Tidak ada tabel plan/subscription/payment/quota pada bagian skema yang diperiksa.
-- Tidak ada hasil dari pencarian kode GitHub awal untuk `chat_limit`, `chat_blocked`, `subscription`, `quota`, `stripe`, `billing`, `pricing`, atau `checkout`. Karena indeks pencarian tidak menghasilkan hasil, ini **bukan** bukti final bahwa semua referensi tidak ada.
+### Keputusan produk (dikonfirmasi pemilik)
+- EksplorinAja **sepenuhnya gratis**. Tidak ada paket berbayar, langganan, checkout, paywall, atau fitur premium.
+- Tidak ada kuota penggunaan per pengguna untuk pesan AI, flashcard, kuis, atau artefak belajar.
+- Batas teknis yang wajar tetap diperbolehkan untuk keamanan dan stabilitas (ukuran request/unggahan, timeout, concurrency, proteksi spam/bot, dan retry). Batas teknis tidak boleh digunakan sebagai kuota berbayar terselubung.
+- Settings tidak memerlukan tab billing; copy dan UI harus menjelaskan akses gratis tanpa mengisyaratkan paket Pro.
+
+### Hasil pemeriksaan statis sementara
+- `package.json` yang diperiksa tidak mencantumkan dependency Stripe atau library billing.
+- Skema Drizzle yang diperiksa tidak menunjukkan tabel plan/subscription/payment/quota.
+- Pencarian kode GitHub untuk `subscription`, `quota`, `pricing`, dan `limit` tidak menghasilkan hasil. Karena pencarian kode/index dapat tidak lengkap, ini **belum** membuktikan tidak ada referensi di seluruh repo.
+- Status saat ini: **belum ditemukan bukti billing/kuota pengguna pada area yang diperiksa; audit seluruh file, route, UI, dan migrasi masih harus diselesaikan**.
 
 ### Daftar yang wajib diaudit sebelum penghapusan
 - Rute/halaman/komponen bernama pricing, checkout, billing, subscription, manage plan.
@@ -101,7 +108,7 @@ Estimasi adalah perkiraan engineering awal, bukan janji durasi; tiap fase ditutu
 
 ### Urutan rekomendasi
 
-1. Bereskan baseline test dan keamanan data yang sudah ada, terutama akses GET chat lintas pengguna.
+1. Bereskan baseline test dan keamanan data yang sudah ada, terutama akses GET chat lintas pengguna. PR #15 (`fix/chat-history-authorization`) sudah dibuat; GitHub Actions CI pada commit `f183186c2fc24c5e105c794c53e4982ea35353ec` berstatus success untuk test, type-check, build, dan smoke tests. PR belum digabung.
 2. Bangun fondasi import/background jobs dan metadata sumber agar fitur lanjutan tidak mengulang arsitektur.
 3. Chat sessions + SSE + RAG/sitasi.
 4. Flashcard SM-2 dan kuis dengan tes.
@@ -125,6 +132,6 @@ Estimasi adalah perkiraan engineering awal, bukan janji durasi; tiap fase ditutu
 
 Audit dilakukan melalui file dan metadata repository GitHub yang tersedia. Belum dilakukan checkout dan eksekusi lokal, build/test aktual, scan menyeluruh terhadap semua file, inspeksi mesin hosting/tunnel, koneksi database production, atau verifikasi visual live. Karena itu, hasil ini adalah baseline audit statis; tiap fase harus memvalidasi asumsi yang relevan sebelum mengubah kode.
 
-## 7. Gerbang persetujuan
+## 7. Gerbang persetujuan dan aturan eksekusi
 
-Sesuai prompt induk, implementasi fitur besar **berhenti setelah Fase 0**. Minta tinjauan/konfirmasi atas urutan prioritas ini sebelum mulai Fase 1 atau fitur besar berikutnya. Perbaikan keamanan kecil yang berdiri sendiri dapat dipisahkan sebagai PR khusus setelah disetujui.
+Pemilik telah menyetujui pelaksanaan seluruh fase secara bertahap, dengan prioritas awal keamanan, audit billing/kuota, dan fondasi. Setiap fase harus memiliki perubahan yang terukur, tes yang relevan, self-review, dan PR terpisah. Jangan menggabungkan PR atau melakukan deployment/perubahan production tanpa izin eksplisit. Status CI harus dilaporkan apa adanya; jangan mengklaim tes lokal bila tidak dijalankan.
