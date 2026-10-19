@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { usePreferences } from '@/components/providers/PreferencesProvider';
 
 interface MindMapNode { id: string; label: string; parentId: string | null; }
@@ -11,6 +11,36 @@ export default function MindMapPanel({ studySetId }: { studySetId: string }) {
   const [mapData, setMapData] = useState<MindMapData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [draftRestored, setDraftRestored] = useState(false);
+  const storageKey = 'eksplorinaja:mind-map-draft:' + studySetId;
+
+  useEffect(() => {
+    try {
+      const saved = window.sessionStorage.getItem(storageKey);
+      if (saved) {
+        const parsed = JSON.parse(saved) as MindMapData;
+        if (typeof parsed.title === 'string' && Array.isArray(parsed.nodes) &&
+            parsed.nodes.every((node) => node && typeof node.id === 'string' &&
+              typeof node.label === 'string' &&
+              (node.parentId === null || typeof node.parentId === 'string'))) {
+          setMapData(parsed);
+        }
+      }
+    } catch {
+      try { window.sessionStorage.removeItem(storageKey); } catch { /* Storage may be unavailable. */ }
+    } finally {
+      setDraftRestored(true);
+    }
+  }, [storageKey]);
+
+  useEffect(() => {
+    if (!draftRestored || !mapData) return;
+    try {
+      window.sessionStorage.setItem(storageKey, JSON.stringify(mapData));
+    } catch {
+      // Editing and exporting remain available when session storage is disabled.
+    }
+  }, [draftRestored, mapData, storageKey]);
 
   async function generate() {
     setLoading(true);
@@ -125,7 +155,7 @@ export default function MindMapPanel({ studySetId }: { studySetId: string }) {
           <button type="button" onClick={exportMap} className="rounded-xl border border-slate-600 px-4 py-2.5 text-sm font-bold text-slate-100 hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500">Export JSON</button>
         </div>
       </div>
-      <p className="text-xs text-slate-500">Edit labels, add concepts or remove branches, then export the map as JSON. Edits stay in this session until you export them.</p>
+      <p className="text-xs text-slate-500">Draft edits are kept in this tab session. Edit labels, add concepts or remove branches, then export the current map as JSON.</p>
       <ul className="min-w-64 space-y-3">{(childrenByParent.get(null) ?? []).map((root) => renderNode(root, 0))}</ul>
       {mapData.nodes.length === 0 && <p className="text-sm text-slate-400">This map has no valid nodes. Try generating it again.</p>}
     </div>}
