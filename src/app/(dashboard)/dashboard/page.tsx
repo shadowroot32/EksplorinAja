@@ -85,7 +85,7 @@ export default function DashboardPage() {
               <div className="text-xs font-extrabold uppercase tracking-widest text-blue-800">{t('dashboard.dailyGoal')}</div>
               <div className="mt-1 text-lg font-black text-slate-950">{goalProgress >= 100 ? t('dashboard.goalReached') : t('dashboard.keepStreak')}</div>
               <p className="mt-1 text-xs leading-5 text-slate-600">{goalProgress >= 100 ? t('dashboard.goalReachedBody') : Math.max(0, DAILY_REVIEW_TARGET - reviewedToday) + ' ' + t('dashboard.goalBody')}</p>
-              <p className="mt-2 text-xs font-bold text-orange-700">🔥 {stats?.streakDays ?? 0} day streak</p>
+              <p className="mt-2 text-xs font-bold text-orange-700">🔥 {t('dashboard.dayStreak').replace('{n}', String(stats?.streakDays ?? 0))}</p>
             </div>
           </div>
         </div>
