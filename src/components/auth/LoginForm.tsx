@@ -118,7 +118,7 @@ export default function LoginForm() {
 
   return (
     <main className="public-auth-card mx-auto grid w-full max-w-6xl overflow-hidden rounded-[2rem] border border-[var(--public-border)] bg-[var(--public-surface)] shadow-2xl shadow-blue-950/10 lg:grid-cols-[0.92fr_1.08fr]">
-      <section className="relative hidden min-h-[680px] flex-col justify-between overflow-hidden bg-gradient-to-br from-sky-500 via-blue-600 to-indigo-700 p-10 text-white dark:from-slate-950 dark:via-blue-950 dark:to-indigo-950 lg:flex xl:p-12">
+      <section className="relative hidden min-h-[760px] flex-col justify-between gap-10 overflow-hidden bg-gradient-to-br from-sky-500 via-blue-600 to-indigo-700 p-10 text-white dark:from-slate-950 dark:via-blue-950 dark:to-indigo-950 lg:flex xl:p-14">
         <div aria-hidden="true" className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-cyan-300/25 blur-3xl" />
         <div aria-hidden="true" className="absolute -bottom-24 -left-16 h-80 w-80 rounded-full bg-indigo-300/25 blur-3xl" />
         <Brand light tagline={text.tagline} />
@@ -138,13 +138,13 @@ export default function LoginForm() {
             </div>
           </div>
         </div>
-        <div className="relative z-10 flex items-center gap-3 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm text-blue-50 backdrop-blur dark:border-white/10 dark:bg-white/5 dark:text-slate-200">
+        <div className="relative z-10 flex items-center gap-3 border-t border-white/20 pt-6 text-sm text-blue-100 dark:border-white/10 dark:text-slate-300">
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15 text-lg" aria-hidden="true">🌱</span>
           <p className="min-w-0 max-w-xs leading-6">{text.footerLine}</p>
         </div>
       </section>
 
-      <section className="flex min-h-[610px] flex-col justify-center px-6 py-10 sm:px-10 lg:min-h-[680px] lg:px-12 xl:px-16">
+      <section className="flex min-h-[760px] flex-col justify-center px-6 py-10 sm:px-10 lg:min-h-[760px] lg:px-12 xl:px-16">
         <div className="mb-9 lg:hidden"><Brand tagline={text.tagline} /></div>
         <div className="mx-auto w-full max-w-md">
           <div className="mb-8">
