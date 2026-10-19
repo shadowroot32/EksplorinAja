@@ -1,7 +1,6 @@
 'use strict';
 
 const { test } = require('node:test');
-const { buildDocumentBlocks, normalizeOcrPageText } = require('../.test-build/document-formatting.js');
 const assert = require('node:assert/strict');
 const {
   AI_REQUEST_TIMEOUT_MS,
