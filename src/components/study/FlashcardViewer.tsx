@@ -117,7 +117,7 @@ export default function FlashcardViewer({ studySetId, tags = [] }: { studySetId:
         </div>
       </header>
 
-      <div className="h-1.5 overflow-hidden rounded-full bg-slate-800" aria-label={'Session progress ' + progress + '%'}>
+      <div role="progressbar" aria-label="Flashcard session progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress} className="h-1.5 overflow-hidden rounded-full bg-slate-800">
         <div className="h-full rounded-full bg-sky-500 transition-all" style={{ width: progress + '%' }} />
       </div>
 
