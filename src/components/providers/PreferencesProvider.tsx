@@ -649,6 +649,19 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
   }, [locale, theme, sidebarCollapsed, ready]);
 
   useEffect(() => {
+    if (!ready || theme !== 'system') return;
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    const syncSystemTheme = () => {
+      const isDark = media.matches;
+      document.documentElement.classList.toggle('dark', isDark);
+      document.documentElement.dataset.resolvedTheme = isDark ? 'dark' : 'light';
+    };
+    syncSystemTheme();
+    media.addEventListener('change', syncSystemTheme);
+    return () => media.removeEventListener('change', syncSystemTheme);
+  }, [ready, theme]);
+
+  useEffect(() => {
     if (!ready) return;
     function onStorage(event: StorageEvent) {
       if (event.key === 'cendekia-locale' && (event.newValue === 'id' || event.newValue === 'en')) setLocaleState(event.newValue);
