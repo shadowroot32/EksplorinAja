@@ -89,3 +89,25 @@ Di Google Cloud Console → Google Auth Platform → Clients, edit OAuth client 
 - Podcast menghasilkan naskah dan membacakannya lewat browser; pembuatan serta penyimpanan MP3 belum tersedia.
 - Ekspor JSON dapat berisi isi materi belajar dan riwayat chat. Perlakukan berkas seperti data pribadi.
 - Fitur share bersifat bearer-link: siapa pun yang memiliki URL aktif dapat membaca materi yang dibagikan.
+
+
+## 5. Deploy dari Windows PC/server sendiri
+
+Script `scripts/deploy-selfhosted.ps1` menjalankan `npm ci`, test, type-check, build production, lalu menjalankan Next.js pada `127.0.0.1:3000`. Script hanya berjalan dari branch `main` dengan working tree bersih dan memeriksa keberadaan variabel environment tanpa mencetak nilainya.
+
+1. Pastikan Node.js 22, Git, PostgreSQL, dan `cloudflared` sudah terpasang pada mesin yang akan menjalankan aplikasi.
+2. Di folder repository, jalankan `git switch main` lalu `git pull --ff-only origin main`. Pastikan perubahan lokal yang belum disimpan sudah diamankan.
+3. Buat file lokal `.env.production` dan isi variabel production yang valid. Gunakan `deploy/cloudflare-production.env.example` sebagai daftar variabel, tetapi jangan menyalin placeholder. Jangan commit `.env.production`.
+4. Pastikan database production sudah tersedia dan skema terbaru sudah diterapkan dengan backup yang dapat dipulihkan. Script deploy tidak menjalankan migrasi database otomatis.
+5. Buka PowerShell di root repository dan jalankan:
+
+   ```powershell
+   Set-ExecutionPolicy -Scope Process Bypass
+   .\scripts\deploy-selfhosted.ps1
+   ```
+
+6. Biarkan jendela server tetap terbuka. Dari jendela PowerShell lain, uji `http://127.0.0.1:3000` sebelum membuka tunnel.
+7. Untuk demo sementara saja, jalankan `cloudflared tunnel --url http://127.0.0.1:3000` di jendela terpisah. URL `trycloudflare.com` yang dihasilkan bersifat sementara dan bisa berubah. Jangan mengandalkannya untuk hosting permanen.
+8. Karena domain `eksplorinaja.com` belum dibeli, jangan menganggap alamat itu sudah dapat diakses. Google OAuth juga hanya akan bekerja pada hostname yang cocok dengan origin dan callback yang didaftarkan di Google Cloud. Untuk demo via Quick Tunnel, URL callback berubah-ubah sehingga bukan pengganti domain tetap.
+
+Script ini tidak mengatur Windows Service/Task Scheduler, membuka port router, mengubah DNS, mendaftarkan domain, membuat Named Tunnel, atau mengatur Google OAuth. Untuk operasi 24/7, siapkan proses Next.js dan Named Tunnel persisten setelah domain terdaftar; jangan menjalankan server sebagai administrator kecuali memang dibutuhkan.
