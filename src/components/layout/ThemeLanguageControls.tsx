@@ -18,17 +18,17 @@ export default function ThemeLanguageControls({ compact = false }: { compact?: b
         <span aria-hidden="true">{theme === 'dark' ? '☀️' : '🌙'}</span>
         {!compact && <span>{t(theme === 'dark' ? 'prefs.dark' : 'prefs.light')}</span>}
       </button>
-      <label className="flex min-w-0 items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-2.5 py-2 dark:border-slate-700 dark:bg-slate-900">
+      <label className={'flex min-w-0 items-center gap-1.5 rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900 ' + (compact ? 'px-1.5 py-2' : 'px-2.5 py-2')}>
         <span className="sr-only">{t('prefs.language')}</span>
         <span aria-hidden="true">🌐</span>
         <select
           value={locale}
           onChange={(event) => setLocale(event.target.value === 'id' ? 'id' : 'en')}
-          className={'min-w-0 max-w-[120px] cursor-pointer bg-transparent font-semibold text-slate-700 outline-none dark:text-slate-200 ' + (compact ? 'text-xs' : 'text-sm')}
+          className={'min-w-0 cursor-pointer bg-transparent font-semibold text-slate-700 outline-none dark:text-slate-200 ' + (compact ? 'max-w-[52px] text-xs' : 'max-w-[120px] text-sm')}
           aria-label={t('prefs.language')}
         >
-          <option value="en">{t('prefs.english')}</option>
-          <option value="id">{t('prefs.indonesian')}</option>
+          <option value="en">{compact ? 'EN' : t('prefs.english')}</option>
+          <option value="id">{compact ? 'ID' : t('prefs.indonesian')}</option>
         </select>
       </label>
     </div>
