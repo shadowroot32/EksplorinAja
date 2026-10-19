@@ -6,11 +6,12 @@ import QuizPlayer from '@/components/study/QuizPlayer';
 import CornellNotesPanel from '@/components/study/CornellNotesPanel';
 import MindMapPanel from '@/components/study/MindMapPanel';
 import PodcastPanel from '@/components/study/PodcastPanel';
+import StudyStudioPanel from '@/components/study/StudyStudioPanel';
 import ShareDocumentButton from '@/components/study/ShareDocumentButton';
 import { usePreferences } from '@/components/providers/PreferencesProvider';
 import { buildDocumentBlocks } from '@/lib/document-formatting';
 
-type WorkspaceTab = 'document' | 'summaries' | 'notes' | 'flashcards' | 'mindmap' | 'artifacts';
+type WorkspaceTab = 'document' | 'summaries' | 'notes' | 'flashcards' | 'mindmap' | 'artifacts' | 'studio';
 type ArtifactTab = 'quiz' | 'podcast';
 interface StudySet {
   id: string;
@@ -39,6 +40,7 @@ const tabs: { key: WorkspaceTab; labelKey: string; icon: string }[] = [
   { key: 'flashcards', labelKey: 'workspace.flashcards', icon: '▣' },
   { key: 'mindmap', labelKey: 'workspace.mindMap', icon: '⌘' },
   { key: 'artifacts', labelKey: 'workspace.artifacts', icon: '◇' },
+  { key: 'studio', labelKey: 'Studio', icon: '▧' },
 ];
 
 export default function StudyClient({ paramsPromise }: { paramsPromise: Promise<{ setId: string }> }) {
@@ -388,6 +390,7 @@ export default function StudyClient({ paramsPromise }: { paramsPromise: Promise<
           {tab === 'notes' && <CornellNotesPanel studySetId={setId} />}
           {tab === 'flashcards' && <FlashcardViewer studySetId={setId} tags={tags} />}
           {tab === 'mindmap' && <MindMapPanel studySetId={setId} />}
+          {tab === 'studio' && <StudyStudioPanel title={set.title} summary={set.summary} sourceContent={set.sourceContent} locale={locale} stats={stats} />}
           {tab === 'artifacts' && (
             <section className="space-y-5">
               <div>
