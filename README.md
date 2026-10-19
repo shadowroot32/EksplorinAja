@@ -144,6 +144,7 @@ CI **tidak** membuktikan bahwa Google OAuth, kredensial provider AI, database pr
 │   │   ├── layout/
 │   │   └── study/                 # Flashcard, quiz, Cornell, mind map, podcast
 │   └── lib/
+│       ├── site-url.ts            # Domain kanonis dan normalisasi URL publik
 │       ├── ai/                    # Integrasi provider LLM dan validasi output
 │       ├── db/                    # Drizzle client dan skema
 │       └── auth.ts                # Session
