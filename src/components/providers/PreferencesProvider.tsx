@@ -25,6 +25,8 @@ const en: Record<string, string> = {
   'nav.library': 'Study library',
   'nav.settings': 'Settings',
   'nav.workspace': 'Your workspace',
+  'nav.collapse': 'Collapse sidebar',
+  'nav.expand': 'Expand sidebar',
   'nav.habitTitle': 'Small steps add up',
   'nav.habitBody': 'Turn a few focused minutes into a habit you can keep.',
   'nav.makeSet': 'Make a study set',
@@ -315,6 +317,8 @@ const id: Record<string, string> = {
   'nav.library': 'Perpustakaan belajar',
   'nav.settings': 'Pengaturan',
   'nav.workspace': 'Ruang belajarmu',
+  'nav.collapse': 'Ciutkan sidebar',
+  'nav.expand': 'Perluas sidebar',
   'nav.habitTitle': 'Langkah kecil berarti',
   'nav.habitBody': 'Ubah beberapa menit fokus menjadi kebiasaan baik.',
   'nav.makeSet': 'Buat set belajar',
@@ -627,6 +631,7 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
     document.documentElement.lang = locale;
     document.documentElement.classList.toggle('dark', theme === 'dark');
     document.documentElement.dataset.theme = theme;
+    document.documentElement.dataset.sidebarCollapsed = String(sidebarCollapsed);
     try {
       window.localStorage.setItem('cendekia-locale', locale);
       window.localStorage.setItem('cendekia-theme', theme);
