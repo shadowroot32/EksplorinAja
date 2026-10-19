@@ -35,10 +35,10 @@ const contentByLocale: Record<Locale, {
     ],
     footerLine: 'A little progress, every day.',
     secure: 'Secure sign in',
-    signInTitle: 'Welcome to Explorin',
+    signInTitle: 'Welcome to EksplorinAja',
     signInDescription: 'One secure step into your personal learning space. Continue with your Google account.',
     google: 'Continue with Google',
-    privacy: 'Explorin never receives your Google password. Google securely verifies your identity.',
+    privacy: 'EksplorinAja never receives your Google password. Google securely verifies your identity.',
     oauth: 'Protected with Google OAuth 2.0',
     back: 'Back to home',
     genericError: 'Sign-in did not complete. Please try again.',
@@ -63,10 +63,10 @@ const contentByLocale: Record<Locale, {
     ],
     footerLine: 'Sedikit progres, setiap hari.',
     secure: 'Masuk dengan aman',
-    signInTitle: 'Selamat datang di Explorin',
+    signInTitle: 'Selamat datang di EksplorinAja',
     signInDescription: 'Satu langkah aman untuk membuka ruang belajarmu. Lanjutkan dengan akun Google.',
     google: 'Lanjutkan dengan Google',
-    privacy: 'Explorin tidak pernah menerima kata sandi Google-mu. Google memverifikasi identitasmu dengan aman.',
+    privacy: 'EksplorinAja tidak pernah menerima kata sandi Google-mu. Google memverifikasi identitasmu dengan aman.',
     oauth: 'Dilindungi Google OAuth 2.0',
     back: 'Kembali ke beranda',
     genericError: 'Proses masuk belum berhasil. Silakan coba lagi.',
@@ -159,8 +159,8 @@ function GoogleMark() {
 }
 
 function Brand({ light = false, tagline }: { light?: boolean; tagline: string }) {
-  return <Link href="/" className="relative z-10 inline-flex items-center gap-3 self-start" aria-label="Explorin home">
+  return <Link href="/" className="relative z-10 inline-flex items-center gap-3 self-start" aria-label="EksplorinAja home">
     <span className={'flex h-11 w-11 items-center justify-center rounded-2xl text-xl font-black shadow-lg ' + (light ? 'bg-white text-blue-700' : 'bg-gradient-to-br from-sky-500 to-blue-600 text-white')}>E</span>
-    <span><span className={'block text-lg font-extrabold tracking-tight ' + (light ? 'text-white' : 'text-[var(--public-text)]')}>Explorin</span><span className={'block text-xs ' + (light ? 'text-blue-100' : 'text-[var(--public-muted)]')}>{tagline}</span></span>
+    <span><span className={'block text-lg font-extrabold tracking-tight ' + (light ? 'text-white' : 'text-[var(--public-text)]')}>EksplorinAja</span><span className={'block text-xs ' + (light ? 'text-blue-100' : 'text-[var(--public-muted)]')}>{tagline}</span></span>
   </Link>;
 }
