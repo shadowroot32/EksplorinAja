@@ -138,7 +138,7 @@ export default function LoginForm() {
             </div>
           </div>
         </div>
-        <div className="relative z-10 flex items-center gap-3 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm text-blue-50 backdrop-blur dark:border-white/10 dark:bg-white/5 dark:text-slate-200">
+        <div className="relative z-10 flex items-center gap-3 border-t border-white/20 pt-6 text-sm text-blue-100 dark:border-white/10 dark:text-slate-300">
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15 text-lg" aria-hidden="true">🌱</span>
           <p className="min-w-0 max-w-xs leading-6">{text.footerLine}</p>
         </div>
