@@ -1,6 +1,6 @@
 # EksplorinAja
 
-[![CI](https://github.com/shadowroot32/cendekia-ai/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/shadowroot32/cendekia-ai/actions/workflows/ci.yml)
+[![CI](https://github.com/shadowroot32/EksplorinAja/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/shadowroot32/EksplorinAja/actions/workflows/ci.yml)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
@@ -55,8 +55,8 @@
 ## Menjalankan secara lokal
 
 ```bash
-git clone https://github.com/shadowroot32/cendekia-ai.git
-cd cendekia-ai
+git clone https://github.com/shadowroot32/EksplorinAja.git
+cd EksplorinAja
 npm ci
 cp .env.example .env
 ```
@@ -119,7 +119,7 @@ npm run build
 npm run start
 ```
 
-GitHub Actions juga menjalankan smoke tests terhadap server production untuk pemeriksaan autentikasi API material, progres belajar, fitur belajar, dan respons endpoint OTP legacy. Workflow berjalan pada push ke `main` dan pull request: [riwayat CI](https://github.com/shadowroot32/cendekia-ai/actions/workflows/ci.yml).
+GitHub Actions juga menjalankan smoke tests terhadap server production untuk pemeriksaan autentikasi API material, progres belajar, fitur belajar, dan respons endpoint OTP legacy. Workflow berjalan pada push ke `main` dan pull request: [riwayat CI](https://github.com/shadowroot32/EksplorinAja/actions/workflows/ci.yml).
 
 CI **tidak** membuktikan bahwa Google OAuth, kredensial provider AI, database production, atau konfigurasi hosting sungguhan sudah benar. Lihat [checklist deployment](DEPLOYMENT_CHECKLIST.md) untuk langkah sebelum rilis.
 
