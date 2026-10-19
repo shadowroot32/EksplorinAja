@@ -11,11 +11,12 @@ async function readPage(path) {
 }
 
 async function main() {
-  const [home, login, robots, sitemap] = await Promise.all([
+  const [home, login, robots, sitemap, manifest] = await Promise.all([
     readPage('/'),
     readPage('/login'),
     readPage('/robots.txt'),
     readPage('/sitemap.xml'),
+    readPage('/manifest.webmanifest'),
   ]);
 
   assert.match(home, /EksplorinAja/, 'landing page should use the new product name');
@@ -34,6 +35,9 @@ async function main() {
   assert.match(login, /Continue with Google|Lanjutkan dengan Google/i, 'login page should render Google sign-in');
   assert.match(login, /Secure OAuth|OAuth 2\.0|Google/, 'login page should explain secure Google sign-in');
   assert.match(login, /English/, 'login page should render the language control');
+  assert.match(login, /noindex/i, 'login page should not be indexed by search engines');
+  assert.ok(!login.includes('<link rel="canonical"'), 'login page must not inherit the homepage canonical URL');
+  assert.match(manifest, /EksplorinAja/, 'web app manifest should use the new product name');
 
   process.stdout.write('EksplorinAja landing and login pages passed branding and public-preference smoke tests.\n');
 }
