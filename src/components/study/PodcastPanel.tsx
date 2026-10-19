@@ -27,11 +27,12 @@ export default function PodcastPanel({ studySetId }: { studySetId: string }) {
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => {
       cancelled = true;
-      if (mediaUrl) URL.revokeObjectURL(mediaUrl);
     };
-  // mediaUrl intentionally isn't a dependency: cleanup should run when the panel unmounts.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [studySetId, t]);
+
+  useEffect(() => {
+    return () => { if (mediaUrl) URL.revokeObjectURL(mediaUrl); };
+  }, [mediaUrl]);
 
   async function generate() {
     setGenerating(true); setError('');
