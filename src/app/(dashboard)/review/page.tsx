@@ -122,7 +122,7 @@ export default function ReviewPage() {
         <div className="rounded-3xl border border-slate-200 bg-white px-6 py-16 text-center shadow-sm">
           <div className="text-5xl" aria-hidden="true">🎉</div>
           <h2 className="mt-4 text-xl font-black text-slate-950">{reviewed === 0 ? t('review.allCaughtUp') : t('review.complete')}</h2>
-          <p className="mt-2 text-sm text-slate-500">{nextCursor ? '{t('review.moreWaiting')}' : '{t('review.noMore')}'}</p>
+          <p className="mt-2 text-sm text-slate-500">{nextCursor ? t('review.moreWaiting') : t('review.noMore')}</p>
           {nextCursor
             ? <button type="button" onClick={() => void loadNextPage()} className="mt-5 rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-700">{t('review.loadMore')}</button>
             : <Link href="/dashboard" className="mt-5 inline-flex rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-700">{t('review.backDashboard')}</Link>}
@@ -144,7 +144,7 @@ export default function ReviewPage() {
           >
             <span className="max-w-2xl text-xl font-semibold leading-relaxed text-slate-900">{flipped ? card.back : card.front}</span>
           </button>
-          <p className="mt-3 text-center text-xs text-slate-400">{flipped ? '{t('review.rate')}' : '{t('review.revealFirst')}'}</p>
+          <p className="mt-3 text-center text-xs text-slate-400">{flipped ? t('review.rate') : t('review.revealFirst')}</p>
           {flipped && <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-5">
             {gradeOptions.map((option) => <button
               key={option.grade}
