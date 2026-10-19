@@ -48,21 +48,21 @@ export async function sendOtpEmail(to: string, code: string, name?: string): Pro
   const recipientName = name?.trim()
     ? '<p style="margin:0 0 20px;color:#334155">Hi ' + escapeHtml(name.trim()) + ',</p>'
     : '';
-  const from = process.env.SMTP_FROM?.trim() || '"Cendekia.ai" <' + settings.user + '>';
+  const from = process.env.SMTP_FROM?.trim() || '"Explorin" <' + settings.user + '>';
 
   try {
     await transporter.verify();
     const info = await transporter.sendMail({
       from,
       to,
-      subject: 'Your Cendekia.ai verification code',
+      subject: 'Your Explorin verification code',
       text: (name?.trim() ? 'Hi ' + name.trim() + ',\n\n' : '') +
-        'Your Cendekia.ai verification code is ' + code + '. It expires in 10 minutes. Do not share this code with anyone.',
+        'Your Explorin verification code is ' + code + '. It expires in 10 minutes. Do not share this code with anyone.',
       html: `
         <div style="margin:0;background:#f1f7ff;padding:32px 16px;font-family:Arial,Helvetica,sans-serif;color:#0f172a">
           <div style="max-width:480px;margin:0 auto;background:#fff;border:1px solid #dbeafe;border-radius:24px;overflow:hidden">
             <div style="padding:28px 32px;background:linear-gradient(135deg,#dbeafe,#e0f2fe)">
-              <div style="font-size:12px;letter-spacing:2px;font-weight:700;color:#0369a1;text-transform:uppercase">Cendekia.ai</div>
+              <div style="font-size:12px;letter-spacing:2px;font-weight:700;color:#0369a1;text-transform:uppercase">Explorin</div>
               <h1 style="margin:10px 0 0;font-size:25px;line-height:1.25;color:#0f172a">Your next learning session starts here.</h1>
             </div>
             <div style="padding:28px 32px">
