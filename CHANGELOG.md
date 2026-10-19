@@ -1,5 +1,22 @@
 # Changelog
 
+## Domain kanonis EksplorinAja
+
+- Menyiapkan `https://eksplorinaja.com` sebagai default canonical domain untuk production ketika `NEXT_PUBLIC_APP_URL` tidak disetel.
+- Menambahkan canonical/Open Graph metadata pada landing page saja, agar login tidak mewarisi canonical URL beranda.
+- Menambahkan route `robots.txt`, `sitemap.xml`, dan web app manifest; halaman autentikasi, dashboard, serta tautan berbagi ditandai noindex.
+- Menambahkan template production environment tanpa secret dan panduan aktivasi domain, Cloudflare Tunnel/Pages, serta Google OAuth callback.
+- Memperluas CI untuk menguji canonical host, robots, sitemap, manifest, dan perilaku noindex.
+
+
+## EksplorinAja brand and public pages
+
+- Mengganti nama tampilan website menjadi EksplorinAja pada landing page, dashboard navigation, login, metadata, dokumen berbagi, dan email verifikasi.
+- Menambahkan kontrol tema terang/gelap dan bahasa Indonesia/English pada landing page sebelum login.
+- Mendesain ulang login dengan panel manfaat, tombol Google yang lebih rapi, pesan error dua bahasa, dan kontrol preferensi yang konsisten.
+- Menyatukan token warna halaman publik agar mengikuti tema tersimpan di browser.
+
+
 ## Dashboard hero dark theme
 
 - Menyesuaikan gradient kartu pendamping belajar, badge, heading, tombol sekunder, panel target harian, dan lingkaran progres agar kontrasnya konsisten pada tema gelap.

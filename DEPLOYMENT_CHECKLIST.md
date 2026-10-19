@@ -1,6 +1,55 @@
-# Checklist Deployment Cendekia.ai
+# Checklist Deployment EksplorinAja
 
 Gunakan checklist ini untuk deployment baru atau saat merilis perubahan yang menyentuh login, database, atau fitur belajar.
+
+## Domain custom `eksplorinaja.com` (belum diaktifkan)
+
+Domain kanonis yang dipilih untuk EksplorinAja adalah `https://eksplorinaja.com`. Perubahan kode di PR menyiapkan metadata canonical, Open Graph, `robots.txt`, dan `sitemap.xml`; domain baru aktif setelah domain benar-benar terdaftar, DNS/Cloudflare dikonfigurasi, dan environment production diperbarui.
+
+### 1. Domain dan Cloudflare
+
+- [ ] Pastikan `eksplorinaja.com` sudah dibeli/terdaftar atas akun yang kamu kontrol. Perubahan repository tidak membeli atau mengunci nama domain.
+- [ ] Tambahkan domain ke akun Cloudflare yang akan mengelola DNS, lalu ikuti instruksi nameserver dari registrar jika diminta.
+- [ ] URL sekarang yang memakai `trycloudflare.com` adalah Quick Tunnel sementara. Jangan jadikan URL tersebut domain production permanen.
+- [ ] Jika aplikasi dijalankan di server/PC melalui Cloudflare Tunnel: buat **Named Tunnel** yang persisten di Cloudflare Zero Trust, arahkan Public Hostname `eksplorinaja.com` ke origin aplikasi yang benar (contoh `http://localhost:3000` jika aplikasi memang berjalan di mesin tunnel), dan pastikan host tetap aktif.
+- [ ] Jika aplikasi akan berjalan di Cloudflare Pages, hubungkan custom domain dari menu Pages project → Custom domains dan ikuti DNS record yang diberikan Cloudflare. Jangan menyalin record Tunnel untuk deployment Pages.
+- [ ] Opsional: tambahkan `www.eksplorinaja.com` lalu buat redirect permanen ke `https://eksplorinaja.com`, supaya hanya ada satu alamat utama.
+
+### 2. Variabel environment production
+
+Atur di environment **host aplikasi** yang benar-benar menjalankan Next.js (jangan commit secret). Jika memakai Cloudflare Pages, atur di build/runtime variables Pages; jika memakai Cloudflare Tunnel ke PC/server, atur di environment proses aplikasi pada mesin tersebut dan restart proses setelah berubah:
+
+| Variabel | Nilai production |
+| --- | --- |
+| `NEXT_PUBLIC_APP_URL` | `https://eksplorinaja.com` |
+| `GOOGLE_REDIRECT_URI` | `https://eksplorinaja.com/api/auth/google/callback` |
+| `GOOGLE_CLIENT_ID` | Client ID OAuth Web yang sudah diizinkan untuk domain tersebut |
+| `GOOGLE_CLIENT_SECRET` | Client Secret OAuth (secret; jangan commit) |
+| `JWT_SECRET` | Secret acak unik minimal 32 karakter |
+| `DATABASE_URL` | Connection string database production |
+| `LLM_BASE_URL`, `LLM_API_KEY`, `LLM_MODEL` | Konfigurasi provider AI production |
+| `SMTP_FROM` (jika SMTP OTP lama digunakan) | `EksplorinAja <alamat-email-yang-terverifikasi>` |
+
+`NEXT_PUBLIC_APP_URL` juga menjadi sumber canonical URL, alamat Open Graph, `robots.txt`, dan sitemap. Jika variabel ini masih berisi `trycloudflare.com`, hasil metadata akan tetap menggunakan URL itu, jadi harus diganti sebelum rilis.
+
+### 3. Google OAuth
+
+Di Google Cloud Console → Google Auth Platform → Clients, edit OAuth client Web yang dipakai:
+
+- [ ] Authorized JavaScript origins: `https://eksplorinaja.com`
+- [ ] Authorized redirect URIs: `https://eksplorinaja.com/api/auth/google/callback`
+- [ ] Pertahankan localhost callback/origin hanya jika masih dibutuhkan untuk development.
+- [ ] Uji login Google pada domain custom setelah environment dan DNS aktif.
+
+### 4. Pemeriksaan sebelum mengaktifkan domain
+
+- [ ] Buka `https://eksplorinaja.com` melalui HTTPS dan pastikan sertifikat valid.
+- [ ] Pastikan tag canonical halaman publik menuju domain tersebut.
+- [ ] Pastikan `https://eksplorinaja.com/robots.txt` menunjuk ke `https://eksplorinaja.com/sitemap.xml`.
+- [ ] Pastikan `https://eksplorinaja.com/sitemap.xml` hanya memuat URL publik yang memang boleh diindeks; dashboard, API, dan halaman berbagi tidak dimasukkan.
+- [ ] Jalankan login Google, pembuatan materi, alur belajar, dan pengiriman email yang digunakan secara nyata.
+- [ ] Perubahan konfigurasi pada dokumen ini adalah persiapan saja. DNS, pendaftaran domain, environment Cloudflare, OAuth Console, dan deployment belum diubah dari repository.
+
 
 ## 1. Environment dan secrets
 

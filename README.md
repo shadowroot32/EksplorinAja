@@ -1,4 +1,4 @@
-# Cendekia.ai
+# EksplorinAja
 
 [![CI](https://github.com/shadowroot32/cendekia-ai/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/shadowroot32/cendekia-ai/actions/workflows/ci.yml)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org/)
@@ -7,7 +7,7 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql)](https://www.postgresql.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-**Cendekia.ai** adalah ruang belajar berbasis AI yang membantu mengubah catatan, dokumen PDF, dan materi YouTube menjadi ringkasan, flashcard, kuis, serta pengalaman belajar yang terorganisasi. Aplikasi menggunakan Next.js App Router, TypeScript, Drizzle ORM, dan PostgreSQL.
+**EksplorinAja** adalah ruang belajar berbasis AI yang membantu mengubah catatan, dokumen PDF, dan materi YouTube menjadi ringkasan, flashcard, kuis, serta pengalaman belajar yang terorganisasi. Aplikasi menggunakan Next.js App Router, TypeScript, Drizzle ORM, dan PostgreSQL.
 
 ## Fitur
 
@@ -72,6 +72,12 @@ Buka [http://localhost:3000](http://localhost:3000).
 
 **Sebelum menjalankan `drizzle-kit push` pada database yang berisi data penting, buat backup dan tinjau perubahan skema.** Untuk fitur tahap 3 yang ditambahkan ke database lama, SQL manual tersedia di [`drizzle/0001_stage3_learning_features.sql`](drizzle/0001_stage3_learning_features.sql). Jangan menjalankan SQL manual itu sebagai pengganti sinkronisasi skema lengkap pada database yang benar-benar kosong.
 
+## Domain resmi
+
+Domain kanonis yang dipilih adalah [`https://eksplorinaja.com`](https://eksplorinaja.com). Konfigurasi aplikasi menggunakan `NEXT_PUBLIC_APP_URL` untuk canonical metadata, Open Graph, `robots.txt`, sitemap, dan fallback Google OAuth. Nilai `.env.example` tetap untuk localhost agar development lokal tidak rusak; isi production adalah `NEXT_PUBLIC_APP_URL=https://eksplorinaja.com` dan `GOOGLE_REDIRECT_URI=https://eksplorinaja.com/api/auth/google/callback`.
+
+Sebelum domain aktif, domain harus terdaftar pada akun yang kamu kontrol, DNS atau Cloudflare Tunnel/Pages harus diarahkan ke aplikasi, dan Google OAuth Client harus mendapat origin serta callback HTTPS yang persis sama. URL `trycloudflare.com` adalah Quick Tunnel sementara, bukan hostname production tetap. Detail langkah ada di [DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md#domain-custom-eksplorinajacom-belum-diaktifkan). Penambahan konfigurasi repository ini tidak mendaftarkan domain, mengubah DNS, atau melakukan deployment.
+
 ## Menyiapkan Google OAuth
 
 1. Buka [Google Cloud Console](https://console.cloud.google.com/) dan pilih/buat project.
@@ -82,7 +88,7 @@ Buka [http://localhost:3000](http://localhost:3000).
 6. Isi `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI`, dan `NEXT_PUBLIC_APP_URL` pada environment.
 7. Untuk production, daftarkan callback HTTPS dengan domain yang benar-benar dipakai dan redeploy aplikasi.
 
-Flow login menggunakan authorization code, PKCE S256, state, nonce, verifikasi ID token melalui Google JWKS, pemeriksaan issuer/audience, dan klaim email terverifikasi. Password Google tidak pernah diterima atau disimpan oleh Cendekia.ai.
+Flow login menggunakan authorization code, PKCE S256, state, nonce, verifikasi ID token melalui Google JWKS, pemeriksaan issuer/audience, dan klaim email terverifikasi. Password Google tidak pernah diterima atau disimpan oleh EksplorinAja.
 
 ## Environment variables
 
@@ -95,7 +101,7 @@ Flow login menggunakan authorization code, PKCE S256, state, nonce, verifikasi I
 | `GOOGLE_CLIENT_ID` | Client ID OAuth Web Google |
 | `GOOGLE_CLIENT_SECRET` | Client Secret OAuth; rahasiakan |
 | `GOOGLE_REDIRECT_URI` | Callback OAuth lengkap yang terdaftar di Google Cloud |
-| `NEXT_PUBLIC_APP_URL` | URL publik aplikasi; fallback untuk callback |
+| `NEXT_PUBLIC_APP_URL` | URL publik aplikasi; sumber canonical URL, robots/sitemap dan fallback callback; gunakan domain production yang resmi |
 | `JWT_SECRET` | Secret acak minimal 32 karakter di production |
 | `PDF_OCR_LANGS` | Opsional; bahasa OCR Tesseract (default `eng+ind`) |
 
@@ -130,6 +136,9 @@ CI **tidak** membuktikan bahwa Google OAuth, kredensial provider AI, database pr
 │   ├── app/
 │   │   ├── (auth)/login/          # Login
 │   │   ├── (dashboard)/           # Dashboard, library, study, settings
+│   │   ├── robots.ts               # robots.txt untuk crawler
+│   │   ├── sitemap.ts              # Sitemap URL publik kanonis
+│   │   ├── manifest.ts             # Metadata PWA EksplorinAja
 │   │   ├── api/auth/google/       # OAuth start dan callback
 │   │   ├── api/study-sets/        # Materi, review, dan fitur belajar
 │   │   ├── api/user/              # Profil, penghapusan akun, ekspor data
@@ -138,11 +147,13 @@ CI **tidak** membuktikan bahwa Google OAuth, kredensial provider AI, database pr
 │   │   ├── layout/
 │   │   └── study/                 # Flashcard, quiz, Cornell, mind map, podcast
 │   └── lib/
+│       ├── site-url.ts            # Domain kanonis dan normalisasi URL publik
 │       ├── ai/                    # Integrasi provider LLM dan validasi output
 │       ├── db/                    # Drizzle client dan skema
 │       └── auth.ts                # Session
 ├── tests/                         # Unit tests
 ├── .env.example
+├── deploy/cloudflare-production.env.example
 ├── CHANGELOG.md
 ├── CONTRIBUTING.md
 ├── DEPLOYMENT_CHECKLIST.md

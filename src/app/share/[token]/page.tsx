@@ -1,5 +1,11 @@
+import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import SharedDocumentClient from './SharedDocumentClient';
+
+export const metadata: Metadata = {
+  title: 'Materi dibagikan | EksplorinAja',
+  robots: { index: false, follow: false },
+};
 
 export default function SharedDocumentPage({ params }: { params: Promise<{ token: string }> }) {
   return (
