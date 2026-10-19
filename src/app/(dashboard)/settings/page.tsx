@@ -96,6 +96,28 @@ export default function SettingsPage() {
     }
   }
 
+  async function downloadActivityCsv() {
+    setExporting(true);
+    setErrorMessage('');
+    try {
+      const response = await fetch('/api/user/export/activities', { cache: 'no-store' });
+      if (!response.ok) throw new Error('Activity export failed');
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'eksplorinaja-activity-history-' + new Date().toISOString().slice(0, 10) + '.csv';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => window.URL.revokeObjectURL(url), 1000);
+    } catch {
+      setErrorMessage(tr('settings.exportError'));
+    } finally {
+      setExporting(false);
+    }
+  }
+
   async function deleteAccount() {
     if (!window.confirm(tr('settings.deleteConfirm'))) return;
     setDeleting(true);
@@ -162,6 +184,9 @@ export default function SettingsPage() {
           <p className="text-xs leading-5 text-slate-500 dark:text-slate-400">{tr('settings.exportWarning')}</p>
           <Button type="button" variant="outline" onClick={downloadData} disabled={exporting}>
             {exporting ? tr('settings.exporting') : tr('settings.export')}
+          </Button>
+          <Button type="button" variant="outline" onClick={() => void downloadActivityCsv()} disabled={exporting}>
+            Activity history CSV
           </Button>
         </CardContent>
       </Card>
