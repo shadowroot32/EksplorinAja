@@ -34,7 +34,7 @@ export default function Navbar() {
 
   function navClass(href: string) {
     return cn(
-      'group flex items-center rounded-2xl text-sm font-semibold transition-all duration-200',
+      'group relative flex items-center rounded-2xl text-sm font-semibold transition-all duration-200',
       sidebarCollapsed ? 'justify-center px-2 py-3' : 'gap-3 px-4 py-3',
       activePath(href)
         ? 'bg-blue-50 text-blue-700 shadow-sm ring-1 ring-blue-100 dark:bg-blue-950/60 dark:text-blue-200 dark:ring-blue-900'
