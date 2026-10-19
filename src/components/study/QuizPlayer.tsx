@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { usePreferences } from '@/components/providers/PreferencesProvider';
 
 interface QuizItem { id: string; question: string; options: string[]; }
 interface QuizResults {
@@ -12,6 +13,7 @@ interface QuizResults {
 }
 
 export default function QuizPlayer({ studySetId }: { studySetId: string }) {
+  const { t } = usePreferences();
   const [items, setItems] = useState<QuizItem[]>([]);
   const [idx, setIdx] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
@@ -26,13 +28,13 @@ export default function QuizPlayer({ studySetId }: { studySetId: string }) {
     let cancelled = false;
     fetch(`/api/study-sets/${studySetId}/quiz`)
       .then(async (response) => {
-        if (!response.ok) throw new Error('Could not load quiz');
+        if (!response.ok) throw new Error(t('quiz.failed'));
         const payload = await response.json();
         if (!cancelled) setItems(Array.isArray(payload) ? payload : []);
       })
-      .catch(() => { if (!cancelled) setLoadError('Quiz could not be loaded. Refresh the page to try again.'); });
+      .catch(() => { if (!cancelled) setLoadError(t('quiz.failed')); });
     return () => { cancelled = true; };
-  }, [studySetId]);
+  }, [studySetId, t]);
 
   function pick(index: number) {
     if (selected !== null) return;
@@ -59,27 +61,27 @@ export default function QuizPlayer({ studySetId }: { studySetId: string }) {
         }),
       });
       const payload = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(payload.error || 'Quiz results could not be saved.');
+      if (!response.ok) throw new Error(payload.error || t('quiz.savedFailed'));
       setResults(payload as QuizResults);
       setDone(true);
     } catch (error) {
-      setSaveError(error instanceof Error ? error.message : 'Quiz results could not be saved.');
+      setSaveError(error instanceof Error ? error.message : t('quiz.savedFailed'));
     } finally {
       setSaving(false);
     }
   }
 
   if (loadError) return <p role="alert" className="rounded-xl border border-rose-900 bg-rose-950/50 p-4 text-sm text-rose-200">{loadError}</p>;
-  if (items.length === 0) return <div className="py-20 text-center text-slate-400">No quiz questions yet.</div>;
+  if (items.length === 0) return <div className="py-20 text-center text-slate-400">{t('quiz.empty')}</div>;
 
   if (done && results) return (
     <div className="space-y-5">
       <div className="rounded-3xl border border-slate-700 bg-[#0f1829] p-8 text-center shadow-sm">
         <div className="text-5xl" aria-hidden="true">{results.percentage >= 70 ? '🏆' : '📚'}</div>
-        <h2 className="mt-3 text-xl font-black text-slate-100">Quiz complete!</h2>
-        <p className="mt-2 text-slate-400">{results.score} / {results.total} correct ({results.percentage}%)</p>
+        <h2 className="mt-3 text-xl font-black text-slate-100">{t('quiz.complete')}</h2>
+        <p className="mt-2 text-slate-400">{results.score} / {results.total} {t('quiz.correct')} ({results.percentage}%)</p>
         <p className="mt-2 text-sm text-slate-400">Your subject mastery has been updated from this result.</p>
-        <Button className="mt-5" onClick={() => { setIdx(0); setSelected(null); setAnswers({}); setResults(null); setDone(false); setSaveError(''); }}>Retry quiz</Button>
+        <Button className="mt-5" onClick={() => { setIdx(0); setSelected(null); setAnswers({}); setResults(null); setDone(false); setSaveError(''); }}>{t('quiz.retry')}</Button>
       </div>
       <div className="space-y-3">
         {results.results.map((result, resultIndex) => {
@@ -87,8 +89,8 @@ export default function QuizPlayer({ studySetId }: { studySetId: string }) {
           if (!question) return null;
           return <article key={result.questionId} className="rounded-2xl border border-slate-700 bg-[#0f1829] p-5">
             <p className="font-bold text-slate-100">{resultIndex + 1}. {question.question}</p>
-            <p className={'mt-3 text-sm ' + (result.isCorrect ? 'text-emerald-700' : 'text-rose-700')}>Your answer: {question.options[result.selectedIndex]}</p>
-            {!result.isCorrect && <p className="mt-1 text-sm font-semibold text-slate-300">Correct answer: {question.options[result.correctIndex]}</p>}
+            <p className={'mt-3 text-sm ' + (result.isCorrect ? 'text-emerald-700' : 'text-rose-700')}>{t('quiz.yourAnswer')}: {question.options[result.selectedIndex]}</p>
+            {!result.isCorrect && <p className="mt-1 text-sm font-semibold text-slate-300">{t('quiz.correctAnswer')}: {question.options[result.correctIndex]}</p>}
             <p className="mt-2 text-sm leading-6 text-slate-400">{result.explanation}</p>
           </article>;
         })}
@@ -101,8 +103,8 @@ export default function QuizPlayer({ studySetId }: { studySetId: string }) {
   return (
     <div className="space-y-6">
       <div className="flex justify-between text-sm text-slate-400">
-        <span>Question {idx + 1} of {items.length}</span>
-        <span>{Object.keys(answers).length} answered</span>
+        <span>{t('quiz.questionOf').replace('{i}', String(idx + 1)).replace('{n}', String(items.length))}</span>
+        <span>{Object.keys(answers).length} {t('quiz.answered')}</span>
       </div>
       <div className="h-1.5 overflow-hidden rounded-full bg-slate-800">
         <div className="h-full rounded-full bg-blue-600 transition-all" style={{ width: ((idx / items.length) * 100) + '%' }} />
@@ -119,7 +121,7 @@ export default function QuizPlayer({ studySetId }: { studySetId: string }) {
         })}
       </div>
       {saveError && <p role="alert" className="rounded-xl border border-rose-900 bg-rose-950/50 p-3 text-sm text-rose-200">{saveError}</p>}
-      {selected !== null && <Button onClick={next} disabled={saving} className="w-full">{saving ? 'Saving results…' : idx + 1 < items.length ? 'Next question →' : 'Submit answers'}</Button>}
+      {selected !== null && <Button onClick={next} disabled={saving} className="w-full">{saving ? t('quiz.saving') : idx + 1 < items.length ? t('quiz.next') : t('quiz.submit')}</Button>}
     </div>
   );
 }

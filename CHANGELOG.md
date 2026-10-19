@@ -1,5 +1,13 @@
 # Changelog
 
+## Tema, bahasa, dan mode fokus
+
+- Menambahkan pengalih tema terang/gelap global yang menyimpan preferensi di localStorage.
+- Menambahkan pilihan bahasa Bahasa Indonesia/English yang berlaku di navigasi, dasbor, perpustakaan, mata pelajaran, ulasan, pengaturan, dan workspace belajar.
+- Mempertahankan mode fokus workspace serta menerapkan kontras yang sesuai saat tema diganti.
+- Menyesuaikan kontrol bahasa pada layar mobile dan memperbarui waktu/tanggal agar mengikuti bahasa yang dipilih.
+
+
 ## Workspace belajar terpadu
 
 - Mengganti halaman belajar sederhana menjadi workspace dengan tab Document, Summaries, Notes, Flashcards, Mind Map, dan Artifacts.
