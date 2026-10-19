@@ -98,13 +98,13 @@ export default function StudyClient({ paramsPromise }: { paramsPromise: Promise<
       try {
         const response = await fetch('/api/study-sets/' + setId, { cache: 'no-store' });
         const payload = await response.json().catch(() => null);
-        if (!response.ok || !payload?.id) throw new Error(payload?.error || 'Study document could not be loaded.');
+        if (!response.ok || !payload?.id) throw new Error(payload?.error || t('workspace.loadError'));
         if (cancelled) return;
         setSet(payload as StudySet);
         setEditTitle(payload.title ?? '');
         setEditContent(payload.sourceContent ?? '');
       } catch {
-        if (!cancelled) setLoadError('Study document could not be loaded. Refresh the page and try again.');
+        if (!cancelled) setLoadError(t('workspace.loadError'));
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -376,8 +376,8 @@ export default function StudyClient({ paramsPromise }: { paramsPromise: Promise<
               </div>
               <article className="overflow-hidden rounded-2xl border border-slate-700 bg-[#0f1829]">
                 <header className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-700 px-5 py-4 sm:px-6">
-                  <div className="min-w-0"><h3 className="break-words text-lg font-semibold text-slate-100">{set.title}</h3><p className="mt-1 text-xs text-slate-400">Summary · {formattedDate(set.createdAt, locale)}</p></div>
-                  <button type="button" onClick={() => void copySummary()} className="rounded-lg border border-slate-700 px-3 py-2 text-sm font-semibold text-slate-300 hover:bg-slate-800">▤ Copy</button>
+                  <div className="min-w-0"><h3 className="break-words text-lg font-semibold text-slate-100">{set.title}</h3><p className="mt-1 text-xs text-slate-400">{t('workspace.summary')} · {formattedDate(set.createdAt, locale)}</p></div>
+                  <button type="button" onClick={() => void copySummary()} className="rounded-lg border border-slate-700 px-3 py-2 text-sm font-semibold text-slate-300 hover:bg-slate-800">{'▤ ' + t('workspace.copy')}</button>
                 </header>
                 <div className="space-y-5 p-5 sm:p-6">
                   <p className="text-sm font-semibold uppercase tracking-wide text-slate-300">{t('workspace.summary')}</p>
