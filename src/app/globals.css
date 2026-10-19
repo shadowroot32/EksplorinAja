@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Use the app-selected theme instead of the operating-system preference. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #f4f8ff;
   --foreground: #0f172a;
@@ -159,12 +162,6 @@ html:not(.dark) .study-workspace .bg-slate-800\/90 .bg-\[\#0b1220\] {
   background-color: #e2e8f0 !important;
 }
 
-html.dark .bg-gradient-to-br,
-html.dark .bg-gradient-to-r,
-html.dark .bg-gradient-to-b {
-  background-color: #172338 !important;
-  background-image: none !important;
-}
 html:not(.dark) .study-workspace .bg-\[\#0b1220\].text-white {
   color: #0f172a !important;
 }
