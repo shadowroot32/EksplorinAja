@@ -1,4 +1,5 @@
 'use client';
+
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
@@ -10,92 +11,141 @@ import { Badge } from '@/components/ui/badge';
 import { usePreferences } from '@/components/providers/PreferencesProvider';
 
 interface StudySet { id: string; title: string; sourceType: string; summary: string; createdAt: string; }
-
 type Tab = 'text' | 'youtube' | 'pdf';
 
 export default function LibraryPage() {
-  const { t } = usePreferences();
-  const [sets, setSets] = useState<StudySet[]{([]);
+  const { t: tr } = usePreferences();
+  const [sets, setSets] = useState<StudySet[]>([]);
   const [open, setOpen] = useState(false);
-  const [tab, setTab] = useState<Tab{('text');
+  const [tab, setTab] = useState<Tab>('text');
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ title: '', content: '', url: '' });
-  const [file, setFile] = useState<File | null{(null);
+  const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState('');
 
-  useEffect(() ={ { fetch('/api/study-sets').then(r ={ r.json()).then(setSets); }, []);
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/study-sets')
+      .then((response) => response.json())
+      .then((payload) => { if (!cancelled) setSets(Array.isArray(payload) ? payload : []); })
+      .catch(() => { if (!cancelled) setError(tr('library.networkError')); });
+    return () => { cancelled = true; };
+  }, [tr]);
 
-  async function create(e: React.FormEvent) {
-    e.preventDefault(); setError(''); setLoading(true);
+  async function create(event: React.FormEvent) {
+    event.preventDefault();
+    setError('');
+    setLoading(true);
     try {
-      let res: Response;
+      let response: Response;
       if (tab === 'pdf' && file) {
-        const fd = new FormData();
-        fd.append('title', form.title); fd.append('sourceType', 'pdf'); fd.append('file', file);
-        res = await fetch('/api/study-sets', { method: 'POST', body: fd });
+        const body = new FormData();
+        body.append('title', form.title);
+        body.append('sourceType', 'pdf');
+        body.append('file', file);
+        response = await fetch('/api/study-sets', { method: 'POST', body });
       } else if (tab === 'youtube') {
-        res = await fetch('/api/study-sets', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title: form.title, sourceType: 'youtube', url: form.url }) });
+        response = await fetch('/api/study-sets', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title: form.title, sourceType: 'youtube', url: form.url }),
+        });
       } else {
-        res = await fetch('/api/study-sets', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title: form.title, sourceType: 'text', content: form.content }) });
+        response = await fetch('/api/study-sets', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title: form.title, sourceType: 'text', content: form.content }),
+        });
       }
-      if (res.ok) { const s = await res.json(); setSets(p ={ [s, ...p]); setOpen(false); setForm({ title: '', content: '', url: '' }); }
-      else setError((await res.json()).error ?? t('library.failed'));
-    } catch { setError(t('library.networkError')); }
-    setLoading(false);
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload.error || tr('library.failed'));
+      setSets((current) => [payload as StudySet, ...current]);
+      setOpen(false);
+      setForm({ title: '', content: '', url: '' });
+      setFile(null);
+      setTab('text');
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : tr('library.networkError'));
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function remove(id: string) {
-    await fetch(`/api/study-sets/${id}`, { method: 'DELETE' });
-    setSets(p ={ p.filter(s ={ s.id !== id));
+    try {
+      const response = await fetch('/api/study-sets/' + id, { method: 'DELETE' });
+      if (response.ok) setSets((current) => current.filter((item) => item.id !== id));
+      else setError(tr('library.failed'));
+    } catch {
+      setError(tr('library.networkError'));
+    }
   }
 
-  const tabCls = (t: Tab) ={ `px-4 py-2 rounded-lg text-sm font-medium transition-colors ${tab === t ? 'bg-emerald-50 text-emerald-700' : 'text-slate-600 hover:text-slate-800'}`;
+  const tabCls = (tabValue: Tab) => 'rounded-lg px-4 py-2 text-sm font-medium transition-colors ' + (
+    tab === tabValue
+      ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-200'
+      : 'text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white'
+  );
 
   return (
-    <div className="space-y-6"{
-      <div className="flex items-center justify-between"{
-        <h1 className="text-2xl font-bold text-slate-900"{{t('library.title')}</h1{
-        <Button onClick={() ={ setOpen(true)}{+ {t('library.newSet')}</Button{
-      </div{
+    <div className="space-y-6">
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{tr('library.title')}</h1>
+        <Button onClick={() => setOpen(true)}>+ {tr('library.newSet')}</Button>
+      </div>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"{
-        {sets.map(s ={ (
-          <Card key={s.id} className="hover:border-emerald-200 transition-colors"{
-            <CardContent className="pt-6"{
-              <div className="flex items-start justify-between mb-2"{
-                <Badge{{s.sourceType}</Badge{
-                <button onClick={() ={ remove(s.id)} className="text-slate-600 hover:text-red-600 text-sm transition-colors"{✕</button{
-              </div{
-              <h3 className="font-semibold text-slate-900 mb-1"{{s.title}</h3{
-              <p className="text-sm text-slate-600 line-clamp-2 mb-4"{{s.summary || t('library.processing')}</p{
-              <Link href={`/study/${s.id}`} className="text-emerald-700 text-sm hover:underline"{Study →</Link{
-            </CardContent{
-          </Card{
+      {error && <p role="alert" className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-200">{error}</p>}
+
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {sets.map((item) => (
+          <Card key={item.id} className="transition-colors hover:border-emerald-200">
+            <CardContent className="pt-6">
+              <div className="mb-2 flex items-start justify-between">
+                <Badge>{item.sourceType}</Badge>
+                <button type="button" onClick={() => void remove(item.id)} aria-label={tr('library.remove')} className="text-sm text-slate-600 transition-colors hover:text-red-600">✕</button>
+              </div>
+              <h3 className="mb-1 font-semibold text-slate-900 dark:text-slate-100">{item.title}</h3>
+              <p className="mb-4 line-clamp-2 text-sm text-slate-600 dark:text-slate-300">{item.summary || tr('library.processing')}</p>
+              <Link href={'/study/' + item.id} className="text-sm text-emerald-700 hover:underline dark:text-emerald-300">{tr('library.study')} →</Link>
+            </CardContent>
+          </Card>
         ))}
-        {sets.length === 0 && <div className="col-span-3 text-center py-20 text-slate-500"{{t('library.noSets')}</div{}
-      </div{
+        {sets.length === 0 && <div className="col-span-full py-20 text-center text-slate-500">{tr('library.noSets')}</div>}
+      </div>
 
-      <Dialog open={open} onClose={() ={ setOpen(false)}{
-        <DialogTitle{New Study Set</DialogTitle{
-        <form onSubmit={create} className="space-y-4"{
-          <div className="space-y-1.5"{
-            <Label{Title *</Label{
-            <Input value={form.title} onChange={e ={ setForm(p ={ ({ ...p, title: e.target.value }))} placeholder={t('library.titlePlaceholder')} required /{
-          </div{
-          <div className="flex gap-1 bg-slate-100 p-1 rounded-lg"{
-            {(['text', 'youtube', 'pdf'] as Tab[]).map(t ={ <button key={t} type="button" onClick={() ={ setTab(t)} className={tabCls(t)}{{t === 'text' ? '📝 ' + t('library.text') : t === 'youtube' ? '▶️ ' + t('library.youtube') : '📄 ' + t('library.pdf')}</button{)}
-          </div{
-          {tab === 'text' && <div className="space-y-1.5"{<Label{Content *</Label{<textarea className="w-full min-h-[120px] rounded-lg border border-slate-300 bg-slate-100 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none" value={form.content} onChange={e ={ setForm(p ={ ({ ...p, content: e.target.value }))} placeholder={t('library.contentPlaceholder')} required /{</div{}
-          {tab === 'youtube' && <div className="space-y-1.5"{<Label{YouTube URL *</Label{<Input value={form.url} onChange={e ={ setForm(p ={ ({ ...p, url: e.target.value }))} placeholder="https://youtube.com/watch?v=..." required /{</div{}
-          {tab === 'pdf' && <div className="space-y-1.5"{<Label{PDF File *</Label{<input type="file" accept=".pdf" onChange={e ={ setFile(e.target.files?.[0] ?? null)} className="text-sm text-slate-700" required /{</div{}
-          {error && <p className="text-red-600 text-sm"{{error}</p{}
-          {loading && <p className="text-emerald-700 text-sm"{{t('library.generating')}</p{}
-          <div className="flex gap-3 justify-end"{
-            <Button variant="outline" type="button" onClick={() ={ setOpen(false)}{Cancel</Button{
-            <Button type="submit" disabled={loading}{{loading ? t('library.processing') : t('library.create')}</Button{
-          </div{
-        </form{
-      </Dialog{
-    </div{
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        <DialogTitle>{tr('library.dialogTitle')}</DialogTitle>
+        <form onSubmit={create} className="space-y-4">
+          <div className="space-y-1.5">
+            <Label>{tr('library.titleLabel')}</Label>
+            <Input value={form.title} onChange={(event) => setForm((current) => ({ ...current, title: event.target.value }))} placeholder={tr('library.titlePlaceholder')} required />
+          </div>
+          <div className="flex gap-1 rounded-lg bg-slate-100 p-1 dark:bg-slate-800">
+            {(['text', 'youtube', 'pdf'] as Tab[]).map((tabValue) => (
+              <button key={tabValue} type="button" onClick={() => setTab(tabValue)} className={tabCls(tabValue)}>
+                {tabValue === 'text' ? '📝 ' + tr('library.text') : tabValue === 'youtube' ? '▶️ YouTube' : '📄 PDF'}
+              </button>
+            ))}
+          </div>
+          {tab === 'text' && <div className="space-y-1.5">
+            <Label>{tr('library.content')}</Label>
+            <textarea className="min-h-[120px] w-full resize-none rounded-lg border border-slate-300 bg-slate-100 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100" value={form.content} onChange={(event) => setForm((current) => ({ ...current, content: event.target.value }))} placeholder={tr('library.contentPlaceholder')} required />
+          </div>}
+          {tab === 'youtube' && <div className="space-y-1.5">
+            <Label>{tr('library.youtubeUrl')}</Label>
+            <Input value={form.url} onChange={(event) => setForm((current) => ({ ...current, url: event.target.value }))} placeholder="https://youtube.com/watch?v=..." required />
+          </div>}
+          {tab === 'pdf' && <div className="space-y-1.5">
+            <Label>{tr('library.pdfFile')}</Label>
+            <input type="file" accept=".pdf,application/pdf" onChange={(event) => setFile(event.target.files?.[0] ?? null)} className="text-sm text-slate-700 dark:text-slate-300" required />
+          </div>}
+          {loading && <p className="text-sm text-emerald-700 dark:text-emerald-300">{tr('library.generating')}</p>}
+          <div className="flex justify-end gap-3">
+            <Button variant="outline" type="button" onClick={() => setOpen(false)}>{tr('library.cancel')}</Button>
+            <Button type="submit" disabled={loading}>{loading ? tr('library.processing') : tr('library.create')}</Button>
+          </div>
+        </form>
+      </Dialog>
+    </div>
   );
 }
