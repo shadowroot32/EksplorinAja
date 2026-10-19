@@ -4,7 +4,7 @@ Keamanan pengguna dan data belajar penting bagi project ini.
 
 ## Melaporkan kerentanan
 
-Jangan memublikasikan kredensial, data pribadi, token sesi, atau detail eksploit yang belum diperbaiki pada issue publik. Laporkan kerentanan melalui [GitHub Security Advisories](https://github.com/shadowroot32/cendekia-ai/security/advisories/new) bila fitur tersebut tersedia untuk repository ini. Sertakan langkah reproduksi minimal, dampak yang diamati, dan versi atau commit yang terpengaruh.
+Jangan memublikasikan kredensial, data pribadi, token sesi, atau detail eksploit yang belum diperbaiki pada issue publik. Laporkan kerentanan melalui [GitHub Security Advisories](https://github.com/shadowroot32/EksplorinAja/security/advisories/new) bila fitur tersebut tersedia untuk repository ini. Sertakan langkah reproduksi minimal, dampak yang diamati, dan versi atau commit yang terpengaruh.
 
 ## Panduan deploy yang aman
 
