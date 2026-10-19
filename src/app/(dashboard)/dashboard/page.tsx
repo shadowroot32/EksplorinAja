@@ -64,27 +64,27 @@ export default function DashboardPage() {
 
       {loadError && <p role="alert" className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">{loadError}</p>}
 
-      <section className="relative isolate overflow-hidden rounded-[2rem] bg-gradient-to-br from-sky-200 via-blue-200 to-cyan-100 px-6 py-8 shadow-sm sm:px-9 sm:py-10">
-        <div aria-hidden="true" className="absolute -right-12 -top-16 -z-10 h-64 w-64 rounded-full bg-white/30 blur-2xl" />
+      <section className="dashboard-hero relative isolate overflow-hidden rounded-[2rem] bg-gradient-to-br from-sky-200 via-blue-200 to-cyan-100 px-6 py-8 shadow-sm sm:px-9 sm:py-10">
+        <div aria-hidden="true" className="dashboard-hero-glow absolute -right-12 -top-16 -z-10 h-64 w-64 rounded-full bg-white/30 blur-2xl" />
         <div aria-hidden="true" className="absolute bottom-0 right-1/4 -z-10 h-32 w-32 rounded-full bg-cyan-300/30 blur-2xl" />
         <div className="grid items-center gap-8 lg:grid-cols-[1fr_260px]">
           <div className="max-w-2xl">
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/50 px-3 py-1.5 text-xs font-bold text-blue-900 backdrop-blur"><span aria-hidden="true">✦</span> {t('dashboard.companion')}</span>
-            <h2 className="mt-5 text-3xl font-black leading-tight tracking-tight text-slate-950 sm:text-4xl">{t('dashboard.heroTitle')}</h2>
-            <p className="mt-3 max-w-xl text-sm leading-6 text-slate-700 sm:text-base">{t('dashboard.heroBody')}</p>
+            <span className="dashboard-hero-badge inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/50 px-3 py-1.5 text-xs font-bold text-blue-900 backdrop-blur"><span aria-hidden="true">✦</span> {t('dashboard.companion')}</span>
+            <h2 className="dashboard-hero-title mt-5 text-3xl font-black leading-tight tracking-tight text-slate-950 sm:text-4xl">{t('dashboard.heroTitle')}</h2>
+            <p className="dashboard-hero-body mt-3 max-w-xl text-sm leading-6 text-slate-700 sm:text-base">{t('dashboard.heroBody')}</p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link href="/library" className="inline-flex items-center gap-2 rounded-xl bg-blue-700 px-5 py-3 text-sm font-extrabold text-white shadow-lg shadow-blue-800/20 transition hover:bg-blue-800">{t('dashboard.continue')} <span aria-hidden="true">→</span></Link>
-              <Link href="/subjects" className="inline-flex items-center rounded-xl border border-white/80 bg-white/50 px-5 py-3 text-sm font-bold text-slate-800 transition hover:bg-white/80">{t('dashboard.exploreSubjects')}</Link>
+              <Link href="/subjects" className="dashboard-hero-secondary inline-flex items-center rounded-xl border border-white/80 bg-white/50 px-5 py-3 text-sm font-bold text-slate-800 transition hover:bg-white/80">{t('dashboard.exploreSubjects')}</Link>
             </div>
           </div>
-          <div className="flex items-center gap-5 rounded-3xl border border-white/70 bg-white/55 p-5 backdrop-blur sm:max-w-sm lg:flex-col lg:items-center lg:justify-center lg:gap-3 lg:p-6">
-            <div className="relative flex h-28 w-28 shrink-0 items-center justify-center rounded-full p-2" style={{ background: 'conic-gradient(#2563eb ' + goalProgress + '%, #dbeafe ' + goalProgress + '%)' }}>
-              <div className="flex h-full w-full flex-col items-center justify-center rounded-full bg-white"><span className="text-2xl font-black text-slate-950">{reviewedToday}</span><span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{t('dashboard.ofCards').replace('{n}', String(DAILY_REVIEW_TARGET))}</span></div>
+          <div className="dashboard-goal-card flex items-center gap-5 rounded-3xl border border-white/70 bg-white/55 p-5 backdrop-blur sm:max-w-sm lg:flex-col lg:items-center lg:justify-center lg:gap-3 lg:p-6">
+            <div className="dashboard-goal-ring relative flex h-28 w-28 shrink-0 items-center justify-center rounded-full p-2" style={{ '--goal-progress': goalProgress + '%' } as React.CSSProperties}>
+              <div className="dashboard-goal-ring-inner flex h-full w-full flex-col items-center justify-center rounded-full bg-white"><span className="dashboard-goal-count text-2xl font-black text-slate-950">{reviewedToday}</span><span className="dashboard-goal-count-label text-[10px] font-bold uppercase tracking-wider text-slate-500">{t('dashboard.ofCards').replace('{n}', String(DAILY_REVIEW_TARGET))}</span></div>
             </div>
             <div className="min-w-0 lg:text-center">
-              <div className="text-xs font-extrabold uppercase tracking-widest text-blue-800">{t('dashboard.dailyGoal')}</div>
-              <div className="mt-1 text-lg font-black text-slate-950">{goalProgress >= 100 ? t('dashboard.goalReached') : t('dashboard.keepStreak')}</div>
-              <p className="mt-1 text-xs leading-5 text-slate-600">{goalProgress >= 100 ? t('dashboard.goalReachedBody') : Math.max(0, DAILY_REVIEW_TARGET - reviewedToday) + ' ' + t('dashboard.goalBody')}</p>
+              <div className="dashboard-goal-label text-xs font-extrabold uppercase tracking-widest text-blue-800">{t('dashboard.dailyGoal')}</div>
+              <div className="dashboard-goal-title mt-1 text-lg font-black text-slate-950">{goalProgress >= 100 ? t('dashboard.goalReached') : t('dashboard.keepStreak')}</div>
+              <p className="dashboard-goal-body mt-1 text-xs leading-5 text-slate-600">{goalProgress >= 100 ? t('dashboard.goalReachedBody') : Math.max(0, DAILY_REVIEW_TARGET - reviewedToday) + ' ' + t('dashboard.goalBody')}</p>
               <p className="mt-2 text-xs font-bold text-orange-700">🔥 {t('dashboard.dayStreak').replace('{n}', String(stats?.streakDays ?? 0))}</p>
             </div>
           </div>
