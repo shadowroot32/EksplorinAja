@@ -97,11 +97,6 @@ html.dark select {
 html.dark input:disabled {
   background-color: #1e293b !important;
 }
-html.dark .bg-gradient-to-br,
-html.dark .bg-gradient-to-r,
-html.dark .bg-gradient-to-b {
-  background-image: none !important;
-}
 html.dark .shadow-sm,
 html.dark .shadow-md,
 html.dark .shadow-xl {
