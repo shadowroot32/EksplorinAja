@@ -1,86 +1,114 @@
 'use client';
+
 import { useEffect, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogTitle } from '@/components/ui/dialog';
+import { usePreferences } from '@/components/providers/PreferencesProvider';
 
 interface Subject { id: string; name: string; emoji: string; description: string; masteryLevel: number; }
 
 export default function SubjectsPage() {
+  const { t: tr } = usePreferences();
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ name: '', emoji: '📚', description: '' });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  useEffect(() => { fetch('/api/subjects').then(r => r.json()).then(setSubjects); }, []);
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/subjects')
+      .then((response) => response.json())
+      .then((payload) => { if (!cancelled) setSubjects(Array.isArray(payload) ? payload : []); })
+      .catch(() => { if (!cancelled) setError(tr('subjects.loadError')); });
+    return () => { cancelled = true; };
+  }, [tr]);
 
-  async function create(e: React.FormEvent) {
-    e.preventDefault(); setLoading(true);
-    const res = await fetch('/api/subjects', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
-    if (res.ok) { const s = await res.json(); setSubjects(p => [s, ...p]); setOpen(false); setForm({ name: '', emoji: '📚', description: '' }); }
-    setLoading(false);
+  async function create(event: React.FormEvent) {
+    event.preventDefault();
+    setLoading(true);
+    setError('');
+    try {
+      const response = await fetch('/api/subjects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload.error || tr('subjects.createError'));
+      setSubjects((current) => [payload as Subject, ...current]);
+      setOpen(false);
+      setForm({ name: '', emoji: '📚', description: '' });
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : tr('subjects.createError'));
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function remove(id: string) {
-    await fetch(`/api/subjects/${id}`, { method: 'DELETE' });
-    setSubjects(p => p.filter(s => s.id !== id));
+    try {
+      const response = await fetch('/api/subjects/' + id, { method: 'DELETE' });
+      if (response.ok) setSubjects((current) => current.filter((subject) => subject.id !== id));
+      else setError(tr('subjects.deleteError'));
+    } catch {
+      setError(tr('subjects.deleteError'));
+    }
   }
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-900">Subjects</h1>
-        <Button onClick={() => setOpen(true)}>+ New Subject</Button>
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{tr('subjects.title')}</h1>
+        <Button onClick={() => setOpen(true)}>+ {tr('subjects.new')}</Button>
       </div>
+      {error && <p role="alert" className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-200">{error}</p>}
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {subjects.map(s => (
-          <Card key={s.id} className="hover:border-emerald-200 transition-colors">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {subjects.map((subject) => (
+          <Card key={subject.id} className="transition-colors hover:border-emerald-200">
             <CardContent className="pt-6">
-              <div className="flex items-start justify-between mb-3">
-                <span className="text-3xl">{s.emoji}</span>
-                <button onClick={() => remove(s.id)} className="text-slate-600 hover:text-red-600 text-sm transition-colors">✕</button>
+              <div className="mb-3 flex items-start justify-between">
+                <span className="text-3xl">{subject.emoji}</span>
+                <button type="button" onClick={() => void remove(subject.id)} aria-label={tr('subjects.delete')} className="text-sm text-slate-600 transition-colors hover:text-red-600">✕</button>
               </div>
-              <h3 className="font-semibold text-slate-900 mb-1">{s.name}</h3>
-              <p className="text-sm text-slate-600 mb-3">{s.description || 'No description'}</p>
+              <h3 className="mb-1 font-semibold text-slate-900 dark:text-slate-100">{subject.name}</h3>
+              <p className="mb-3 text-sm text-slate-600 dark:text-slate-300">{subject.description || tr('subjects.noDescription')}</p>
               <div className="flex items-center gap-2">
-                <div className="h-1.5 flex-1 bg-slate-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-blue-600 rounded-full" style={{ width: `${s.masteryLevel * 100}%` }} />
+                <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+                  <div className="h-full rounded-full bg-blue-600" style={{ width: Math.max(0, Math.min(100, subject.masteryLevel * 100)) + '%' }} />
                 </div>
-                <span className="text-xs text-slate-600">{Math.round(s.masteryLevel * 100)}%</span>
+                <span className="text-xs text-slate-600 dark:text-slate-300">{Math.round(subject.masteryLevel * 100)}%</span>
               </div>
             </CardContent>
           </Card>
         ))}
-        {subjects.length === 0 && (
-          <div className="col-span-3 text-center py-20 text-slate-500">
-            No subjects yet. Create your first one!
-          </div>
-        )}
+        {subjects.length === 0 && <div className="col-span-full py-20 text-center text-slate-500">{tr('subjects.empty')}</div>}
       </div>
 
       <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>New Subject</DialogTitle>
+        <DialogTitle>{tr('subjects.dialog')}</DialogTitle>
         <form onSubmit={create} className="space-y-4">
           <div className="flex gap-3">
-            <div className="space-y-1.5 w-20">
-              <Label>Emoji</Label>
-              <Input value={form.emoji} onChange={e => setForm(p => ({ ...p, emoji: e.target.value }))} maxLength={2} className="text-center text-xl" />
+            <div className="w-20 space-y-1.5">
+              <Label>{tr('subjects.emoji')}</Label>
+              <Input value={form.emoji} onChange={(event) => setForm((current) => ({ ...current, emoji: event.target.value }))} maxLength={2} className="text-center text-xl" />
             </div>
-            <div className="space-y-1.5 flex-1">
-              <Label>Name *</Label>
-              <Input value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} placeholder="e.g. Biology" required />
+            <div className="flex-1 space-y-1.5">
+              <Label>{tr('subjects.name')}</Label>
+              <Input value={form.name} onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))} placeholder={tr('subjects.namePlaceholder')} required />
             </div>
           </div>
           <div className="space-y-1.5">
-            <Label>Description</Label>
-            <Input value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} placeholder="Optional description" />
+            <Label>{tr('subjects.description')}</Label>
+            <Input value={form.description} onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))} placeholder={tr('subjects.descriptionPlaceholder')} />
           </div>
-          <div className="flex gap-3 justify-end">
-            <Button variant="outline" type="button" onClick={() => setOpen(false)}>Cancel</Button>
-            <Button type="submit" disabled={loading}>{loading ? 'Creating…' : 'Create'}</Button>
+          <div className="flex justify-end gap-3">
+            <Button variant="outline" type="button" onClick={() => setOpen(false)}>{tr('library.cancel')}</Button>
+            <Button type="submit" disabled={loading}>{loading ? tr('subjects.creating') : tr('subjects.create')}</Button>
           </div>
         </form>
       </Dialog>
