@@ -17,7 +17,7 @@ Domain kanonis yang dipilih untuk EksplorinAja adalah `https://eksplorinaja.com`
 
 ### 2. Variabel environment production
 
-Atur di **Cloudflare runtime/build environment** yang benar-benar digunakan oleh aplikasi (jangan commit secret):
+Atur di environment **host aplikasi** yang benar-benar menjalankan Next.js (jangan commit secret). Jika memakai Cloudflare Pages, atur di build/runtime variables Pages; jika memakai Cloudflare Tunnel ke PC/server, atur di environment proses aplikasi pada mesin tersebut dan restart proses setelah berubah:
 
 | Variabel | Nilai production |
 | --- | --- |
