@@ -30,7 +30,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
     question: quizItems.question,
     options: quizItems.options,
   }).from(quizItems).where(eq(quizItems.studySetId, id));
-  return NextResponse.json(rows);
+  return NextResponse.json(rows, { headers: { 'Cache-Control': 'private, no-store' } });
 }
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
