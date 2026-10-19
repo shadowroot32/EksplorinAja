@@ -22,7 +22,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
   if (!set) return NextResponse.json({ error: 'Not found' }, { status: 404 });
   const [notes] = await db.select().from(cornellNotes)
     .where(and(eq(cornellNotes.studySetId, id), eq(cornellNotes.userId, user.id))).limit(1);
-  return NextResponse.json(notes ?? { studySetId: id, cues: '', notes: '', summary: '', reflection: '', updatedAt: null });
+  return NextResponse.json(notes ?? { studySetId: id, cues: '', notes: '', summary: '', reflection: '', updatedAt: null }, { headers: { 'Cache-Control': 'private, no-store' } });
 }
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {

@@ -23,5 +23,5 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ tok
     ))
     .limit(1);
   if (!share) return NextResponse.json({ error: 'Share link not found or expired' }, { status: 404 });
-  return NextResponse.json({ document: share });
+  return NextResponse.json({ document: share }, { headers: { 'Cache-Control': 'private, no-store' } });
 }

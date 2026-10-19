@@ -40,7 +40,7 @@ export async function GET() {
   const user = await getSession();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const rows = await db.select().from(studySets).where(eq(studySets.userId, user.id));
-  return NextResponse.json(rows);
+  return NextResponse.json(rows, { headers: { 'Cache-Control': 'private, no-store' } });
 }
 
 export async function POST(req: NextRequest) {

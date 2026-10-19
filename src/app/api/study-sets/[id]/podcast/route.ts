@@ -17,7 +17,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
   if (!set) return NextResponse.json({ error: 'Not found' }, { status: 404 });
   const [podcast] = await db.select().from(podcasts).where(eq(podcasts.studySetId, id))
     .orderBy(desc(podcasts.createdAt)).limit(1);
-  return NextResponse.json(podcast ?? null);
+  return NextResponse.json(podcast ?? null, { headers: { 'Cache-Control': 'private, no-store' } });
 }
 
 export async function POST(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
