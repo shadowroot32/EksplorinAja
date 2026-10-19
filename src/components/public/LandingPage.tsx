@@ -109,8 +109,8 @@ export default function LandingPage() {
 
   return (
     <main className="public-site min-h-screen overflow-hidden bg-[var(--public-bg)] text-[var(--public-text)] transition-colors duration-300">
-      <header className="sticky top-0 z-30 border-b border-[var(--public-border)] bg-[var(--public-bg)]/90 backdrop-blur-xl">
-        <nav className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-4 sm:px-8">
+      <header className="relative z-20 mx-auto max-w-7xl px-5 sm:px-8">
+        <nav className="flex flex-wrap items-center justify-between gap-3 py-5">
           <Link href="/" className="inline-flex shrink-0 items-center gap-3" aria-label="EksplorinAja home">
             <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 to-blue-700 text-xl font-black text-white shadow-lg shadow-blue-600/20">E</span>
             <span><span className="block text-lg font-extrabold tracking-tight text-[var(--public-text)]">EksplorinAja</span><span className="block text-xs text-[var(--public-muted)]">{text.tagline}</span></span>
@@ -124,19 +124,19 @@ export default function LandingPage() {
         </nav>
       </header>
 
-      <section className="relative mx-auto grid max-w-7xl items-center gap-12 px-5 pb-20 pt-12 sm:px-8 sm:pt-16 lg:grid-cols-[0.96fr_1.04fr] lg:gap-10 lg:pb-24 lg:pt-20">
+      <section className="relative mx-auto grid max-w-7xl items-center gap-12 px-5 pb-20 pt-10 sm:px-8 sm:pt-14 lg:grid-cols-[1.02fr_.98fr] lg:gap-8 lg:pb-28 lg:pt-16">
         <div aria-hidden="true" className="pointer-events-none absolute -left-24 top-8 h-72 w-72 rounded-full bg-sky-400/10 blur-3xl" />
         <div className="relative z-10">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[var(--public-border)] bg-[var(--public-surface)] px-4 py-2 text-xs font-bold uppercase tracking-[0.14em] text-sky-600 shadow-sm dark:text-sky-300"><span aria-hidden="true">✦</span> {text.eyebrow}</div>
+          <div className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white/80 px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-sky-700 shadow-sm"><span aria-hidden="true">✦</span> {text.eyebrow}</div>
           <h1 className="mt-6 max-w-2xl text-4xl font-black leading-[1.08] tracking-tight text-[var(--public-text)] sm:text-5xl lg:text-6xl">
-            {text.headlineOne}<br /><span className="bg-gradient-to-r from-blue-600 via-sky-500 to-emerald-500 bg-clip-text text-transparent dark:from-sky-300 dark:via-blue-300 dark:to-emerald-300">{text.headlineTwo}</span>
+            {text.headlineOne}<br /><span className="bg-gradient-to-r from-blue-700 via-sky-600 to-emerald-500 bg-clip-text text-transparent">{text.headlineTwo}</span>
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-8 text-[var(--public-muted)]">{text.hero}</p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link href="/login?mode=register" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-blue-600 px-7 py-4 text-sm font-bold text-white shadow-xl shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-blue-700">{text.start} <span aria-hidden="true">→</span></Link>
-            <Link href="#features" className="inline-flex items-center justify-center rounded-2xl border border-[var(--public-border)] bg-[var(--public-surface)] px-7 py-4 text-sm font-bold text-[var(--public-text)] shadow-sm transition hover:border-sky-300 hover:bg-[var(--public-soft)]">{text.explore}</Link>
+            <Link href="#features" className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-7 py-4 text-sm font-bold text-slate-700 shadow-sm transition hover:border-sky-200 hover:bg-sky-50">{text.explore}</Link>
           </div>
-          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-[var(--public-muted)]">
+          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-slate-500">
             <span className="inline-flex items-center gap-2"><span className="text-emerald-500" aria-hidden="true">✓</span>{text.trustOne}</span>
             <span className="inline-flex items-center gap-2"><span className="text-emerald-500" aria-hidden="true">✓</span>{text.trustTwo}</span>
           </div>
@@ -144,7 +144,7 @@ export default function LandingPage() {
 
         <div className="relative mx-auto w-full max-w-2xl lg:pl-3">
           <div aria-hidden="true" className="absolute inset-5 rounded-[2.5rem] bg-gradient-to-br from-sky-400/25 via-blue-400/20 to-emerald-300/20 blur-2xl" />
-          <div className="relative overflow-hidden rounded-[2rem] border border-[var(--public-border)] bg-[var(--public-surface)] p-3 shadow-2xl shadow-blue-950/10 sm:p-4">
+          <div className="relative overflow-hidden rounded-[2rem] border border-white/90 bg-white/95 p-3 shadow-2xl shadow-blue-900/15 sm:p-4">
             <div className="flex items-center justify-between rounded-t-[1.4rem] border-b border-[var(--public-border)] px-3 py-3 sm:px-4">
               <div className="flex items-center gap-2"><span className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-600 font-black text-white">E</span><span className="text-sm font-extrabold">{text.preview}</span></div>
               <div className="flex gap-1.5" aria-hidden="true"><span className="h-2.5 w-2.5 rounded-full bg-rose-400" /><span className="h-2.5 w-2.5 rounded-full bg-amber-400" /><span className="h-2.5 w-2.5 rounded-full bg-emerald-400" /></div>
@@ -152,8 +152,8 @@ export default function LandingPage() {
             <div className="px-3 pt-3 sm:px-4">
               <span className="inline-flex max-w-full rounded-full border border-[var(--public-border)] bg-[var(--public-soft)] px-3 py-1.5 text-[10px] font-semibold leading-4 text-[var(--public-muted)] sm:text-xs">{text.previewSample}</span>
             </div>
-            <div className="grid gap-3 p-2 sm:grid-cols-[112px_1fr] sm:gap-4 sm:p-3">
-              <aside className="hidden space-y-2 rounded-2xl bg-[var(--public-soft)] p-3 sm:block">
+            <div className="grid gap-3 p-2 sm:grid-cols-[100px_1fr] sm:gap-4 sm:p-3">
+              <aside className="hidden space-y-2 rounded-2xl bg-slate-50 p-3 sm:block">
                 <div className="mb-4 rounded-xl bg-blue-100 px-3 py-2 text-xs font-bold text-blue-700 dark:bg-blue-950 dark:text-blue-200">⌂ {text.overview}</div>
                 <div className="px-3 py-2 text-xs font-medium text-[var(--public-muted)]">▤ {text.subjects}</div>
                 <div className="px-3 py-2 text-xs font-medium text-[var(--public-muted)]">✧ {text.studySets}</div>
@@ -161,7 +161,7 @@ export default function LandingPage() {
                 <div className="mt-8 rounded-xl bg-gradient-to-br from-amber-100 to-orange-50 p-3 text-center dark:from-amber-950/50 dark:to-orange-950/40"><div className="text-xl" aria-hidden="true">🏆</div><div className="mt-1 text-[10px] font-bold text-amber-800 dark:text-amber-200">{text.keepGoing}</div></div>
               </aside>
               <div className="min-w-0 space-y-3">
-                <div className="rounded-2xl bg-gradient-to-br from-sky-100 via-blue-100 to-cyan-50 p-4 dark:from-[#193452] dark:via-[#172b4a] dark:to-[#10243a] sm:p-5">
+                <div className="rounded-2xl bg-gradient-to-br from-sky-200 via-blue-200 to-cyan-100 p-4 sm:p-5">
                   <div className="flex items-start justify-between gap-3">
                     <div><div className="text-xs font-bold uppercase tracking-wider text-blue-800 dark:text-sky-300">{text.everyDay}</div><div className="mt-2 text-xl font-black leading-tight text-slate-900 dark:text-white sm:text-2xl">{text.curious} 👋</div><div className="mt-2 max-w-xs text-xs leading-5 text-slate-600 dark:text-slate-300 sm:text-sm">{text.session}</div></div>
                     <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[1.4rem] bg-white/70 text-4xl shadow-sm dark:bg-slate-900/60 sm:h-20 sm:w-20">🧠</div>
@@ -180,7 +180,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section id="features" className="border-y border-[var(--public-border)] bg-[var(--public-surface)]/80 py-20 sm:py-24">
+      <section id="features" className="border-y border-sky-100 bg-white/80 py-20 sm:py-24">
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
           <div className="mx-auto max-w-2xl text-center"><span className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600 dark:text-sky-300">{text.featuresEyebrow}</span><h2 className="mt-4 text-3xl font-black tracking-tight text-[var(--public-text)] sm:text-4xl">{text.featuresTitle}</h2><p className="mt-4 leading-7 text-[var(--public-muted)]">{text.featuresIntro}</p></div>
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
