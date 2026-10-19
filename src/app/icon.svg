@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="explorin-gradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0ea5e9"/>
+      <stop offset="1" stop-color="#1d4ed8"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="18" fill="url(#explorin-gradient)"/>
+  <path d="M44 18H21v28h23v-7H29v-4h13v-7H29v-3h15z" fill="#fff"/>
+  <circle cx="46" cy="45" r="4" fill="#a7f3d0"/>
+</svg>
