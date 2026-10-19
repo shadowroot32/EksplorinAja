@@ -13,10 +13,8 @@ export const metadata: Metadata = {
   metadataBase: siteUrl,
   title: siteBrand + ' — Your AI Learning Space',
   description: 'EksplorinAja turns notes, PDFs, and videos into flashcards, quizzes, and a clearer learning routine.',
-  alternates: { canonical: '/' },
   openGraph: {
     type: 'website',
-    url: '/',
     siteName: siteBrand,
     title: siteBrand + ' — Your AI Learning Space',
     description: 'Turn notes, PDFs, and videos into flashcards, quizzes, and a clearer learning routine.',
