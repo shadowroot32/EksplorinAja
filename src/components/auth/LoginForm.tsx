@@ -15,6 +15,13 @@ const contentByLocale: Record<Locale, {
   secure: string;
   signInTitle: string;
   signInDescription: string;
+  registerTitle: string;
+  registerDescription: string;
+  registerGoogle: string;
+  newAccountPrompt: string;
+  existingAccountPrompt: string;
+  switchToRegister: string;
+  switchToSignIn: string;
   google: string;
   privacy: string;
   oauth: string;
@@ -37,6 +44,13 @@ const contentByLocale: Record<Locale, {
     secure: 'Secure sign in',
     signInTitle: 'Welcome to EksplorinAja',
     signInDescription: 'One secure step into your personal learning space. Continue with your Google account.',
+    registerTitle: 'Create your EksplorinAja account',
+    registerDescription: 'New here? Create your account with Google. If you already have an account, you will sign in instead.',
+    registerGoogle: 'Create account with Google',
+    newAccountPrompt: 'New to EksplorinAja?',
+    existingAccountPrompt: 'Already have an account?',
+    switchToRegister: 'Create an account',
+    switchToSignIn: 'Sign in',
     google: 'Continue with Google',
     privacy: 'EksplorinAja never receives your Google password. Google securely verifies your identity.',
     oauth: 'Protected with Google OAuth 2.0',
@@ -65,6 +79,13 @@ const contentByLocale: Record<Locale, {
     secure: 'Masuk dengan aman',
     signInTitle: 'Selamat datang di EksplorinAja',
     signInDescription: 'Satu langkah aman untuk membuka ruang belajarmu. Lanjutkan dengan akun Google.',
+    registerTitle: 'Buat akun EksplorinAja',
+    registerDescription: 'Baru di sini? Buat akun menggunakan Google. Jika akunmu sudah terdaftar, kamu akan langsung masuk.',
+    registerGoogle: 'Buat akun dengan Google',
+    newAccountPrompt: 'Belum punya akun?',
+    existingAccountPrompt: 'Sudah punya akun?',
+    switchToRegister: 'Buat akun',
+    switchToSignIn: 'Masuk',
     google: 'Lanjutkan dengan Google',
     privacy: 'EksplorinAja tidak pernah menerima kata sandi Google-mu. Google memverifikasi identitasmu dengan aman.',
     oauth: 'Dilindungi Google OAuth 2.0',
@@ -84,10 +105,13 @@ export default function LoginForm() {
   const { locale } = usePreferences();
   const text = contentByLocale[locale];
   const [errorCode, setErrorCode] = useState('');
+  const [mode, setMode] = useState<'signin' | 'register'>('signin');
 
   useEffect(() => {
-    const code = new URLSearchParams(window.location.search).get('error');
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('error');
     if (code) setErrorCode(code);
+    if (params.get('mode') === 'register') setMode('register');
   }, []);
 
   const error = errorCode ? (text.errors[errorCode] ?? text.genericError) : '';
@@ -114,25 +138,35 @@ export default function LoginForm() {
             </div>
           </div>
         </div>
-        <div className="relative z-10 flex items-center gap-3 text-sm text-blue-100 dark:text-slate-300"><span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/15 text-lg" aria-hidden="true">🌱</span>{text.footerLine}</div>
+        <div className="relative z-10 flex items-center gap-3 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm text-blue-50 backdrop-blur dark:border-white/10 dark:bg-white/5 dark:text-slate-200">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15 text-lg" aria-hidden="true">🌱</span>
+          <p className="min-w-0 max-w-xs leading-6">{text.footerLine}</p>
+        </div>
       </section>
 
       <section className="flex min-h-[610px] flex-col justify-center px-6 py-10 sm:px-10 lg:min-h-[680px] lg:px-12 xl:px-16">
         <div className="mb-9 lg:hidden"><Brand tagline={text.tagline} /></div>
         <div className="mx-auto w-full max-w-md">
           <div className="mb-8">
-            <span className="inline-flex items-center gap-2 rounded-full border border-sky-100 bg-sky-50 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-sky-700 dark:border-sky-900 dark:bg-sky-950/50 dark:text-sky-200"><span aria-hidden="true">↗</span> {text.secure}</span>
-            <h2 className="mt-5 text-3xl font-black leading-tight tracking-tight text-[var(--public-text)] sm:text-4xl">{text.signInTitle}</h2>
-            <p className="mt-3 leading-7 text-[var(--public-muted)]">{text.signInDescription}</p>
+            <span className="inline-flex max-w-full items-center gap-2 rounded-full border border-sky-100 bg-sky-50 px-3 py-1.5 text-xs font-bold uppercase leading-5 tracking-wider text-sky-700 dark:border-sky-900 dark:bg-sky-950/50 dark:text-sky-200"><span aria-hidden="true">↗</span> {text.secure}</span>
+            <h2 className="mt-5 text-3xl font-black leading-tight tracking-tight text-[var(--public-text)] sm:text-4xl">{mode === 'register' ? text.registerTitle : text.signInTitle}</h2>
+            <p className="mt-3 leading-7 text-[var(--public-muted)]">{mode === 'register' ? text.registerDescription : text.signInDescription}</p>
           </div>
 
           {error && <p role="alert" className="mb-5 flex gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-950 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-100"><span aria-hidden="true">!</span><span>{error}</span></p>}
 
           <a href="/api/auth/google" className="group flex min-h-14 w-full items-center justify-center gap-3 rounded-2xl border border-[var(--public-border)] bg-[var(--public-surface)] px-5 py-4 text-sm font-bold text-[var(--public-text)] shadow-sm transition hover:-translate-y-0.5 hover:border-sky-300 hover:bg-[var(--public-soft)] hover:shadow-md focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100 dark:focus-visible:ring-blue-900/40">
             <GoogleMark />
-            <span>{text.google}</span>
+            <span>{mode === 'register' ? text.registerGoogle : text.google}</span>
             <span className="ml-auto text-[var(--public-muted)] transition-transform group-hover:translate-x-0.5" aria-hidden="true">→</span>
           </a>
+
+          <p className="mt-5 text-center text-sm leading-6 text-[var(--public-muted)]">
+            {mode === 'register' ? text.existingAccountPrompt : text.newAccountPrompt}{' '}
+            <Link href={mode === 'register' ? '/login' : '/login?mode=register'} className="font-bold text-sky-700 underline-offset-4 hover:underline dark:text-sky-300">
+              {mode === 'register' ? text.switchToSignIn : text.switchToRegister}
+            </Link>
+          </p>
 
           <div className="mt-5 flex items-start gap-3 rounded-2xl bg-[var(--public-soft)] px-4 py-4">
             <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300" aria-hidden="true">✓</span>
@@ -160,7 +194,7 @@ function GoogleMark() {
 
 function Brand({ light = false, tagline }: { light?: boolean; tagline: string }) {
   return <Link href="/" className="relative z-10 inline-flex items-center gap-3 self-start" aria-label="EksplorinAja home">
-    <span className={'flex h-11 w-11 items-center justify-center rounded-2xl text-xl font-black shadow-lg ' + (light ? 'bg-white text-blue-700' : 'bg-gradient-to-br from-sky-500 to-blue-600 text-white')}>E</span>
-    <span><span className={'block text-lg font-extrabold tracking-tight ' + (light ? 'text-white' : 'text-[var(--public-text)]')}>EksplorinAja</span><span className={'block text-xs ' + (light ? 'text-blue-100' : 'text-[var(--public-muted)]')}>{tagline}</span></span>
+    <span className={'flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-xl font-black shadow-lg ' + (light ? 'bg-white text-blue-700' : 'bg-gradient-to-br from-sky-500 to-blue-600 text-white')}>E</span>
+    <span className="min-w-0 space-y-1"><span className={'block text-lg font-extrabold leading-6 tracking-tight ' + (light ? 'text-white' : 'text-[var(--public-text)]')}>EksplorinAja</span><span className={'block text-xs leading-5 ' + (light ? 'text-blue-100' : 'text-[var(--public-muted)]')}>{tagline}</span></span>
   </Link>;
 }
