@@ -1,5 +1,15 @@
 # Changelog
 
+## Workspace belajar terpadu
+
+- Mengganti halaman belajar sederhana menjadi workspace dengan tab Document, Summaries, Notes, Flashcards, Mind Map, dan Artifacts.
+- Menambahkan mode fokus, statistik flashcard/kuis, pembaca dokumen dengan outline heading, dan ringkasan yang dapat disalin.
+- Menampilkan flashcard dalam grid; jawaban dibuka per kartu dan penilaian mengirim grade ke sistem spaced repetition.
+- Memindahkan quiz, naskah podcast, dan kontrol share ke tab Artifacts.
+- Menambahkan edit dokumen, penyimpanan perubahan sumber, dan preview revisi AI sebelum disimpan.
+- Memastikan endpoint edit memverifikasi sesi serta kepemilikan study set; perubahan source tidak otomatis meregenerasi summary/flashcard/quiz.
+
+
 ## Tahap 5 — OCR fallback untuk PDF scan
 
 - Menambahkan Tesseract.js sebagai fallback jika ekstraksi teks asli PDF menghasilkan kurang dari 40 karakter.
