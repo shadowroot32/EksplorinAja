@@ -1,6 +1,7 @@
 'use strict';
 
 const { test } = require('node:test');
+const { buildDocumentBlocks } = require('../.test-build/document-formatting.js');
 const assert = require('node:assert/strict');
 const {
   AI_REQUEST_TIMEOUT_MS,
@@ -95,4 +96,43 @@ test('summary parser rejects blank, overly short, and oversized content', () => 
   assert.equal(parseSummaryOutput('Ini adalah ringkasan yang menjelaskan materi dengan cukup jelas dan benar.').startsWith('Ini'), true);
   assert.throws(() => parseSummaryOutput('singkat'), /schema validation/);
   assert.throws(() => parseSummaryOutput('A'.repeat(30_001)), /schema validation/);
+});
+
+
+test('document formatter keeps OCR fragments out of the heading outline', () => {
+  const blocks = buildDocumentBlocks([
+    'Application Security',
+    '',
+    'Application security is a critical component of information security and protects applications from external threats.',
+    '',
+    'ETI TS TF = FF _ _',
+    '',
+    'sremEs iE it &',
+    '',
+    '1. Inspect the House for Weak Spots',
+    'Use testing methods to identify and document software vulnerabilities.',
+  ].join('\n'));
+
+  const headings = blocks.filter((block) => block.type === 'heading').map((block) => block.text);
+  assert.deepEqual(headings, ['Application Security', '1. Inspect the House for Weak Spots']);
+  assert.ok(blocks.some((block) => block.type === 'paragraph' && block.text.includes('ETI TS TF = FF _ _')));
+  assert.ok(blocks.some((block) => block.type === 'paragraph' && block.text.includes('sremEs iE it &')));
+});
+
+test('document formatter joins wrapped paragraph lines and keeps list items structured', () => {
+  const blocks = buildDocumentBlocks([
+    'A heading',
+    '',
+    'A paragraph that wrapped',
+    'onto the next visual line and should remain a single readable paragraph.',
+    '',
+    '• Client devices request services.',
+    '• Servers respond to clients.',
+  ].join('\n'));
+
+  assert.ok(blocks.some((block) => block.type === 'paragraph' && block.text === 'A paragraph that wrapped onto the next visual line and should remain a single readable paragraph.'));
+  assert.deepEqual(blocks.filter((block) => block.type === 'listItem').map((block) => [block.marker, block.text]), [
+    ['•', 'Client devices request services.'],
+    ['•', 'Servers respond to clients.'],
+  ]);
 });
