@@ -84,7 +84,7 @@ export default function SettingsPage() {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = 'cendekia-ai-export-' + new Date().toISOString().slice(0, 10) + '.json';
+      link.download = 'explorin-export-' + new Date().toISOString().slice(0, 10) + '.json';
       document.body.appendChild(link);
       link.click();
       link.remove();
