@@ -259,7 +259,6 @@ export default function StudyClient({ paramsPromise }: { paramsPromise: Promise<
             <button type="button" onClick={() => { setTab('artifacts'); setArtifactTab('quiz'); }} className="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm font-semibold text-slate-200 transition hover:bg-slate-800">
               Quizzes <span className="ml-1 rounded-md bg-slate-800 px-1.5 py-0.5 text-xs text-slate-300">{stats.questions}</span>
             </button>
-            <ShareDocumentButton studySetId={setId} />
             <button type="button" onClick={() => setFocus((value) => !value)} className="rounded-xl border border-slate-700 px-3 py-2 text-sm font-semibold text-slate-300 transition hover:bg-slate-800" aria-pressed={focus}>
               {focus ? '↙ Exit focus' : '⛶ Focus'}
             </button>
@@ -402,6 +401,7 @@ export default function StudyClient({ paramsPromise }: { paramsPromise: Promise<
                 <button type="button" onClick={() => setArtifactTab('podcast')} className={'flex-1 rounded-lg px-4 py-2.5 text-sm font-semibold ' + (artifactTab === 'podcast' ? 'bg-[#0b1220] text-white' : 'text-slate-400 hover:text-white')}>Podcast</button>
               </div>
               {artifactTab === 'quiz' ? <QuizPlayer studySetId={setId} /> : <PodcastPanel studySetId={setId} />}
+              <div className="pt-3"><ShareDocumentButton studySetId={setId} /></div>
             </section>
           )}
         </main>
