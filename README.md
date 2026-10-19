@@ -1,4 +1,4 @@
-# Cendekia.ai
+# Explorin
 
 [![CI](https://github.com/shadowroot32/cendekia-ai/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/shadowroot32/cendekia-ai/actions/workflows/ci.yml)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org/)
@@ -7,7 +7,7 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql)](https://www.postgresql.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-**Cendekia.ai** adalah ruang belajar berbasis AI yang membantu mengubah catatan, dokumen PDF, dan materi YouTube menjadi ringkasan, flashcard, kuis, serta pengalaman belajar yang terorganisasi. Aplikasi menggunakan Next.js App Router, TypeScript, Drizzle ORM, dan PostgreSQL.
+**Explorin** adalah ruang belajar berbasis AI yang membantu mengubah catatan, dokumen PDF, dan materi YouTube menjadi ringkasan, flashcard, kuis, serta pengalaman belajar yang terorganisasi. Aplikasi menggunakan Next.js App Router, TypeScript, Drizzle ORM, dan PostgreSQL.
 
 ## Fitur
 
