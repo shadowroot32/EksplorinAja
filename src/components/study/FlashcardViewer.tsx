@@ -135,7 +135,7 @@ export default function FlashcardViewer({ studySetId, tags = [] }: { studySetId:
                     <div className="grid grid-cols-2 gap-2">
                       {gradeOptions.map((option) => (
                         <button key={option.grade} type="button" disabled={Boolean(savingId)} onClick={() => void grade(card, option.grade)} className={'rounded-lg border px-3 py-2 text-sm font-semibold transition disabled:cursor-wait disabled:opacity-50 ' + option.className}>
-                          {saving && option.grade === gradeOptions[0].grade ? 'Saving…' : option.label}
+                          {saving ? t('flash.saving') : t(option.labelKey)}
                         </button>
                       ))}
                     </div>
