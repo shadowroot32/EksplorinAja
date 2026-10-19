@@ -29,29 +29,7 @@ export default function SettingsPage() {
 
   useEffect(() => {
     let cancelled = false;
-    async function downloadActivityCsv() {
-    setExporting(true);
-    setErrorMessage('');
-    try {
-      const response = await fetch('/api/user/export/activities', { cache: 'no-store' });
-      if (!response.ok) throw new Error('Activity export failed');
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'eksplorinaja-activity-history-' + new Date().toISOString().slice(0, 10) + '.csv';
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.setTimeout(() => window.URL.revokeObjectURL(url), 1000);
-    } catch {
-      setErrorMessage(tr('settings.exportError'));
-    } finally {
-      setExporting(false);
-    }
-  }
-
-  async function loadProfile() {
+    async function loadProfile() {
       try {
         const response = await fetch('/api/user', { cache: 'no-store' });
         if (!response.ok) throw new Error('Profile request failed');
@@ -93,6 +71,28 @@ export default function SettingsPage() {
       setErrorMessage(tr('settings.saveError'));
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function downloadActivityCsv() {
+    setExporting(true);
+    setErrorMessage('');
+    try {
+      const response = await fetch('/api/user/export/activities', { cache: 'no-store' });
+      if (!response.ok) throw new Error('Activity export failed');
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'eksplorinaja-activity-history-' + new Date().toISOString().slice(0, 10) + '.csv';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => window.URL.revokeObjectURL(url), 1000);
+    } catch {
+      setErrorMessage(tr('settings.exportError'));
+    } finally {
+      setExporting(false);
     }
   }
 
