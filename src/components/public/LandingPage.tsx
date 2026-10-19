@@ -149,9 +149,6 @@ export default function LandingPage() {
               <div className="flex items-center gap-2"><span className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-600 font-black text-white">E</span><span className="text-sm font-extrabold">{text.preview}</span></div>
               <div className="flex gap-1.5" aria-hidden="true"><span className="h-2.5 w-2.5 rounded-full bg-rose-400" /><span className="h-2.5 w-2.5 rounded-full bg-amber-400" /><span className="h-2.5 w-2.5 rounded-full bg-emerald-400" /></div>
             </div>
-            <div className="px-3 pt-3 sm:px-4">
-              <span className="inline-flex max-w-full rounded-full border border-[var(--public-border)] bg-[var(--public-soft)] px-3 py-1.5 text-[10px] font-semibold leading-4 text-[var(--public-muted)] sm:text-xs">{text.previewSample}</span>
-            </div>
             <div className="grid gap-3 p-2 sm:grid-cols-[100px_1fr] sm:gap-4 sm:p-3">
               <aside className="hidden space-y-2 rounded-2xl bg-slate-50 p-3 sm:block">
                 <div className="mb-4 rounded-xl bg-blue-100 px-3 py-2 text-xs font-bold text-blue-700 dark:bg-blue-950 dark:text-blue-200">⌂ {text.overview}</div>
