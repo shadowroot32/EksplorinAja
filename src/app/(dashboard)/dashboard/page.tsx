@@ -40,6 +40,15 @@ export default function DashboardPage() {
 
   const reviewedToday = stats?.cardsReviewedToday ?? 0;
   const goalProgress = Math.min(100, Math.round((reviewedToday / DAILY_REVIEW_TARGET) * 100));
+  const workspaceShortcuts = [
+    { key: 'document', label: t('workspace.document'), icon: '▤', tone: 'bg-sky-50 text-sky-700' },
+    { key: 'summaries', label: t('workspace.summaries'), icon: '✧', tone: 'bg-violet-50 text-violet-700' },
+    { key: 'notes', label: t('workspace.notes'), icon: '▧', tone: 'bg-amber-50 text-amber-700' },
+    { key: 'flashcards', label: t('workspace.flashcards'), icon: '▣', tone: 'bg-emerald-50 text-emerald-700' },
+    { key: 'mindmap', label: t('workspace.mindMap'), icon: '⌘', tone: 'bg-fuchsia-50 text-fuchsia-700' },
+    { key: 'artifacts', label: t('workspace.artifacts'), icon: '◇', tone: 'bg-indigo-50 text-indigo-700' },
+  ];
+
   const statsCards = [
     { label: t('dashboard.studySets'), value: stats?.studySets ?? '—', icon: '📚', tone: 'bg-violet-50 text-violet-700' },
     { label: t('dashboard.subjects'), value: stats?.subjects ?? '—', icon: '🗂️', tone: 'bg-sky-50 text-sky-700' },
@@ -88,6 +97,26 @@ export default function DashboardPage() {
               <p className="mt-2 text-xs font-bold text-orange-700">🔥 {t('dashboard.dayStreak').replace('{n}', String(stats?.streakDays ?? 0))}</p>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="workspace-shortcuts-title" className="space-y-4">
+        <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-end">
+          <div>
+            <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-blue-600">{t('dashboard.workspaceTools')}</p>
+            <h2 id="workspace-shortcuts-title" className="mt-1 text-xl font-black tracking-tight text-slate-950">{t('dashboard.workspaceTitle')}</h2>
+            <p className="mt-1 text-sm text-slate-500">{t('dashboard.workspaceToolsBody')}</p>
+          </div>
+          <Link href={sets[0] ? '/study/' + sets[0].id : '/library'} className="inline-flex w-fit items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:border-blue-200 hover:text-blue-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+            {sets[0] ? t('dashboard.openWorkspace') : t('dashboard.createWorkspace')} <span aria-hidden="true">→</span>
+          </Link>
+        </div>
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
+          {workspaceShortcuts.map((shortcut) => <Link key={shortcut.key} href={sets[0] ? '/study/' + sets[0].id + '?tab=' + shortcut.key : '/library'} className="group rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
+            <span className={'flex h-10 w-10 items-center justify-center rounded-xl text-lg ' + shortcut.tone} aria-hidden="true">{shortcut.icon}</span>
+            <span className="mt-3 block text-sm font-extrabold text-slate-900 group-hover:text-blue-700 dark:text-slate-100 dark:group-hover:text-sky-300">{shortcut.label}</span>
+            <span className="mt-1 block text-xs leading-5 text-slate-500">{t('dashboard.openWorkspace')}</span>
+          </Link>)}
         </div>
       </section>
 
