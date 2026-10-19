@@ -42,7 +42,7 @@ export default function ThemeLanguageControls({ compact = false }: { compact?: b
         <span className="flex h-6 w-6 items-center justify-center rounded-xl bg-amber-100 text-sm transition-colors group-hover:bg-amber-200 dark:bg-slate-800 dark:group-hover:bg-slate-700" aria-hidden="true">
           {theme === 'dark' ? '☀' : '☾'}
         </span>
-        <span>{compact ? (theme === 'dark' ? 'Dark' : 'Light') : t(theme === 'dark' ? 'prefs.dark' : 'prefs.light')}</span>
+        <span>{t(theme === 'dark' ? 'prefs.dark' : 'prefs.light')}</span>
       </button>
 
       <div className="relative" ref={languageRef}>
