@@ -38,10 +38,10 @@ export default function FlashcardViewer({ studySetId, tags = [] }: { studySetId:
         if (!response.ok) throw new Error(payload?.error || t('flash.loadFailed'));
         if (!cancelled) setCards(Array.isArray(payload) ? payload : []);
       })
-      .catch(() => { if (!cancelled) setError('{t('flash.loadFailed')}'); })
+      .catch(() => { if (!cancelled) setError(t('flash.loadFailed')); })
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
-  }, [studySetId]);
+  }, [studySetId, t]);
 
   function toggleReveal(id: string) {
     setRevealedIds((current) => {
@@ -63,10 +63,10 @@ export default function FlashcardViewer({ studySetId, tags = [] }: { studySetId:
         body: JSON.stringify({ cardId: card.id, grade: value }),
       });
       const payload = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(payload.error || 't('flash.saveFailed')');
+      if (!response.ok) throw new Error(payload.error || t('flash.saveFailed'));
       setReviewedIds((current) => new Set(current).add(card.id));
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 't('flash.saveFailed')');
+      setError(cause instanceof Error ? cause.message : t('flash.saveFailed'));
     } finally {
       setSavingId('');
     }
