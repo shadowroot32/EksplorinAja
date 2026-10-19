@@ -11,12 +11,19 @@ async function readPage(path) {
 }
 
 async function main() {
-  const [home, login] = await Promise.all([
+  const [home, login, robots, sitemap] = await Promise.all([
     readPage('/'),
     readPage('/login'),
+    readPage('/robots.txt'),
+    readPage('/sitemap.xml'),
   ]);
 
   assert.match(home, /EksplorinAja/, 'landing page should use the new product name');
+  assert.match(home, /https:\\/\\/eksplorinaja\\.com/, 'public metadata should use the production canonical domain');
+  assert.match(robots, /https:\\/\\/eksplorinaja\\.com\\/sitemap\\.xml/, 'robots.txt should link to the canonical sitemap');
+  assert.match(robots, /Disallow: \\/api\\//, 'robots.txt should disallow API routes');
+  assert.match(sitemap, /https:\\/\\/eksplorinaja\\.com\\//, 'sitemap should use the canonical domain');
+  assert.doesNotMatch(sitemap, /\\/dashboard|\\/api\\//, 'sitemap must not include private or API paths');
   assert.doesNotMatch(home, /Cendekia\.ai|Explorin/i, 'landing page must not show the previous brand');
   assert.match(home, /Start learning for free|Mulai belajar gratis/i, 'landing page should render a primary CTA');
   assert.match(home, /English/, 'landing page should render the language control');
