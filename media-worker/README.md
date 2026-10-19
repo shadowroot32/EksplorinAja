@@ -12,8 +12,9 @@ EksplorinAja's optional self-hosted media worker generates Indonesian speech wit
 
 1. Download the Indonesian Piper voice model and matching .onnx.json file from the official Piper voice collection/model card and put both in media-worker/models/. Do not commit model weights.
 2. Copy media-worker/.env.example to media-worker/.env and set a strong token.
-3. Run docker compose -f media-worker/compose.yml up --build -d.
-4. Set MEDIA_WORKER_URL to the private URL reachable by Next.js and the same MEDIA_WORKER_TOKEN in the Next.js server environment, then restart/redeploy the app.
+3. Create a private Docker network once: docker network create eksplorinaja-private (or set MEDIA_PRIVATE_NETWORK to the existing network that the Next.js container uses).
+4. Run docker compose -f media-worker/compose.yml up --build -d.
+5. Set MEDIA_WORKER_URL to the private URL reachable by Next.js and the same MEDIA_WORKER_TOKEN in the Next.js server environment, then restart/redeploy the app.
 
 The worker must only be reachable from the application/private network. Do not publish port 8090 to the public internet.
 
