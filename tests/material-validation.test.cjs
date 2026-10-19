@@ -1,7 +1,7 @@
 'use strict';
 
 const { test } = require('node:test');
-const { buildDocumentBlocks } = require('../.test-build/document-formatting.js');
+const { buildDocumentBlocks, normalizeOcrPageText } = require('../.test-build/document-formatting.js');
 const assert = require('node:assert/strict');
 const {
   AI_REQUEST_TIMEOUT_MS,
@@ -135,4 +135,12 @@ test('document formatter joins wrapped paragraph lines and keeps list items stru
     ['•', 'Client devices request services.'],
     ['•', 'Servers respond to clients.'],
   ]);
+});
+
+
+test('OCR normalization preserves paragraphs but removes inconsistent spacing and control characters', () => {
+  assert.equal(
+    normalizeOcrPageText('  Application Security  \r\n\r\n  is an important topic.  \u0000'),
+    'Application Security\n\nis an important topic.',
+  );
 });
