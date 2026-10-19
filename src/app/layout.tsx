@@ -7,8 +7,8 @@ const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
 const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Cendekia.ai — Your AI Learning Workspace',
-  description: 'Turn notes, PDFs, and videos into flashcards, quizzes, and clear learning progress with AI.',
+  title: 'Explorin — Your AI Learning Space',
+  description: 'Explorin turns notes, PDFs, and videos into flashcards, quizzes, and a clearer learning routine.'
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
