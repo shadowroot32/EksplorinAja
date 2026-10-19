@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 export type Locale = 'en' | 'id';
 export type Theme = 'light' | 'dark';
@@ -377,15 +377,18 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
     return () => window.removeEventListener('storage', onStorage);
   }, [ready]);
 
+  const translate = useCallback((key: string) => dictionaries[locale][key] ?? en[key] ?? key, [locale]);
+  const toggleTheme = useCallback(() => setThemeState((current) => current === 'light' ? 'dark' : 'light'), []);
+
   const value = useMemo<Preferences>(() => ({
     locale,
     theme,
     ready,
     setLocale: setLocaleState,
     setTheme: setThemeState,
-    toggleTheme: () => setThemeState((current) => current === 'light' ? 'dark' : 'light'),
-    t: (key) => dictionaries[locale][key] ?? en[key] ?? key,
-  }), [locale, theme, ready]);
+    toggleTheme,
+    t: translate,
+  }), [locale, theme, ready, toggleTheme, translate]);
 
   return <PreferencesContext.Provider value={value}>{children}</PreferencesContext.Provider>;
 }
