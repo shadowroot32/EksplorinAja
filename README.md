@@ -136,6 +136,9 @@ CI **tidak** membuktikan bahwa Google OAuth, kredensial provider AI, database pr
 │   ├── app/
 │   │   ├── (auth)/login/          # Login
 │   │   ├── (dashboard)/           # Dashboard, library, study, settings
+│   │   ├── robots.ts               # robots.txt untuk crawler
+│   │   ├── sitemap.ts              # Sitemap URL publik kanonis
+│   │   ├── manifest.ts             # Metadata PWA EksplorinAja
 │   │   ├── api/auth/google/       # OAuth start dan callback
 │   │   ├── api/study-sets/        # Materi, review, dan fitur belajar
 │   │   ├── api/user/              # Profil, penghapusan akun, ekspor data
@@ -150,6 +153,7 @@ CI **tidak** membuktikan bahwa Google OAuth, kredensial provider AI, database pr
 │       └── auth.ts                # Session
 ├── tests/                         # Unit tests
 ├── .env.example
+├── deploy/cloudflare-production.env.example
 ├── CHANGELOG.md
 ├── CONTRIBUTING.md
 ├── DEPLOYMENT_CHECKLIST.md
